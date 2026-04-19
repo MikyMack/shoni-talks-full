@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
+    <title>Shony Talks - Admin Banners</title>
+
+    <meta name="author" content="themesflat.com">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Theme Style -->
+    <link rel="stylesheet" type="text/css" href="/admin-css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/animation.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap-select.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Font -->
+    <link rel="stylesheet" href="/admin-font/fonts.css">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/admin-icon/style.css">
+
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="/img/devin.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/devin.png">
+    <style>
+        .wg-table ul.wg-product {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .wg-table .image img {
+            width: 100px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .list-icon-function {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .list-icon-function .item {
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .list-icon-function .item:hover {
+            background: #f0f0f0;
+        }
+        .list-icon-function .item.edit {
+            color: #2196F3;
+        }
+        .list-icon-function .item.trash {
+            color: #f44336;
+        }
+        .toggle-container {
+            margin-left: 10px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        .toggle-input:checked + .toggle-slider {
+            background-color: #4CAF50;
+        }
+        .toggle-input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        .no-banners {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+     <style>
+        /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-content {
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        position: relative;
+    }
+    
+    .modal-header {
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 15px;
+    }
+    
+    .modal-body {
+        padding: 15px 0;
+    }
+    
+    .modal-footer {
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        margin-top: 15px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #aaa;
+        cursor: pointer;
+    }
+    
+    .close:hover {
+        color: #333;
+    }
+    
+    /* Form styles */
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+    
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group input[type="file"],
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    </style>
+</head>
+
+<body class="body">
+
+    <!-- #wrapper -->
+    <div id="wrapper">
+        <!-- #page -->
+        <div id="page" class="">
+            <!-- layout-wrap -->
+           <div class="layout-wrap loader-off">
+                <!-- preload -->
+                <div id="preload" class="preload-container">
+                    <div class="preloading">
+                        <span></span>
+                    </div>
+                </div>
+                <!-- /preload -->
+                <!-- section-menu-left -->
+                    <div class="section-menu-left">
+                    <div class="box-logo">
+                        <a href="/admin/admin-dashboard" id="site-logo-inner">
+                            <img style="width:60px;" id="logo_header" alt="" src="/img/devin.png" data-light="/img/devin.png" data-dark="img/logo.png" >
+                        </a>
+                        <div class="button-show-hide">
+                            <i class="icon-chevron-left"></i>
+                        </div>
+                    </div>
+                    <div class="section-menu-left-wrap">
+                        <div class="center">
+                            <div class="center-item">
+                                <ul class="">
+                                    <li class="menu-item">
+                                        <a href="/admin/admin-dashboard" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.2652 3.57566C12.1187 3.42921 11.8813 3.42921 11.7348 3.57566L5.25 10.0605V19.8748C5.25 20.0819 5.41789 20.2498 5.625 20.2498H9V16.1248C9 15.0893 9.83947 14.2498 10.875 14.2498H13.125C14.1605 14.2498 15 15.0893 15 16.1248V20.2498H18.375C18.5821 20.2498 18.75 20.0819 18.75 19.8748V10.0605L12.2652 3.57566ZM20.25 11.5605L21.2197 12.5302C21.5126 12.8231 21.9874 12.8231 22.2803 12.5302C22.5732 12.2373 22.5732 11.7624 22.2803 11.4695L13.3258 2.51499C12.5936 1.78276 11.4064 1.78276 10.6742 2.515L1.71967 11.4695C1.42678 11.7624 1.42678 12.2373 1.71967 12.5302C2.01256 12.8231 2.48744 12.8231 2.78033 12.5302L3.75 11.5605V19.8748C3.75 20.9104 4.58947 21.7498 5.625 21.7498H18.375C19.4105 21.7498 20.25 20.9104 20.25 19.8748V11.5605ZM13.5 20.2498H10.5V16.1248C10.5 15.9177 10.6679 15.7498 10.875 15.7498H13.125C13.3321 15.7498 13.5 15.9177 13.5 16.1248V20.2498Z" fill="#111111"/>
+                                                </svg>
+                                            </div>
+                                            <div class="text">Admin Dashboard</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/admin-blogs" class="menu-item-button">
+                                            <div class="icon"><i class="icon-file-plus"></i></div>
+                                            <div class="text">Blog Management</div>
+                                        </a>
+                                    
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/admin-programs" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Program Management</div>
+                                        </a>
+                                 
+                                    </li>
+                                    <li class="menu-item active">
+                                        <a href="/admin/admin-banner" class="menu-item-button">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.5 1.875C0.5 0.839466 1.33947 0 2.375 0H19.625C20.6605 0 21.5 0.839466 21.5 1.875V3.375C21.5 4.29657 20.8351 5.06285 19.9589 5.22035L19.3733 15.1762C19.28 16.7619 17.9669 18 16.3785 18H5.62154C4.03311 18 2.71999 16.7619 2.62671 15.1762L2.04108 5.22035C1.16485 5.06285 0.5 4.29657 0.5 3.375V1.875ZM2.75659 3.75C2.75266 3.74997 2.74873 3.74997 2.74479 3.75H2.375C2.16789 3.75 2 3.58211 2 3.375V1.875C2 1.66789 2.16789 1.5 2.375 1.5H19.625C19.8321 1.5 20 1.66789 20 1.875V3.375C20 3.58211 19.8321 3.75 19.625 3.75H19.2552C19.2513 3.74997 19.2473 3.74997 19.2434 3.75H2.75659ZM3.54541 5.25L4.12412 15.0881C4.17076 15.8809 4.82732 16.5 5.62154 16.5H16.3785C17.1727 16.5 17.8292 15.8809 17.8759 15.0881L18.4546 5.25H3.54541ZM8.24976 8.25C8.24976 7.83579 8.58554 7.5 8.99976 7.5H12.9998C13.414 7.5 13.7498 7.83579 13.7498 8.25C13.7498 8.66421 13.414 9 12.9998 9H8.99976C8.58554 9 8.24976 8.66421 8.24976 8.25Z" fill="#111111"/>
+                                                </svg>
+                                            </div>
+                                            <div class="text">Banner Management</div>
+                                        </a>
+                                  
+                                    </li>
+                            
+                                    <li class="menu-item ">
+                                        <a href="/admin/admin-testimonials" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-users"></i></div>
+                                            <div class="text">Testimonials Management</div>
+                                        </a>
+                              
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/admin-courses" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-star-o"></i></div>
+                                            <div class="text">Course Management</div>
+                                        </a>
+                                  
+                                    </li>
+                                       </li>
+                                         <li class="menu-item  ">
+                                        <a href="/admin/admin-plans" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-address-book"></i></div>
+                                            <div class="text">Plan Management</div>
+                                        </a>
+                                  
+                                    </li>
+                              
+                             
+                            
+                                    <li class="menu-item">
+                                        <a href="/admin/logout" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M8.125 18.6875C8.125 18.903 8.0394 19.1097 7.88702 19.262C7.73465 19.4144 7.52799 19.5 7.3125 19.5H1.625C1.19402 19.5 0.780698 19.3288 0.475951 19.024C0.171205 18.7193 0 18.306 0 17.875V1.625C0 1.19402 0.171205 0.780698 0.475951 0.475951C0.780698 0.171205 1.19402 0 1.625 0H7.3125C7.52799 0 7.73465 0.0856026 7.88702 0.237976C8.0394 0.390349 8.125 0.597012 8.125 0.8125C8.125 1.02799 8.0394 1.23465 7.88702 1.38702C7.73465 1.5394 7.52799 1.625 7.3125 1.625H1.625V17.875H7.3125C7.52799 17.875 7.73465 17.9606 7.88702 18.113C8.0394 18.2653 8.125 18.472 8.125 18.6875ZM19.2623 9.17516L15.1998 5.11266C15.0474 4.9602 14.8406 4.87455 14.625 4.87455C14.4094 4.87455 14.2026 4.9602 14.0502 5.11266C13.8977 5.26511 13.812 5.47189 13.812 5.6875C13.812 5.90311 13.8977 6.10989 14.0502 6.26234L16.7263 8.9375H7.3125C7.09701 8.9375 6.89035 9.0231 6.73798 9.17548C6.5856 9.32785 6.5 9.53451 6.5 9.75C6.5 9.96549 6.5856 10.1722 6.73798 10.3245C6.89035 10.4769 7.09701 10.5625 7.3125 10.5625H16.7263L14.0502 13.2377C13.8977 13.3901 13.812 13.5969 13.812 13.8125C13.812 14.0281 13.8977 14.2349 14.0502 14.3873C14.2026 14.5398 14.4094 14.6255 14.625 14.6255C14.8406 14.6255 15.0474 14.5398 15.1998 14.3873L19.2623 10.3248C19.3379 10.2494 19.3978 10.1598 19.4387 10.0611C19.4796 9.9625 19.5006 9.85678 19.5006 9.75C19.5006 9.64322 19.4796 9.5375 19.4387 9.43886C19.3978 9.34023 19.3379 9.25062 19.2623 9.17516Z" fill="#111111"/>
+                                                </svg>
+                                            </div>
+                                            <div class="text">Log out</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /section-menu-left -->
+                <!-- section-content-right -->
+                <div class="section-content-right">
+                    <!-- header-dashboard -->
+                    <div class="header-dashboard">
+                        <div class="wrap">
+                            <div class="header-left">
+                                <a href="/admin/admin-dashboard">
+                                    <img style="width: 50px;" id="logo_header_mobile" alt="LogoImage" src="/img/devin.png" data-light="/img/devin.png" data-dark="/img/devin.png" >
+                                </a>
+                                <div class="button-show-hide">
+                                    <i class="icon-chevron-left"></i>
+                                </div>
+                             
+                            </div>
+                            <div class="header-grid">
+                                <div class="header-item button-dark-light">
+                                    <i class="icon-moon"></i>
+                                </div>
+                              
+                            
+                                <div class="header-item button-zoom-maximize">
+                                    <div class="">
+                                        <i class="icon-maximize"></i>
+                                    </div>
+                                </div>
+                                <div class="popup-wrap user type-header">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="header-user wg-user">
+                                                <span class="image">
+                                                    <img src="/img/devin.png" alt="">
+                                                </span>
+                                                <span class="flex flex-column">
+                                                    <span class="body-text text-main-dark">Shony Talks</span>
+                                                    <span class="text-tiny">Admin</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton3" >
+                                          
+                                            <li>
+                                                <a href="#" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-headphones"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Support</div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="admin-login.html" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-log-out"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Log out</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /header-dashboard -->
+                    <!-- main-content -->
+                    <div class="main-content">
+                        <div class="main-content-inner">
+                            <div class="main-content-wrap">
+                                <div class="flex items-center flex-wrap justify-between gap20 mb-30">
+                                    <h3>All Banners</h3>
+                                    <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                                        <li>
+                                            <a href="/admin/admin-dashboard"><div class="text-tiny">Dashboard</div></a>
+                                        </li>
+                                        <li>
+                                            <i class="icon-chevron-right"></i>
+                                        </li>
+                                        <li>
+                                            <a href="#"><div class="text-tiny">Banners</div></a>
+                                        </li>
+                                        <li>
+                                            <i class="icon-chevron-right"></i>
+                                        </li>
+                                        <li>
+                                            <div class="text-tiny">All Banners</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="wg-box">
+                                    <div class="flex items-center justify-between gap10 flex-wrap">
+                                        <div class="wg-filter flex-grow">
+ 
+                                            <form class="form-search" id="searchForm">
+                                                <fieldset class="name">
+                                                    <input type="text" placeholder="Search here..." class=""
+                                                        name="search" id="searchInput" tabindex="2" value=""
+                                                        aria-required="true">
+                                                </fieldset>
+                                                <div class="button-submit">
+                                                    <button class="" type="submit"><i class="icon-search"></i></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <button class="tf-button style-1 w208" onclick="openModal()">
+                                            <i class="icon-plus"></i>Add New
+                                        </button>
+                                    </div>
+                
+                                    <div class="wg-table table-all-category">
+                                        <ul class="table-title flex gap20 mb-14">
+                                            <li style="flex: 2;">
+                                                <div class="body-title">Banner Image</div>
+                                            </li>    
+                                            <li style="flex: 2;">
+                                                <div class="body-title">Title</div>
+                                            </li>    
+                                            <li style="flex: 1;">
+                                                <div class="body-title">Status</div>
+                                            </li>
+                                            <li style="flex: 1;">
+                                                <div class="body-title">Action</div>
+                                            </li>
+                                        </ul>
+                                        <ul class="flex flex-column" id="bannersList">
+                                            <% if (banners && banners.length > 0) { %>
+                                                <% banners.forEach(banner => { %>
+                                                    <li class="wg-product item-row gap20" id="banner-<%= banner._id %>">
+                                                        <div class="name" style="flex: 2;">
+                                                            <div class="image">
+                                                                <img src="/uploads/<%= banner.image %>" alt="<%= banner.title %>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="body-text text-main-dark mt-4" style="flex: 2;">
+                                                            <%= banner.title %>
+                                                        </div>
+                                                        <div style="flex: 1;">
+                                                            <div class="toggle-container">
+                                                                <label class="toggle-switch">
+                                                                    <input type="checkbox" class="toggle-input" 
+                                                                        <%= banner.isActive ? 'checked' : '' %>
+                                                                        onchange="toggleStatus('<%= banner._id %>', this)">
+                                                                    <span class="toggle-slider"></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="list-icon-function" style="flex: 1;">
+                                                            <div class="item edit" onclick="editBanner('<%= banner._id %>')">
+                                                                <i class="icon-edit-3"></i>
+                                                            </div>
+                                                            <div class="item trash" onclick="confirmDelete('<%= banner._id %>')">
+                                                                <i class="icon-trash-2"></i>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <div class="no-banners">
+                                                    <p>No banners found</p>
+                                                </div>
+                                            <% } %>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="divider"></div>
+                                    <div class="flex items-center justify-between flex-wrap gap10">
+                                      <ul class="wg-pagination">
+
+    <% if (currentPage > 1) { %>
+        <li>
+            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>&search=<%= searchTerm %>">
+                ←
+            </a>
+        </li>
+    <% } %>
+
+    <% for (let i = 1; i <= totalPages; i++) { %>
+        <li>
+            <a href="?page=<%= i %>&limit=<%= limit %>&search=<%= searchTerm %>"
+               class="<%= currentPage === i ? 'active' : '' %>">
+               <%= i %>
+            </a>
+        </li>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+        <li>
+            <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>&search=<%= searchTerm %>">
+                →
+            </a>
+        </li>
+    <% } %>
+
+</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bottom-page">
+                            <div class="body-text">Copyright © 2025 <a href="https://trivlogic.com">Trivlogic</a>. Design by Trivlogic All rights reserved</div>
+                        </div>
+                    </div>
+                
+                    <!-- Add/Edit Banner Modal -->
+                    <div id="bannerModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeModal()">&times;</span>
+                            <h4 id="modalTitle">Add New Banner</h4>
+                            <form id="bannerForm" enctype="multipart/form-data">
+                                <input type="hidden" id="bannerId" name="bannerId">
+                                
+                                <div class="form-group">
+                                    <label for="title">Title</label>
+                                    <input type="text" id="title" name="title" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="banner">Banner Image</label>
+                                    <input type="file" id="banner" name="banner" accept="image/*">
+                                    <div id="imagePreview" style="margin-top: 10px;"></div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="isActive" name="isActive" checked>
+                                        Active
+                                    </label>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="button" class="tf-button style-3" onclick="closeModal()">Cancel</button>
+                                    <button type="button" class="tf-button style-1" onclick="saveBanner()">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                
+                    <!-- Confirmation Modal -->
+                    <div id="confirmModal" class="modal">
+                        <div class="modal-content" style="max-width: 400px;">
+                            <div class="modal-header">
+                                <h3>Confirm Action</h3>
+                            </div>
+                            <div class="modal-body">
+                                <p id="confirmMessage">Are you sure you want to delete this banner?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="tf-button style-3" onclick="closeConfirmModal()">Cancel</button>
+                                <button type="button" id="confirmActionButton" class="tf-button style-3">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <script>
+                        // Modal functions
+                        function openModal(banner = null) {
+                            const modal = document.getElementById('bannerModal');
+                            const form = document.getElementById('bannerForm');
+                            const modalTitle = document.getElementById('modalTitle');
+                            
+                            if (banner) {
+                                modalTitle.textContent = 'Edit Banner';
+                                document.getElementById('bannerId').value = banner._id;
+                                document.getElementById('title').value = banner.title;
+                                document.getElementById('isActive').checked = banner.isActive !== false;
+                                
+                                // Show image preview if exists
+                                const imagePreview = document.getElementById('imagePreview');
+                                if (banner.image) {
+                                    imagePreview.innerHTML = `<img src="/uploads/${banner.image}" alt="Current Banner" style="max-width:200px; max-height:150px;">`;
+                                } else {
+                                    imagePreview.innerHTML = '';
+                                }
+                            } else {
+                                modalTitle.textContent = 'Add New Banner';
+                                form.reset();
+                                document.getElementById('imagePreview').innerHTML = '';
+                            }
+                            
+                            modal.style.display = 'flex';
+                        }
+                
+                        function closeModal() {
+                            document.getElementById('bannerModal').style.display = 'none';
+                        }
+                
+                        // Image preview
+                        document.getElementById('banner').addEventListener('change', function(e) {
+                            const file = e.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function(event) {
+                                    document.getElementById('imagePreview').innerHTML = 
+                                        `<img src="${event.target.result}" alt="Preview" style="max-width: 200px; max-height: 150px;">`;
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                
+                        // Banner CRUD operations
+                        async function saveBanner() {
+                            const form = document.getElementById('bannerForm');
+                            const formData = new FormData(form);
+
+                            // ✅ Force checkbox value
+                            const isActive = document.getElementById('isActive').checked;
+                            formData.set('isActive', isActive);
+
+                            const bannerId = document.getElementById('bannerId').value;
+                            const url = bannerId ? `/banner/${bannerId}` : '/banner';
+                            const method = bannerId ? 'PUT' : 'POST';
+
+                            try {
+                                const response = await fetch(url, {
+                                    method: method,
+                                    body: formData
+                                });
+
+                                const result = await response.json();
+
+                                if (response.ok) {
+                                    alert(bannerId ? 'Banner updated successfully!' : 'Banner created successfully!');
+                                    window.location.reload();
+                                } else {
+                                    throw new Error(result.message || 'Failed to save banner');
+                                }
+                            } catch (error) {
+                                console.error('Error:', error);
+                                alert(error.message);
+                            }
+                        }
+                        
+                        async function editBanner(id) {
+                            try {
+                                const response = await fetch(`/banner/${id}`);
+                                const banner = await response.json();
+                
+                                if (response.ok) {
+                                    openModal(banner);
+                                } else {
+                                    throw new Error(banner.message || 'Failed to fetch banner');
+                                }
+                            } catch (error) {
+                                console.error('Error:', error);
+                                alert(error.message);
+                            }
+                        }
+                
+                        function confirmDelete(id) {
+                            const modal = document.getElementById('confirmModal');
+                            modal.style.display = 'flex';
+                
+                            document.getElementById('confirmMessage').textContent = 'Are you sure you want to delete this banner? This action cannot be undone.';
+                
+                            document.getElementById('confirmActionButton').onclick = function() {
+                                deleteBanner(id);
+                            };
+                        }
+                
+                        async function deleteBanner(id) {
+                            try {
+                                const response = await fetch(`/banner/${id}`, {
+                                    method: 'DELETE'
+                                });
+                
+                                const result = await response.json();
+                
+                                if (response.ok) {
+                                    alert('Banner deleted successfully!');
+                                    closeConfirmModal();
+                                    // Update showing info
+                                                                        window.location.reload();
+
+                                } else {
+                                    throw new Error(result.message || 'Failed to delete banner');
+                                }
+                            } catch (error) {
+                                console.error('Error:', error);
+                                alert(error.message);
+                            }
+                        }
+                
+async function toggleStatus(id, checkbox) {
+    try {
+        const response = await fetch(`/banner/toggle/${id}`, {
+            method: 'PATCH'
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message || 'Failed to update status');
+        }
+
+        // ✅ No need to manually flip
+        // Checkbox already changed by user action
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+
+        // ❗ Revert UI if failed
+        checkbox.checked = !checkbox.checked;
+    }
+}               
+
+
+                        function closeConfirmModal() {
+                            document.getElementById('confirmModal').style.display = 'none';
+                        }
+                
+                        function updateShowingInfo() {
+                            const bannerCount = document.querySelectorAll('#bannersList li.wg-product').length;
+                            document.getElementById('showingInfo').textContent = `Showing ${bannerCount} entries`;
+                        }
+                
+                        // Close modals when clicking outside
+                        window.onclick = function(event) {
+                            const bannerModal = document.getElementById('bannerModal');
+                            const confirmModal = document.getElementById('confirmModal');
+                            
+                            if (event.target === bannerModal) {
+                                bannerModal.style.display = 'none';
+                            }
+                            if (event.target === confirmModal) {
+                                confirmModal.style.display = 'none';
+                            }
+                        };
+                
+                        // Search functionality
+                        document.getElementById('searchForm').addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                            
+                            document.querySelectorAll('#bannersList li.wg-product').forEach(banner => {
+                                const title = banner.querySelector('.body-text').textContent.toLowerCase();
+                                
+                                if (title.includes(searchTerm)) {
+                                    banner.style.display = 'flex';
+                                } else {
+                                    banner.style.display = 'none';
+                                }
+                            });
+                        });
+                
+                        // Pagination function
+function updatePagination() {
+    const limit = document.getElementById('entriesPerPage').value;
+
+    const params = new URLSearchParams(window.location.search);
+
+    params.set('limit', limit);
+    params.set('page', 1); // reset page
+
+    window.location.search = params.toString();
+}
+                    </script>
+                    <!-- /main-content -->
+                </div>
+                <!-- /section-content-right -->
+            </div>
+            <!-- /layout-wrap -->
+        </div>
+        <!-- /#page -->
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Javascript -->
+      
+    <script src="/admin-js/jquery.min.js"></script>
+    <script src="/admin-js/bootstrap.min.js"></script>
+    <script src="/admin-js/bootstrap-select.min.js"></script>
+    <script src="/admin-js/zoom.js"></script>
+    <script src="/admin-js/switcher.js"></script>
+    <script defer src="/admin-js/theme-settings.js"></script>
+    <script defer src="/admin-js/main.js"></script>
+
+</body>
+
+</html>
