@@ -105,4 +105,5 @@ programSchema.pre("save", function (next) {
   next();
 });
 
-module.exports = mongoose.model("Program", programSchema);
+module.exports =
+  mongoose.models.Program || mongoose.model("Program", programSchema);
