@@ -37,8 +37,8 @@ router.get("/", async (req, res) => {
 // about page
 router.get("/about", async (req, res) => {
   try {
-    const testmonials = await Testimonial.find().sort({ date: -1 });
-    res.render("user/about", { title: "About us", testmonials });
+    const testimonials = await Testimonial.find().sort({ date: -1 });
+    res.render("user/about", { title: "About us", testimonials });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error loading about page data");
