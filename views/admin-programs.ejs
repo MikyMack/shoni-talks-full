@@ -566,73 +566,100 @@
 
     <h4 id="modalTitle">Add Program</h4>
 
-    <form id="programForm"  class="form-grid">
+    <form id="programForm" class="form-grid">
 
-      <input type="hidden" id="programId">
+  <input type="hidden" id="programId">
 
-      <!-- TITLE -->
-      <div class="form-group">
-        <label for="title">Program Title</label>
-        <input type="text" id="title" placeholder="Enter program title" required>
-      </div>
+  <!-- TITLE -->
+  <div class="form-group">
+    <label>Program Title</label>
+    <input type="text" id="title" required>
+  </div>
 
-      <!-- DESCRIPTION -->
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea id="description" placeholder="Enter description"></textarea>
-      </div>
+  <!-- SUBTITLE -->
+  <div class="form-group">
+    <label>Subtitle</label>
+    <input type="text" id="subtitle">
+  </div>
 
-      <!-- DURATION -->
-      <div class="form-group">
-        <label for="duration">Duration</label>
-        <input type="text" id="duration" placeholder="Eg: 3 Days / 2 Weeks">
-      </div>
+  <!-- SHORT DESCRIPTION -->
+  <div class="form-group">
+    <label>Short Description</label>
+    <textarea id="shortDescription"></textarea>
+  </div>
 
-      <!-- CATEGORY DROPDOWN -->
-      <div class="form-group">
-        <label for="category">Category</label>
-        <select id="category">
-          <option value="">Select Category</option>
-          <option value="student">Student</option>
-          <option value="family">Family</option>
-          <option value="mentoring">Mentoring</option>
-          <option value="workshop">Workshop</option>
-        </select>
-      </div>
+  <!-- DESCRIPTION -->
+  <div class="form-group full-width">
+    <label>Description</label>
+    <textarea id="description"></textarea>
+  </div>
 
-      <!-- IMAGE -->
-      <div class="form-group">
-        <label for="image">Program Image</label>
-        <input type="file" id="image" accept="image/*">
+  <!-- DURATION -->
+  <div class="form-group">
+    <label>Duration</label>
+    <input type="text" id="duration">
+  </div>
 
-        <img id="imagePreview"
-          style="width:100%; max-height:200px; object-fit:cover; margin-top:10px; display:none; border-radius:10px;">
-      </div>
+  <!-- CATEGORY -->
+  <div class="form-group">
+    <label>Category</label>
+    <select id="category">
+      <option value="">Select</option>
+      <option value="student">Student</option>
+      <option value="family">Family</option>
+      <option value="mentoring">Mentoring</option>
+      <option value="workshop">Workshop</option>
+    </select>
+  </div>
 
-      <!-- FEATURES -->
-      <div class="form-group">
-        <label for="features">Features</label>
-        <textarea id="features" placeholder="Eg: yoga, meditation, breathing"></textarea>
-      </div>
+  <!-- STATUS -->
+  <div class="form-group">
+    <label>Status</label>
+    <select id="status">
+      <option value="draft">Draft</option>
+      <option value="published">Published</option>
+    </select>
+  </div>
 
-      <!-- SCHEDULES -->
-      <div class="form-group full-width">
-        <label>Schedules</label>
-        <div id="scheduleContainer"></div>
+  <!-- FEATURED -->
+  <div class="form-group">
+    <label>
+      <input type="checkbox" id="isFeatured"> Featured Program
+    </label>
+  </div>
 
-        <button type="button" class="secondary-btn" onclick="addSchedule()">
-          + Add Schedule
-        </button>
-      </div>
+  <!-- IMAGE -->
+  <div class="form-group full-width">
+    <label>Program Image</label>
+    <input type="file" id="image" accept="image/*">
+    <img id="imagePreview" style="width:100%; max-height:200px; object-fit:cover; margin-top:10px; display:none;">
+  </div>
 
-      <!-- ACTION -->
-      <div class="form-group full-width">
-        <button type="button" class="primary-btn btn-primary" onclick="saveProgram()">
-          Save Program
-        </button>
-      </div>
+  <!-- FEATURES -->
+  <div class="form-group full-width">
+    <label>Features (comma separated)</label>
+    <textarea id="features"></textarea>
+  </div>
 
-    </form>
+  <!-- SCHEDULES -->
+  <div class="form-group full-width">
+    <label>Schedules</label>
+
+    <div id="scheduleContainer"></div>
+
+    <button type="button" onclick="addSchedule()" class="secondary-btn">
+      + Add Schedule
+    </button>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="form-group full-width">
+    <button type="button" onclick="saveProgram()" class="primary-btn btn-primary">
+      Save Program
+    </button>
+  </div>
+
+</form>
   </div>
 </div>
                     <!-- Confirmation Modal -->
@@ -686,6 +713,10 @@ function openProgramModal(program = null) {
         document.getElementById("programId").value = program._id;
         document.getElementById("title").value = program.title;
         document.getElementById("description").value = program.description;
+        document.getElementById("subtitle").value = program.subtitle || "";
+        document.getElementById("shortDescription").value = program.shortDescription || "";
+        document.getElementById("status").value = program.status || "draft";
+        document.getElementById("isFeatured").checked = program.isFeatured || false;
         document.getElementById("duration").value = program.duration;
         document.getElementById("category").value = program.category;
         document.getElementById("features").value =
@@ -727,14 +758,65 @@ function addSchedule(data = {}) {
     const container = document.getElementById("scheduleContainer");
 
     const div = document.createElement("div");
-
-    div.style.marginBottom = "10px";
+    div.classList.add("schedule-box");
 
     div.innerHTML = `
-        <input type="date" value="${data.startDate ? data.startDate.split('T')[0] : ''}">
-        <input type="text" placeholder="Location" value="${data.location || ''}">
-        <input type="number" placeholder="Price" value="${data.price || ''}">
-        <button onclick="this.parentElement.remove()">❌</button>
+        <div class="schedule-grid">
+
+            <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" value="${data.startDate ? data.startDate.split('T')[0] : ''}">
+            </div>
+
+            <div class="form-group">
+                <label>End Date</label>
+                <input type="date" value="${data.endDate ? data.endDate.split('T')[0] : ''}">
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" value="${data.location || ''}">
+            </div>
+
+            <div class="form-group">
+                <label>Venue</label>
+                <input type="text" value="${data.venue || ''}">
+            </div>
+
+            <div class="form-group">
+                <label>Price</label>
+                <input type="number" value="${data.price || ''}">
+            </div>
+
+            <div class="form-group">
+                <label>Offer Price</label>
+                <input type="number" value="${data.offerPrice || ''}">
+            </div>
+
+            <div class="form-group">
+                <label>Seats</label>
+                <input type="number" value="${data.seats || ''}">
+            </div>
+
+            <div class="form-group">
+                <label>Join Link</label>
+                <input type="text" value="${data.joinLink || ''}">
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select>
+                    <option value="upcoming" ${data.status === "upcoming" ? "selected" : ""}>Upcoming</option>
+                    <option value="completed" ${data.status === "completed" ? "selected" : ""}>Completed</option>
+                    <option value="cancelled" ${data.status === "cancelled" ? "selected" : ""}>Cancelled</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div style="text-align:right; margin-top:10px;">
+            <button type="button" onclick="this.parentElement.parentElement.remove()">❌ Remove</button>
+        </div>
     `;
 
     container.appendChild(div);
@@ -758,14 +840,21 @@ async function saveProgram() {
 
     const schedules = [];
 
-    document.querySelectorAll("#scheduleContainer div").forEach(div => {
+    document.querySelectorAll("#scheduleContainer .schedule-box").forEach(div => {
 
         const inputs = div.querySelectorAll("input");
+        const status = div.querySelector("select").value;
 
         schedules.push({
             startDate: inputs[0].value,
-            location: inputs[1].value,
-            price: inputs[2].value
+            endDate: inputs[1].value,
+            location: inputs[2].value,
+            venue: inputs[3].value,
+            price: inputs[4].value,
+            offerPrice: inputs[5].value,
+            seats: inputs[6].value,
+            joinLink: inputs[7].value,
+            status
         });
 
     });
@@ -773,18 +862,20 @@ async function saveProgram() {
     const formData = new FormData();
 
     formData.append("title", document.getElementById("title").value);
+    formData.append("subtitle", document.getElementById("subtitle").value);
+    formData.append("shortDescription", document.getElementById("shortDescription").value);
     formData.append("description", document.getElementById("description").value);
     formData.append("duration", document.getElementById("duration").value);
     formData.append("category", document.getElementById("category").value);
+    formData.append("status", document.getElementById("status").value);
+    formData.append("isFeatured", document.getElementById("isFeatured").checked);
 
-    const features = document.getElementById("features").value;
-    const cleanFeatures = features
-  .split(",")
-  .map(f => f.trim())      // remove spaces
-  .filter(f => f !== "");  // remove empty
+    const features = document.getElementById("features").value
+        .split(",")
+        .map(f => f.trim())
+        .filter(f => f);
 
-formData.append("features", JSON.stringify(cleanFeatures));
-
+    formData.append("features", JSON.stringify(features));
     formData.append("schedules", JSON.stringify(schedules));
 
     const image = document.getElementById("image").files[0];
@@ -793,12 +884,15 @@ formData.append("features", JSON.stringify(cleanFeatures));
     const url = id ? `/admin/programs/${id}` : `/admin/programs`;
     const method = id ? "PUT" : "POST";
 
-    const res = await fetch(url, {
-        method,
-        body: formData
-    });
+    const btn = document.querySelector(".primary-btn");
+    btn.innerText = "Saving...";
+    btn.disabled = true;
 
+    const res = await fetch(url, { method, body: formData });
     const data = await res.json();
+
+    btn.innerText = "Save Program";
+    btn.disabled = false;
 
     if (res.ok) {
         alert("Saved successfully");
@@ -807,7 +901,6 @@ formData.append("features", JSON.stringify(cleanFeatures));
         alert(data.message);
     }
 }
-
 
 // EDIT
 async function editProgram(id) {

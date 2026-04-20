@@ -58,7 +58,7 @@
         <nav class="navbar navbar-expand-lg">
           <div class="container">
             <!-- Logo Start -->
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="/">
               <img class="logo-img" src="images/logo.png" alt="Logo" />
             </a>
             <!-- Logo End -->
@@ -68,60 +68,66 @@
               <div class="nav-menu-wrapper">
                 <ul class="navbar-nav mr-auto" id="menu">
                   <li class="nav-item">
-                    <a class="nav-link" href="index.html">HOME</a>
+                    <a class="nav-link" href="/">HOME</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="about.html">ABOUT US</a>
+                    <a class="nav-link" href="/about">ABOUT US</a>
                   </li>
-                    <li class="nav-item submenu"><a class="nav-link" href="services.html">SERVICES</a>
+                  <li class="nav-item submenu">
+                    <a class="nav-link" href="/services">SERVICES</a>
                     <ul>
                       <li class="nav-item">
-                        <a class="nav-link" href="personal-service.html"
+                        <a class="nav-link" href="/personal-service"
                           >Personal Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="family-service.html"
+                        <a class="nav-link" href="/family-service"
                           >Family Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="student-service.html"
+                        <a class="nav-link" href="/student-service"
                           >Student Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="organization-service.html"
+                        <a class="nav-link" href="/organization-service"
                           >Corporate Wellness</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="workspace-service.html"
+                        <a class="nav-link" href="/workspace-service"
                           >Workplace Wellness</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="frontline-service.html"
+                        <a class="nav-link" href="/frontline-service"
                           >Healthcare Support</a
                         >
                       </li>
                     </ul>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="programs.html">PROGRAMS</a>
+                    <a class="nav-link" href="/programs">PROGRAMS</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="course.html">COURSES</a>
+                    <a class="nav-link" href="/courses">COURSES</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="contact.html">CONTACT US</a>
+                    <a class="nav-link" href="/contact">CONTACT US</a>
                   </li>
                 </ul>
               </div>
 
               <!-- Header Btn Start -->
               <div class="header-btn">
-                <a href="account.html" class="profile-icon">
+                <a
+                  href="#"
+                  class="profile-icon"
+                  data-bs-toggle="modal"
+                  data-bs-target="#authModal"
+                >
                   <i class="fa fa-user"></i>
                 </a>
               </div>
@@ -161,124 +167,121 @@
         <div class="row align-items-center mb-5">
           <div class="col-md-6">
             <div class="course-search">
-              <form action="#" class="search-form">
-                <input type="text" class="form-control" placeholder="Search for courses..." />
-                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-              </form>
+            <form action="/courses" method="GET" class="search-form">
+              <input 
+                type="text" 
+                name="search"
+                value="<%= search %>"
+                class="form-control" 
+                placeholder="Search for courses..." 
+              />
+              <button type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </form>
             </div>
           </div>
           <div class="col-md-6 text-md-end">
             <div class="course-sort">
-              <select class="form-select d-inline-block w-auto">
-                <option selected>Sort by: Newest</option>
-                <option value="1">Popularity</option>
-                <option value="2">Price: Low to High</option>
-                <option value="3">Price: High to Low</option>
-              </select>
+            <select 
+              class="form-select d-inline-block w-auto"
+              onchange="location = this.value"
+            >
+              <option value="/courses?sort=newest" <%= sort==='newest'?'selected':'' %>>
+                Newest
+              </option>
+
+              <option value="/courses?sort=priceLow" <%= sort==='priceLow'?'selected':'' %>>
+                Price: Low to High
+              </option>
+
+              <option value="/courses?sort=priceHigh" <%= sort==='priceHigh'?'selected':'' %>>
+                Price: High to Low
+              </option>
+            </select>
             </div>
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-4 col-md-6 mb-4">
-            <a href="course-single.html" class="course-card-link">
-              <div class="course-item">
-                <div class="course-thumb">
-                  <img src="images/course-1.jpg" alt="Course Thumbnail" />
-                  <span class="badge-bestseller">Bestseller</span>
-                </div>
-                <div class="course-content">
-                  <h3>Emotional Intelligence Masterclass</h3>
-                  <p>Master the art of understanding emotions to improve relationships and leadership.</p>
-                  <div class="course-meta">
-                    <span class="rating"><i class="fa-solid fa-star"></i> 4.8</span>
-                    <span class="students">(1,240 ratings)</span>
-                  </div>
-                  <div class="course-info-list">
-                    <span>12 total hours</span>
-                    <span>45 lectures</span>
-                  </div>
-                  <div class="course-footer">
-                    <div class="price">
-                      <span class="current">₹49.99</span>
-                      <span class="old">₹199.99</span>
-                    </div>
-                    <a href="checkout.html" class="add-cart">Buy Now</a>
-                  </div>
-                </div>
-              </div>
-            </a>
-          </div>
+          <% courses.forEach(course => { %>
 
-          <div class="col-lg-4 col-md-6 mb-4">
-            <a href="course-single.html" class="course-card-link">
-              <div class="course-item">
-                <div class="course-thumb">
-                  <img src="images/course-1.jpg" alt="Course Thumbnail" />
-                </div>
-                <div class="course-content">
-                  <h3>Mindfulness & Stress Management</h3>
-                  <p>Practical techniques to reduce anxiety and find focus in your daily professional life.</p>
-                  <div class="course-meta">
-                    <span class="rating"><i class="fa-solid fa-star"></i> 4.7</span>
-                    <span class="students">(850 ratings)</span>
-                  </div>
-                  <div class="course-info-list">
-                    <span>8 total hours</span>
-                    <span>30 lectures</span>
-                  </div>
-                  <div class="course-footer">
-                    <div class="price">
-                      <span class="current">₹39.99</span>
-                      <span class="old">₹149.99</span>
-                    </div>
-                    <a href="checkout.html" class="add-cart">Buy Now</a>
-                  </div>
-                </div>
-              </div>
-            </a>
-          </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+              <a href="/course/<%= course.slug %>" class="course-card-link">
+                <div class="course-item">
 
-          <div class="col-lg-4 col-md-6 mb-4">
-            <a href="course-single.html" class="course-card-link">
-              <div class="course-item">
-                <div class="course-thumb">
-                  <img src="images/course-1.jpg" alt="Course Thumbnail" />
-                </div>
-                <div class="course-content">
-                  <h3>Family Dynamics & Bonding</h3>
-                  <p>A comprehensive guide to resolving conflicts and building stronger family foundations.</p>
-                  <div class="course-meta">
-                    <span class="rating"><i class="fa-solid fa-star"></i> 4.9</span>
-                    <span class="students">(2,100 ratings)</span>
+                  <div class="course-thumb">
+                    <img src="/uploads/<%= course.image || 'default.jpg' %>" alt="Course" />
+
+                    <% if (course.isFeatured) { %>
+                      <span class="badge-bestseller">Featured</span>
+                    <% } %>
                   </div>
-                  <div class="course-info-list">
-                    <span>15 total hours</span>
-                    <span>60 lectures</span>
-                  </div>
-                  <div class="course-footer">
-                    <div class="price">
-                      <span class="current">₹59.99</span>
-                      <span class="old">₹219.99</span>
+
+                  <div class="course-content text-dark">
+                    <h3><%= course.title %></h3>
+
+                    <p>
+                      <%= course.shortDescription || course.description.substring(0, 80) %>...
+                    </p>
+
+                    <div class="course-info-list">
+                      <span><%= course.duration || "N/A" %></span>
+                      <span><%= course.videoHours || 0 %> hrs</span>
                     </div>
-                    <a href="checkout.html" class="add-cart">Buy Now</a>
+
+                    <div class="course-footer">
+                      <div class="price">
+                        <span class="current">₹<%= course.offerPrice || course.price %></span>
+
+                        <% if (course.offerPrice && course.offerPrice < course.price) { %>
+                          <span class="old">₹<%= course.price %></span>
+                        <% } %>
+                      </div>
+
+                      <a href="/course/<%= course.slug %>" class="add-cart">
+                        View
+                      </a>
+                    </div>
                   </div>
+
                 </div>
-              </div>
-            </a>
-          </div>
+              </a>
+            </div>
+
+          <% }) %>
         </div>
         <div class="row mt-5">
+          <% if (totalPages > 1) { %>
           <div class="col-lg-12">
             <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center">
-                <li class="page-item disabled"><a class="page-link" href="#"><i class="fa-solid fa-chevron-left"></i></a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#"><i class="fa-solid fa-chevron-right"></i></a></li>
+
+                <% if (currentPage > 1) { %>
+                  <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage - 1 %>">
+                      <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                  </li>
+                <% } %>
+
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                  <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                  </li>
+                <% } %>
+
+                <% if (currentPage < totalPages) { %>
+                  <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage + 1 %>">
+                      <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                  </li>
+                <% } %>
+
               </ul>
             </nav>
           </div>
+          <% } %>
         </div>
         </div>
     </div>
@@ -287,7 +290,7 @@
     
 
     <!-- Main Footer Section Start -->
-   <footer class="main-footer bg-section dark-section">
+    <footer class="main-footer bg-section dark-section">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
@@ -312,13 +315,13 @@
 
                 <div class="footer-menu">
                   <ul>
-                    <li><a href="index.html">home</a></li>
-                    <li><a href="about.html">about us</a></li>
-                    <li><a href="services.html">services</a></li>
-                    <li><a href="programs.html">programs</a></li>
-                    <li><a href="course.html">courses</a></li>
-                    <li><a href="blog.html">blogs</a></li>
-                    <li><a href="contact.html">contact</a></li>
+                    <li><a href="/">home</a></li>
+                    <li><a href="/about">about us</a></li>
+                    <li><a href="/services">services</a></li>
+                    <li><a href="/programs">programs</a></li>
+                    <li><a href="/courses">courses</a></li>
+                    <li><a href="/blogs">blogs</a></li>
+                    <li><a href="/contact">contact</a></li>
                   </ul>
                 </div>
               </div>
@@ -330,18 +333,18 @@
                   <h3>Our Services</h3>
                   <ul>
                     <li>
-                      <a href="personal-service.html">Personal Support</a>
+                      <a href="/personal-service">Personal Support</a>
                     </li>
-                    <li><a href="family-service.html">Family Support</a></li>
-                    <li><a href="student-service.html">Student Support</a></li>
+                    <li><a href="/family-service">Family Support</a></li>
+                    <li><a href="/student-service">Student Support</a></li>
                     <li>
-                      <a href="organization-service.html">Corporate Wellness</a>
-                    </li>
-                    <li>
-                      <a href="workspace-service.html">Workplace Wellness</a>
+                      <a href="/organization-service">Corporate Wellness</a>
                     </li>
                     <li>
-                      <a href="frontline-service.html">Healthcare Support</a>
+                      <a href="/workspace-service">Workplace Wellness</a>
+                    </li>
+                    <li>
+                      <a href="/frontline-service">Healthcare Support</a>
                     </li>
                   </ul>
                 </div>
@@ -427,7 +430,7 @@
                 <ul>
                   <li><a href="#">Privacy Policy</a></li>
                   <li><a href="#">Terms & Conditions</a></li>
-                  <li><a href="contact.html">Support</a></li>
+                  <li><a href="/contact">Support</a></li>
                 </ul>
               </div>
             </div>
@@ -436,6 +439,140 @@
       </div>
     </footer>
     <!-- Main Footer Section End -->
+
+    <!-- Mobile Bottom Navbar Start -->
+    <nav class="mobile-bottom-navbar d-lg-none">
+      <a href="/" class="mobile-nav-item">
+        <span class="mobile-nav-icon"><i class="fa-solid fa-house"></i></span>
+        <span>Home</span>
+      </a>
+      <a href="/services" class="mobile-nav-item">
+        <span class="mobile-nav-icon"
+          ><i class="fa-solid fa-hand-holding-medical"></i
+        ></span>
+        <span>Services</span>
+      </a>
+      <a href="/programs" class="mobile-nav-item">
+        <span class="mobile-nav-icon"
+          ><i class="fa-solid fa-list-check"></i
+        ></span>
+        <span>Programs</span>
+      </a>
+      <a href="/courses" class="mobile-nav-item">
+        <span class="mobile-nav-icon"
+          ><i class="fa-solid fa-certificate"></i
+        ></span>
+        <span>Courses</span>
+      </a>
+      <a
+        href=""
+        class="mobile-nav-item"
+        data-bs-toggle="modal"
+        data-bs-target="#authModal"
+      >
+        <span class="mobile-nav-icon"><i class="fa-solid fa-user"></i></span>
+        <span>Login</span>
+      </a>
+    </nav>
+    <!-- Mobile Bottom Navbar End -->
+    <!-- Login modal start -->
+    <div class="modal fade" id="authModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content auth-modal">
+          <!-- Close -->
+          <button
+            type="button"
+            class="btn-close custom-close"
+            data-bs-dismiss="modal"
+          ></button>
+
+          <div class="row g-0">
+            <!-- LEFT IMAGE -->
+            <div class="col-lg-6 d-none d-lg-block">
+              <div class="auth-image">
+                <div class="auth-overlay">
+                  <h3 class="text-light mb-3">Welcome to Shony Talks</h3>
+                  <p>Start your journey of transformation today.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT CONTENT -->
+            <div class="col-lg-6 col-12">
+              <div class="auth-body">
+                <h4 class="mb-3">Login</h4>
+
+                <!-- STEP 1 -->
+                <form id="loginForm">
+                  <div class="mb-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Full Name"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <input
+                      type="email"
+                      class="form-control"
+                      placeholder="Email Address"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    class="btn-default btn-highlighted w-100"
+                    onclick="showOtp()"
+                  >
+                    Get OTP
+                  </button>
+                </form>
+
+                <!-- STEP 2 OTP -->
+                <div id="otpSection" style="display: none">
+                  <p class="mb-2">Enter OTP sent to your email</p>
+
+                  <div class="otp-box mb-3">
+                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                  </div>
+
+                  <button class="btn-default btn-highlighted w-100 mb-3">
+                    Verify OTP
+                  </button>
+
+                  <div class="text-center">
+                    <a href="#" onclick="resendOtp()">Resend OTP</a>
+                  </div>
+                </div>
+
+                <!-- DIVIDER -->
+                <div class="auth-divider">
+                  <span>OR</span>
+                </div>
+
+                <!-- GOOGLE LOGIN -->
+                <button class="google-btn w-100">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+                    alt=""
+                  />
+                  Continue with Google
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Login modal end -->
 
     <!-- Jquery Library File -->
     <script>

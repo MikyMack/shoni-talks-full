@@ -24,21 +24,21 @@
       rel="stylesheet"
     />
     <!-- Bootstrap Css -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen" />
     <!-- SlickNav Css -->
-    <link href="css/slicknav.min.css" rel="stylesheet" />
+    <link href="/css/slicknav.min.css" rel="stylesheet" />
     <!-- Swiper Css -->
-    <link rel="stylesheet" href="css/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="/css/swiper-bundle.min.css" />
     <!-- Font Awesome Icon Css-->
-    <link href="css/all.min.css" rel="stylesheet" media="screen" />
+    <link href="/css/all.min.css" rel="stylesheet" media="screen" />
     <!-- Animated Css -->
-    <link href="css/animate.css" rel="stylesheet" />
+    <link href="/css/animate.css" rel="stylesheet" />
     <!-- Magnific Popup Core Css File -->
-    <link rel="stylesheet" href="css/magnific-popup.css" />
+    <link rel="stylesheet" href="/css/magnific-popup.css" />
     <!-- Mouse Cursor Css File -->
-    <link rel="stylesheet" href="css/mousecursor.css" />
+    <link rel="stylesheet" href="/css/mousecursor.css" />
     <!-- Main Custom Css -->
-    <link href="css/custom.css" rel="stylesheet" media="screen" />
+    <link href="/css/custom.css" rel="stylesheet" media="screen" />
   </head>
   <body>
    
@@ -58,8 +58,8 @@
         <nav class="navbar navbar-expand-lg">
           <div class="container">
             <!-- Logo Start -->
-            <a class="navbar-brand" href="index.html">
-              <img class="logo-img" src="images/logo.png" alt="Logo" />
+            <a class="navbar-brand" href="/">
+              <img class="logo-img" src="/images/logo.png" alt="Logo" />
             </a>
             <!-- Logo End -->
 
@@ -68,61 +68,66 @@
               <div class="nav-menu-wrapper">
                 <ul class="navbar-nav mr-auto" id="menu">
                   <li class="nav-item">
-                    <a class="nav-link" href="index.html">HOME</a>
+                    <a class="nav-link" href="/">HOME</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="about.html">ABOUT US</a>
+                    <a class="nav-link" href="/about">ABOUT US</a>
                   </li>
-                    <li class="nav-item submenu"><a class="nav-link" href="services.html">SERVICES</a>
+                  <li class="nav-item submenu">
+                    <a class="nav-link" href="/services">SERVICES</a>
                     <ul>
                       <li class="nav-item">
-                        <a class="nav-link" href="personal-service.html"
+                        <a class="nav-link" href="/personal-service"
                           >Personal Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="family-service.html"
+                        <a class="nav-link" href="/family-service"
                           >Family Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="student-service.html"
+                        <a class="nav-link" href="/student-service"
                           >Student Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="organization-service.html"
+                        <a class="nav-link" href="/organization-service"
                           >Corporate Wellness</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="workspace-service.html"
+                        <a class="nav-link" href="/workspace-service"
                           >Workplace Wellness</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="frontline-service.html"
+                        <a class="nav-link" href="/frontline-service"
                           >Healthcare Support</a
                         >
                       </li>
                     </ul>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="programs.html">PROGRAMS</a>
+                    <a class="nav-link" href="/programs">PROGRAMS</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="course.html">COURSES</a>
+                    <a class="nav-link" href="/courses">COURSES</a>
                   </li>
-                  
                   <li class="nav-item">
-                    <a class="nav-link" href="contact.html">CONTACT US</a>
+                    <a class="nav-link" href="/contact">CONTACT US</a>
                   </li>
                 </ul>
               </div>
 
               <!-- Header Btn Start -->
               <div class="header-btn">
-                <a href="account.html" class="profile-icon">
+                <a
+                  href="#"
+                  class="profile-icon"
+                  data-bs-toggle="modal"
+                  data-bs-target="#authModal"
+                >
                   <i class="fa fa-user"></i>
                 </a>
               </div>
@@ -142,26 +147,35 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
-            <!-- Page Header Box Start -->
+
             <div class="page-header-box">
+
+              <!-- TITLE -->
               <h1 class="text-anime-style-3" data-cursor="-opaque">
-                Prana - Breath of Change
+                <%= program.title %>
               </h1>
+
+              <!-- BREADCRUMB -->
               <nav class="wow fadeInUp">
                 <ol class="breadcrumb">
+
                   <li class="breadcrumb-item">
-                    <a href="index-2.html">home</a>
+                    <a href="/">Home</a>
                   </li>
+
                   <li class="breadcrumb-item">
-                    <a href="programs.html">Programs</a>
+                    <a href="/programs">Programs</a>
                   </li>
+
                   <li class="breadcrumb-item active" aria-current="page">
-                    Prana - Breath of Change
+                    <%= program.title %>
                   </li>
+
                 </ol>
               </nav>
+
             </div>
-            <!-- Page Header Box End -->
+
           </div>
         </div>
       </div>
@@ -180,35 +194,31 @@
                 <!-- Case Study Detail Item Start -->
                 <div class="program-detail-item">
                   <h3>Program name</h3>
-                  <p>Prana - Breath of Change</p>
+                  <p><%= program.title %></p>
                 </div>
                 <!-- Case Study Detail Item End -->
 
                 <!-- Case Study Detail Item Start -->
                 <div class="program-detail-item">
                   <h3>Start date</h3>
-                  <p>15-08-2024</p>
+                  <p><%= schedule ? new Date(schedule.startDate).toDateString() : "Not available" %></p>
                 </div>
                 <!-- Case Study Detail Item End -->
 
                 <!-- Case Study Detail Item Start -->
                 <div class="program-detail-item">
                   <h3>Location</h3>
-                  <p>Training Center</p>
+                  <p><%= schedule?.location || "Not specified" %></p>
                 </div>
                 <!-- Case Study Detail Item End -->
 
                 <!-- Case Study Detail Item Start -->
                 <div class="program-detail-item">
                   <h3>Program duration</h3>
-                  <p>12 weeks</p>
+                  <p><%= program.duration || "N/A" %></p>
                 </div>
 
-                <a
-                  href="#"
-                  class="btn-default btn-highlighted"
-                  >JOIN NOW</a
-                >  
+                <a href="<%= schedule?.joinLink || '#' %>" class="btn-default btn-highlighted">JOIN NOW</a>
 
                 <!-- Case Study Detail Item End -->
               </div>
@@ -249,45 +259,33 @@
               <!-- Program Featured Image Start -->
               <div class="program-featured-image">
                 <figure class="image-anime reveal">
-                  <img src="images/programs/program4.jpg" alt="" />
+                  <img src="/uploads/<%= program.image %>" alt="<%= program.title %>">
                 </figure>
               </div>
               <!-- Program Featured Image End -->
 
               <!-- Program Entry Start -->
               <div class="program-entry">
-                <p class="wow fadeInUp">
-                  In today's fast-paced world, managing stress is essential for
-                  maintaining overall well-being. Stress Reduction & Mindfulness
-                  practices help individuals cultivate a sense of balance,
-                  improve emotional resilience, and enhance focus. Through
-                  guided techniques like deep breathing, meditation, and
-                  progressive relaxation, this approach encourages a calm and
-                  centered mindset. By incorporating mindfulness into daily
-                  routines, individuals can develop a greater awareness of their
-                  thoughts, emotions, and reactions, leading to healthier
-                  responses to stressors.
-                </p>
-                <p class="wow fadeInUp" data-wow-delay="0.2s">
-                  Regular mindfulness practice has been scientifically proven to
-                  lower cortisol levels, reduce anxiety, and improve sleep
-                  quality. It also enhances cognitive function, allowing
-                  individuals to stay present and engaged in their personal and
-                  professional lives.
+                <p class="wow fadeInUp"><%= program.description %>
                 </p>
 
-                <ul class="wow fadeInUp" data-wow-delay="0.4s">
-                  <li>Enhances mental clarity and focus</li>
-                  <li>Encourages a calm and balanced mindset</li>
-                  <li>Reduces anxiety and daily stress</li>
-                  <li>Supports overall well-being and relaxation</li>
-                </ul>
+                  <% if (program.features && program.features.length > 0) { %>
+                  <ul>
+                    <% program.features.forEach(f => { %>
+                      <li><%= f %></li>
+                    <% }) %>
+                  </ul>
+                  <% } %>
 
                 <!-- Program Entry Image Video Start -->
                 <div class="program-entry-image-video">
                   <div class="program-entry-image">
                     <figure class="image-anime reveal">
-                      <img src="images/programs/program5.jpg" alt="" />
+                      <% if (program.gallery && program.gallery.length > 0) { %>
+                        <img src="/uploads/<%= program.gallery[0] %>" alt="">
+                      <% } else { %>
+                        <img src="/uploads/<%= program.image %>" alt="">
+                      <% } %>
                     </figure>
                   </div>
 
@@ -297,82 +295,45 @@
 
                 <!-- Program Entry Practices Start -->
                 <div class="program-entry-practices">
-                  <h2 class="text-anime-style-3">Mindful living practices</h2>
+                  <h2 class="text-anime-style-3">
+                    <%= program.subtitle || "Program Highlights" %>
+                  </h2>
                   <p class="wow fadeInUp">
-                    Neha Kapoor is a passionate Wellness Coach with years of
-                    experience in guiding individuals toward healthier
-                    lifestyles. She specializes in creating personalized health
-                    plans, focusing on balanced nutrition, fitness, and mental
-                    well-being. With a holistic approach, Neha empowers her
-                    clients.
+                    <%= program.shortDescription || program.description %>
                   </p>
-
                   <!-- Program Image Content Start -->
                   <div class="program-image-content-box">
                     <!-- Program Content List Start -->
                     <div class="what-we-do-list program-content-list">
-                      <!-- What We List Item Start -->
-                      <div
-                        class="what-we-list-item wow fadeInUp"
-                        data-wow-delay="0.2s"
-                      >
-                        <div class="icon-box">
-                          <img src="images/icon-service-3.svg" alt="" />
-                        </div>
-                        <div class="what-we-do-list-content">
-                          <h3>Holistic wellness approach</h3>
-                          <p>
-                            Discover a comprehensive approach to well-being that
-                            integrates physical..
-                          </p>
-                        </div>
-                      </div>
-                      <!-- What We List Item End -->
 
-                      <!-- What We List Item Start -->
-                      <div
-                        class="what-we-list-item wow fadeInUp"
-                        data-wow-delay="0.4s"
-                      >
-                        <div class="icon-box">
-                          <img src="images/icon-service-5.svg" alt="" />
-                        </div>
-                        <div class="what-we-do-list-content">
-                          <h3>Stress-free daily routine</h3>
-                          <p>
-                            Learn simple yet effective mindfulness technique to
-                            reduce stress & improve.
-                          </p>
-                        </div>
-                      </div>
-                      <!-- What We List Item End -->
+                      <% if (program.features && program.features.length > 0) { %>
+                        <% program.features.forEach((feature, index) => { %>
 
-                      <!-- What We List Item Start -->
-                      <div
-                        class="what-we-list-item wow fadeInUp"
-                        data-wow-delay="0.6s"
-                      >
-                        <div class="icon-box">
-                          <img src="images/icon-service-2.svg" alt="" />
-                        </div>
-                        <div class="what-we-do-list-content">
-                          <h3>Sustainable lxifestyle habits</h3>
-                          <p>
-                            Develop long-term healthy habits that support your
-                            wellness journey.
-                          </p>
-                        </div>
-                      </div>
-                      <!-- What We List Item End -->
+                          <div class="what-we-list-item wow fadeInUp" data-wow-delay="0.<%= index + 2 %>s">
+
+                            <div class="icon-box">
+                              <img src="/images/icon-service-<%= (index % 5) + 1 %>.svg" alt="">
+                            </div>
+
+                            <div class="what-we-do-list-content">
+                              <h3><%= feature %></h3>
+                              <p>Enhance your experience with <%= feature.toLowerCase() %>.</p>
+                            </div>
+
+                          </div>
+
+                        <% }) %>
+                      <% } %>
+
                     </div>
                     <!-- Program Content List End -->
 
                     <!-- Program Practice Image Start -->
-                    <div class="program-practice-image">
+                    <!-- <div class="program-practice-image">
                       <figure class="image-anime reveal">
                         <img src="images/programs/program6.jpg" alt="" />
                       </figure>
-                    </div>
+                    </div> -->
                     <!-- Program Practice Image End -->
                   </div>
                   <!-- Program Image Content End -->
@@ -399,7 +360,7 @@
               <div class="footer-about">
                 <div class="footer-logo">
                   <img
-                    src="images/logo.jpg"
+                    src="/images/logo.jpg"
                     alt="Shony Talks"
                     class="rounded"
                   />
@@ -415,13 +376,13 @@
 
                 <div class="footer-menu">
                   <ul>
-                    <li><a href="index.html">home</a></li>
-                    <li><a href="about.html">about us</a></li>
-                    <li><a href="services.html">services</a></li>
-                    <li><a href="programs.html">programs</a></li>
-                    <li><a href="course.html">courses</a></li>
-                    <li><a href="blog.html">blogs</a></li>
-                    <li><a href="contact.html">contact</a></li>
+                    <li><a href="/">home</a></li>
+                    <li><a href="/about">about us</a></li>
+                    <li><a href="/services">services</a></li>
+                    <li><a href="/programs">programs</a></li>
+                    <li><a href="/courses">courses</a></li>
+                    <li><a href="/blogs">blogs</a></li>
+                    <li><a href="/contact">contact</a></li>
                   </ul>
                 </div>
               </div>
@@ -433,18 +394,18 @@
                   <h3>Our Services</h3>
                   <ul>
                     <li>
-                      <a href="personal-service.html">Personal Support</a>
+                      <a href="/personal-service">Personal Support</a>
                     </li>
-                    <li><a href="family-service.html">Family Support</a></li>
-                    <li><a href="student-service.html">Student Support</a></li>
+                    <li><a href="/family-service">Family Support</a></li>
+                    <li><a href="/student-service">Student Support</a></li>
                     <li>
-                      <a href="organization-service.html">Corporate Wellness</a>
-                    </li>
-                    <li>
-                      <a href="workspace-service.html">Workplace Wellness</a>
+                      <a href="/organization-service">Corporate Wellness</a>
                     </li>
                     <li>
-                      <a href="frontline-service.html">Healthcare Support</a>
+                      <a href="/workspace-service">Workplace Wellness</a>
+                    </li>
+                    <li>
+                      <a href="/frontline-service">Healthcare Support</a>
                     </li>
                   </ul>
                 </div>
@@ -530,7 +491,7 @@
                 <ul>
                   <li><a href="#">Privacy Policy</a></li>
                   <li><a href="#">Terms & Conditions</a></li>
-                  <li><a href="contact.html">Support</a></li>
+                  <li><a href="/contact">Support</a></li>
                 </ul>
               </div>
             </div>
@@ -639,67 +600,71 @@
 
     <!-- Mobile Bottom Navbar Start -->
     <nav class="mobile-bottom-navbar d-lg-none">
-      <a href="index.html" class="mobile-nav-item">
+      <a href="/" class="mobile-nav-item">
         <span class="mobile-nav-icon"><i class="fa-solid fa-house"></i></span>
         <span>Home</span>
       </a>
-      <a href="services.html" class="mobile-nav-item">
+      <a href="/services" class="mobile-nav-item">
         <span class="mobile-nav-icon"
           ><i class="fa-solid fa-hand-holding-medical"></i
         ></span>
         <span>Services</span>
       </a>
-      <a href="programs.html" class="mobile-nav-item">
+      <a href="/programs" class="mobile-nav-item">
         <span class="mobile-nav-icon"
           ><i class="fa-solid fa-list-check"></i
         ></span>
         <span>Programs</span>
       </a>
-      <a href="course.html" class="mobile-nav-item">
+      <a href="/courses" class="mobile-nav-item">
         <span class="mobile-nav-icon"
           ><i class="fa-solid fa-certificate"></i
         ></span>
         <span>Courses</span>
       </a>
-      <a href="" class="mobile-nav-item" data-bs-toggle="modal"
-                  data-bs-target="#authModal">
-        <span class="mobile-nav-icon" ><i class="fa-solid fa-user"></i></span>
+      <a
+        href=""
+        class="mobile-nav-item"
+        data-bs-toggle="modal"
+        data-bs-target="#authModal"
+      >
+        <span class="mobile-nav-icon"><i class="fa-solid fa-user"></i></span>
         <span>Login</span>
       </a>
     </nav>
     <!-- Mobile Bottom Navbar End -->
 
     <!-- Jquery Library File -->
-    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="/js/jquery-3.7.1.min.js"></script>
     <!-- Circle Progress Js File -->
-    <script src="js/circle-progress.min.js"></script>
+    <script src="/js/circle-progress.min.js"></script>
     <!-- Bootstrap js file -->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
     <!-- Validator js file -->
-    <script src="js/validator.min.js"></script>
+    <script src="/js/validator.min.js"></script>
     <!-- SlickNav js file -->
-    <script src="js/jquery.slicknav.js"></script>
+    <script src="/js/jquery.slicknav.js"></script>
     <!-- Swiper js file -->
-    <script src="js/swiper-bundle.min.js"></script>
+    <script src="/js/swiper-bundle.min.js"></script>
     <!-- Counter js file -->
-    <script src="js/jquery.waypoints.min.js"></script>
-    <script src="js/jquery.counterup.min.js"></script>
+    <script src="/js/jquery.waypoints.min.js"></script>
+    <script src="/js/jquery.counterup.min.js"></script>
     <!-- Magnific js file -->
-    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="/js/jquery.magnific-popup.min.js"></script>
     <!-- Parallax js -->
-    <script src="js/parallaxie.js"></script>
+    <script src="/js/parallaxie.js"></script>
     <!-- MagicCursor js file -->
-    <script src="js/gsap.min.js"></script>
-    <script src="js/magiccursor.js"></script>
+    <script src="/js/gsap.min.js"></script>
+    <script src="/js/magiccursor.js"></script>
     <!-- Text Effect js file -->
-    <script src="js/SplitText.js"></script>
-    <script src="js/ScrollTrigger.min.js"></script>
+    <script src="/js/SplitText.js"></script>
+    <script src="/js/ScrollTrigger.min.js"></script>
     <!-- YTPlayer js File -->
-    <script src="js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="/js/jquery.mb.YTPlayer.min.js"></script>
     <!-- Wow js file -->
-    <script src="js/wow.min.js"></script>
+    <script src="/js/wow.min.js"></script>
     <!-- Main Custom js file -->
-    <script src="js/function.js"></script>
+    <script src="/js/function.js"></script>
   </body>
 
   <!-- Mirrored from html.awaikenthemes.com/healix/program-single.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:03 GMT -->

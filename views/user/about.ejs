@@ -54,7 +54,7 @@
         <nav class="navbar navbar-expand-lg">
           <div class="container">
             <!-- Logo Start -->
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="/">
               <img class="logo-img" src="images/logo.png" alt="Logo" />
             </a>
             <!-- Logo End -->
@@ -64,60 +64,66 @@
               <div class="nav-menu-wrapper">
                 <ul class="navbar-nav mr-auto" id="menu">
                   <li class="nav-item">
-                    <a class="nav-link" href="index.html">HOME</a>
+                    <a class="nav-link" href="/">HOME</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="about.html">ABOUT US</a>
+                    <a class="nav-link" href="/about">ABOUT US</a>
                   </li>
-                    <li class="nav-item submenu"><a class="nav-link" href="services.html">SERVICES</a>
+                  <li class="nav-item submenu">
+                    <a class="nav-link" href="/services">SERVICES</a>
                     <ul>
                       <li class="nav-item">
-                        <a class="nav-link" href="personal-service.html"
+                        <a class="nav-link" href="/personal-service"
                           >Personal Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="family-service.html"
+                        <a class="nav-link" href="/family-service"
                           >Family Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="student-service.html"
+                        <a class="nav-link" href="/student-service"
                           >Student Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="organization-service.html"
+                        <a class="nav-link" href="/organization-service"
                           >Corporate Wellness</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="workspace-service.html"
+                        <a class="nav-link" href="/workspace-service"
                           >Workplace Wellness</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="frontline-service.html"
+                        <a class="nav-link" href="/frontline-service"
                           >Healthcare Support</a
                         >
                       </li>
                     </ul>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="programs.html">PROGRAMS</a>
+                    <a class="nav-link" href="/programs">PROGRAMS</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="course.html">COURSES</a>
+                    <a class="nav-link" href="/courses">COURSES</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="contact.html">CONTACT US</a>
+                    <a class="nav-link" href="/contact">CONTACT US</a>
                   </li>
                 </ul>
               </div>
 
               <!-- Header Btn Start -->
               <div class="header-btn">
-                <a href="account.html" class="profile-icon">
+                <a
+                  href="#"
+                  class="profile-icon"
+                  data-bs-toggle="modal"
+                  data-bs-target="#authModal"
+                >
                   <i class="fa fa-user"></i>
                 </a>
               </div>
@@ -140,12 +146,12 @@
                     <!-- Page Header Box Start -->
                     <div class="page-header-box">
                         <h1 class="text-anime-style-3" data-cursor="-opaque">About us</h1>
-                        <!-- <nav class="wow fadeInUp">
+                        <nav class="wow fadeInUp">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index-2.html">home</a></li>
+                                <li class="breadcrumb-item"><a href="/">home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">about us</li>
                             </ol>
-                        </nav> -->
+                        </nav>
                     </div>
                     <!-- Page Header Box End -->
                 </div>
@@ -213,7 +219,7 @@
                         <div class="about-us-footer wow fadeInUp" data-wow-delay="0.6s">
                             <!-- About Us Button Start -->
                             <div class="about-us-btn">
-                                <a href="contact.html" class="btn-default">contact us</a>
+                                <a href="/contact" class="btn-default">contact us</a>
                             </div>
                             <!-- About Us Button End -->
                             
@@ -324,7 +330,7 @@
                 
                                     <!-- Section Button Start -->
                                     <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
-                                        <a href="contact.html" class="btn-default">contact us</a>
+                                        <a href="/contact" class="btn-default">contact us</a>
                                     </div>
                                     <!-- Section Button End -->
                                 </div>   
@@ -539,7 +545,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="team-explore-btn text-center wow fadeInUp" data-wow-delay="0.8s" style="margin-top: 50px;">
-                    <a href="team.html" class="btn-default">View All Experts</a>
+                    <a href="/team" class="btn-default">View All Experts</a>
                 </div>
             </div>
         </div>
@@ -548,184 +554,73 @@
 
     <!-- Our Testimonial Section Start-->
     <div class="our-testimonial bg-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <!-- Testimonial Content Start-->
-                    <div class="testimonial-content">
-                        <!-- Section Title Start -->
-                        <div class="section-title">
-                            <h3 class="wow fadeInUp">Testimonials</h3>
-                            <h2 class="text-anime-style-3" data-cursor="-opaque">Stories of Transformation</h2>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="testimonial-content">
+              <div class="section-title">
+                <h3 class="wow fadeInUp">Testimonials</h3>
+                <h2 class="text-anime-style-3" data-cursor="-opaque">
+                  Stories of Transformation
+                </h2>
+              </div>
+              <div class="testimonial-boxes">
+                <% if (testimonials && testimonials.length > 0) { %>
+                  <% testimonials.forEach((item, index) => { %>
+                    <% if (item.isActive) { %>
+                      <div
+                        class="testimonial-item <%= index === 0 ? 'active' : '' %> wow fadeInUp"
+                        data-wow-delay="<%= (index * 0.2) %>s"
+                      >
+                        <div class="testimonial-item-content">
+                          <div class="testimonial-rating">
+                            <% for(let i = 0; i < 5; i++) { %>
+                              <i class="<%= i < item.rating ? 'fa-solid' : 'fa-regular' %> fa-star"></i>
+                            <% } %>
+                          </div>
+                          <div class="testimonial-info">
+                            <p>“<%= item.content %>”</p>
+                          </div>
                         </div>
-                        <!-- Section Title End -->
-
-                        <!-- Testimonial Boxes Start -->
-                        <div class="testimonial-boxes">
-                            <!-- Testimonial Item Start -->
-                            <div class="testimonial-item active wow fadeInUp" data-wow-delay="0.2s">
-                                <!-- Testimonial Item Content Start -->
-                                <div class="testimonial-item-content">
-                                    <div class="testimonial-rating">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <div class="testimonial-info">
-                                        <p>“I've struggled with chronic pain for years, but health coaching gave me the tools and support.”</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Item Content End -->
-
-                                <!-- Testimonial Author box Start -->
-                                <div class="testimonial-author-box">
-                                    <div class="testimonial-author-iamge">
-                                        <figure class="image-anime">
-                                            <img src="images/author-1.jpg" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="testimonial-author-content">
-                                        <h3>Bessie cooper</h3>
-                                        <p>Co-Founder</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Author box End -->
-                            </div>
-                            <!-- Testimonial Item End -->
-                            
-                            <!-- Testimonial Item Start -->
-                            <div class="testimonial-item wow fadeInUp" data-wow-delay="0.4s">
-                                <!-- Testimonial Item Content Start -->
-                                <div class="testimonial-item-content">
-                                    <div class="testimonial-rating">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <div class="testimonial-info">
-                                        <p>“I've struggled with chronic pain for years, but health coaching gave me the tools and support.”</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Item Content End -->
-
-                                <!-- Testimonial Author box Start -->
-                                <div class="testimonial-author-box">
-                                    <div class="testimonial-author-iamge">
-                                        <figure class="image-anime">
-                                            <img src="images/author-2.jpg" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="testimonial-author-content">
-                                        <h3>Floyd miles</h3>
-                                        <p>Chairman</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Author box End -->
-                            </div>
-                            <!-- Testimonial Item End -->
-                            
-                            <!-- Testimonial Item Start -->
-                            <div class="testimonial-item wow fadeInUp" data-wow-delay="0.6s">
-                                <!-- Testimonial Item Content Start -->
-                                <div class="testimonial-item-content">
-                                    <div class="testimonial-rating">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <div class="testimonial-info">
-                                        <p>“I've struggled with chronic pain for years, but health coaching gave me the tools and support.”</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Item Content End -->
-
-                                <!-- Testimonial Author box Start -->
-                                <div class="testimonial-author-box">
-                                    <div class="testimonial-author-iamge">
-                                        <figure class="image-anime">
-                                            <img src="images/author-3.jpg" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="testimonial-author-content">
-                                        <h3>Kathryn murphy</h3>
-                                        <p>CEO</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Author box End -->
-                            </div>
-                            <!-- Testimonial Item End -->
-                            
-                            <!-- Testimonial Item Start -->
-                            <div class="testimonial-item wow fadeInUp" data-wow-delay="0.8s">
-                                <!-- Testimonial Item Content Start -->
-                                <div class="testimonial-item-content">
-                                    <div class="testimonial-rating">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <div class="testimonial-info">
-                                        <p>“I've struggled with chronic pain for years, but health coaching gave me the tools and support.”</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Item Content End -->
-
-                                <!-- Testimonial Author box Start -->
-                                <div class="testimonial-author-box">
-                                    <div class="testimonial-author-iamge">
-                                        <figure class="image-anime">
-                                            <img src="images/author-4.jpg" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="testimonial-author-content">
-                                        <h3>Jerome bell</h3>
-                                        <p>Finance director</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Author box End -->
-                            </div>
-                            <!-- Testimonial Item End -->
+                        <div class="testimonial-author-box">
+                          <div class="testimonial-author-iamge">
+                            <figure class="image-anime">
+                              <img src="/uploads/<%= item.imageUrl %>" alt="<%= item.name %>" />
+                            </figure>
+                          </div>
+                          <div class="testimonial-author-content">
+                            <h3><%= item.name %></h3>
+                            <p><%= item.designation %></p>
+                          </div>
                         </div>
-                        <!-- Testimonial Boxes End -->
-                    </div>
-                    <!-- Testimonial Content End-->
-                </div>
-                
-                <div class="col-lg-6">
-                    <!-- Why Choose Image Start -->
-                    <div class="testimonial-images">
-                        <div class="testimonial-img-1">
-                            <figure class="image-anime">
-                                <img src="images/test-1.jpg" alt="">
-                            </figure>
-                        </div>                        
-                        <div class="testimonial-img-2">
-                            <figure class="image-anime">
-                                <img src="images/test-2.jpg" alt="">
-                            </figure>
                         </div>
-                        <!-- <div class="testimonial-img-3">
-                            <figure class="image-anime">
-                                <img src="images/testimonial-image-3.jpg" alt="">
-                            </figure>
-                        </div> -->
+                      <% } %>
+                  <% }) %>
+                <% } else { %>
+                  <p>No testimonials available at the moment.</p>
+                <% } %>
+              </div>
+              </div>
+            </div>
 
-                    </div>
-                    <!-- Why Choose Image End -->
-                </div>
+          <div class="col-lg-6">
+            <div class="testimonial-images">
+              <div class="testimonial-img-1">
+                <figure class="image-anime">
+                  <img src="images/test-1.jpg" alt="" />
+                </figure>
+              </div>
+              <div class="testimonial-img-2">
+                <figure class="image-anime">
+                  <img src="images/test-2.jpg" alt="" />
+                </figure>
+              </div>
+            </div>
             </div>
         </div>
+      </div>
     </div>
     <!-- Our Testimonial Section End-->
-
     <!-- Our FAQs Section Start -->
     <div class="our-faqs">
         <div class="container">
@@ -859,13 +754,13 @@
 
                 <div class="footer-menu">
                   <ul>
-                    <li><a href="index.html">home</a></li>
-                    <li><a href="about.html">about us</a></li>
-                    <li><a href="services.html">services</a></li>
-                    <li><a href="programs.html">programs</a></li>
-                    <li><a href="course.html">courses</a></li>
-                    <li><a href="blog.html">blogs</a></li>
-                    <li><a href="contact.html">contact</a></li>
+                    <li><a href="/">home</a></li>
+                    <li><a href="/about">about us</a></li>
+                    <li><a href="/services">services</a></li>
+                    <li><a href="/programs">programs</a></li>
+                    <li><a href="/courses">courses</a></li>
+                    <li><a href="/blogs">blogs</a></li>
+                    <li><a href="/contact">contact</a></li>
                   </ul>
                 </div>
               </div>
@@ -877,18 +772,18 @@
                   <h3>Our Services</h3>
                   <ul>
                     <li>
-                      <a href="personal-service.html">Personal Support</a>
+                      <a href="/personal-service">Personal Support</a>
                     </li>
-                    <li><a href="family-service.html">Family Support</a></li>
-                    <li><a href="student-service.html">Student Support</a></li>
+                    <li><a href="/family-service">Family Support</a></li>
+                    <li><a href="/student-service">Student Support</a></li>
                     <li>
-                      <a href="organization-service.html">Corporate Wellness</a>
-                    </li>
-                    <li>
-                      <a href="workspace-service.html">Workplace Wellness</a>
+                      <a href="/organization-service">Corporate Wellness</a>
                     </li>
                     <li>
-                      <a href="frontline-service.html">Healthcare Support</a>
+                      <a href="/workspace-service">Workplace Wellness</a>
+                    </li>
+                    <li>
+                      <a href="/frontline-service">Healthcare Support</a>
                     </li>
                   </ul>
                 </div>
@@ -974,7 +869,7 @@
                 <ul>
                   <li><a href="#">Privacy Policy</a></li>
                   <li><a href="#">Terms & Conditions</a></li>
-                  <li><a href="contact.html">Support</a></li>
+                  <li><a href="/contact">Support</a></li>
                 </ul>
               </div>
             </div>
@@ -1083,31 +978,35 @@
 
     <!-- Mobile Bottom Navbar Start -->
     <nav class="mobile-bottom-navbar d-lg-none">
-      <a href="index.html" class="mobile-nav-item">
+      <a href="/" class="mobile-nav-item">
         <span class="mobile-nav-icon"><i class="fa-solid fa-house"></i></span>
         <span>Home</span>
       </a>
-      <a href="services.html" class="mobile-nav-item">
+      <a href="/services" class="mobile-nav-item">
         <span class="mobile-nav-icon"
           ><i class="fa-solid fa-hand-holding-medical"></i
         ></span>
         <span>Services</span>
       </a>
-      <a href="programs.html" class="mobile-nav-item">
+      <a href="/programs" class="mobile-nav-item">
         <span class="mobile-nav-icon"
           ><i class="fa-solid fa-list-check"></i
         ></span>
         <span>Programs</span>
       </a>
-      <a href="course.html" class="mobile-nav-item">
+      <a href="/courses" class="mobile-nav-item">
         <span class="mobile-nav-icon"
           ><i class="fa-solid fa-certificate"></i
         ></span>
         <span>Courses</span>
       </a>
-      <a href="" class="mobile-nav-item" data-bs-toggle="modal"
-                  data-bs-target="#authModal">
-        <span class="mobile-nav-icon" ><i class="fa-solid fa-user"></i></span>
+      <a
+        href=""
+        class="mobile-nav-item"
+        data-bs-toggle="modal"
+        data-bs-target="#authModal"
+      >
+        <span class="mobile-nav-icon"><i class="fa-solid fa-user"></i></span>
         <span>Login</span>
       </a>
     </nav>
