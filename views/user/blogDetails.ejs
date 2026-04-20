@@ -39,6 +39,8 @@
     <link rel="stylesheet" href="/css/mousecursor.css" />
     <!-- Main Custom Css -->
     <link href="/css/custom.css" rel="stylesheet" media="screen" />
+      <!-- toastify CSS -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   </head>
   <body>
 
@@ -471,7 +473,7 @@
     <!-- Main Footer Section End -->
 
      <!-- Login modal start -->
-    <div class="modal fade" id="authModal" tabindex="-1">
+    <div class="modal fade" id="authModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content auth-modal">
           <!-- Close -->
@@ -500,30 +502,16 @@
                 <!-- STEP 1 -->
                 <form id="loginForm">
                   <div class="mb-3">
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Full Name"
-                      required
-                    />
+                    <input type="text" id="name" class="form-control" placeholder="Full Name" required />
                   </div>
 
                   <div class="mb-3">
-                    <input
-                      type="email"
-                      class="form-control"
-                      placeholder="Email Address"
-                      required
-                    />
+                    <input type="email" id="email" class="form-control" placeholder="Email Address" required />
                   </div>
 
-                  <button
-                    type="button"
-                    class="btn-default btn-highlighted w-100"
-                    onclick="showOtp()"
-                  >
-                    Get OTP
-                  </button>
+                  <button id="otpBtn" type="button" onclick="sendOtp()" class="btn-default btn-highlighted w-100">
+                  Get OTP
+                </button>
                 </form>
 
                 <!-- STEP 2 OTP -->
@@ -531,16 +519,17 @@
                   <p class="mb-2">Enter OTP sent to your email</p>
 
                   <div class="otp-box mb-3">
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
                   </div>
 
-                  <button class="btn-default btn-highlighted w-100 mb-3">Verify OTP</button>
-
+                <button id="verifyBtn" type="button" onclick="verifyOtp()" class="btn-default btn-highlighted w-100 mb-3">
+                  Verify OTP
+                </button>
                   <div class="text-center">
                     <a href="#" onclick="resendOtp()">Resend OTP</a>
                   </div>
@@ -634,6 +623,9 @@
     <script src="/js/wow.min.js"></script>
     <!-- Main Custom js file -->
     <script src="/js/function.js"></script>
+    <script src="js/auth.js"></script>
+    <!-- toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   </body>
 
   <!-- Mirrored from html.awaikenthemes.com/healix/blog-single.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:01 GMT -->
