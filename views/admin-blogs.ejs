@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+  
+    <title>Shony Talks - Admin Blogs</title>
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Theme Style -->
+    <link rel="stylesheet" type="text/css" href="/admin-css/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/animation.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/bootstrap-select.min.css">
+    <link rel="stylesheet" type="text/css" href="/admin-css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <!-- Font -->
+    <link rel="stylesheet" href="/admin-font/fonts.css">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="/admin-icon/style.css">
+
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="/img/pulpins/logo violet png.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/pulpins/logo violet png.png">
+    <style>
+        /* Ensure toggle switch is visible */
+        .peer:checked~.peer-checked\:bg-blue-600 {
+            background-color: #2563eb;
+        }
+
+        /* Fix icon alignment */
+        .icon-edit,
+        .icon-trash-2 {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Toggle switch styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #3B82F6;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #3B82F6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Icons styling */
+        .icon-edit,
+        .icon-trash-2 {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        /* Image dimensions */
+        .wg-table .w-40 img {
+            width: 160px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        #currentImagePreview img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        /* This is already included in the HTML classes above, but just in case */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.toggle-slider {
+            background-color: #2196F3;
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+
+<body class="body">
+
+    <!-- #wrapper -->
+    <div id="wrapper">
+        <!-- #page -->
+        <div id="page" class="">
+            <!-- layout-wrap -->
+            <div class="layout-wrap loader-off">
+                <!-- preload -->
+                <div id="preload" class="preload-container">
+                    <div class="preloading">
+                        <span></span>
+                    </div>
+                </div>
+                <!-- /preload -->
+                <!-- section-menu-left -->
+               <div class="section-menu-left">
+                    <div class="box-logo">
+                        <a href="/admin/admin-dashboard" id="site-logo-inner">
+                            <img style="width:60px;" id="logo_header" alt="" src="/img/devin.png" data-light="/img/devin.png" data-dark="img/logo.png" >
+                        </a>
+                        <div class="button-show-hide">
+                            <i class="icon-chevron-left"></i>
+                        </div>
+                    </div>
+                    <div class="section-menu-left-wrap">
+                        <div class="center">
+                            <div class="center-item">
+                                <ul class="">
+                                    <li class="menu-item">
+                                        <a href="/admin/admin-dashboard" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.2652 3.57566C12.1187 3.42921 11.8813 3.42921 11.7348 3.57566L5.25 10.0605V19.8748C5.25 20.0819 5.41789 20.2498 5.625 20.2498H9V16.1248C9 15.0893 9.83947 14.2498 10.875 14.2498H13.125C14.1605 14.2498 15 15.0893 15 16.1248V20.2498H18.375C18.5821 20.2498 18.75 20.0819 18.75 19.8748V10.0605L12.2652 3.57566ZM20.25 11.5605L21.2197 12.5302C21.5126 12.8231 21.9874 12.8231 22.2803 12.5302C22.5732 12.2373 22.5732 11.7624 22.2803 11.4695L13.3258 2.51499C12.5936 1.78276 11.4064 1.78276 10.6742 2.515L1.71967 11.4695C1.42678 11.7624 1.42678 12.2373 1.71967 12.5302C2.01256 12.8231 2.48744 12.8231 2.78033 12.5302L3.75 11.5605V19.8748C3.75 20.9104 4.58947 21.7498 5.625 21.7498H18.375C19.4105 21.7498 20.25 20.9104 20.25 19.8748V11.5605ZM13.5 20.2498H10.5V16.1248C10.5 15.9177 10.6679 15.7498 10.875 15.7498H13.125C13.3321 15.7498 13.5 15.9177 13.5 16.1248V20.2498Z" fill="#111111"/>
+                                                </svg>
+                                            </div>
+                                            <div class="text">Admin Dashboard</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item active">
+                                        <a href="/admin/admin-blogs" class="menu-item-button">
+                                            <div class="icon"><i class="icon-file-plus"></i></div>
+                                            <div class="text">Blog Management</div>
+                                        </a>
+                                    
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/admin-programs" class="menu-item-button">
+                                            <div class="icon"><i class="icon-layers"></i></div>
+                                            <div class="text">Program Management</div>
+                                        </a>
+                                 
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/admin-banner" class="menu-item-button">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.5 1.875C0.5 0.839466 1.33947 0 2.375 0H19.625C20.6605 0 21.5 0.839466 21.5 1.875V3.375C21.5 4.29657 20.8351 5.06285 19.9589 5.22035L19.3733 15.1762C19.28 16.7619 17.9669 18 16.3785 18H5.62154C4.03311 18 2.71999 16.7619 2.62671 15.1762L2.04108 5.22035C1.16485 5.06285 0.5 4.29657 0.5 3.375V1.875ZM2.75659 3.75C2.75266 3.74997 2.74873 3.74997 2.74479 3.75H2.375C2.16789 3.75 2 3.58211 2 3.375V1.875C2 1.66789 2.16789 1.5 2.375 1.5H19.625C19.8321 1.5 20 1.66789 20 1.875V3.375C20 3.58211 19.8321 3.75 19.625 3.75H19.2552C19.2513 3.74997 19.2473 3.74997 19.2434 3.75H2.75659ZM3.54541 5.25L4.12412 15.0881C4.17076 15.8809 4.82732 16.5 5.62154 16.5H16.3785C17.1727 16.5 17.8292 15.8809 17.8759 15.0881L18.4546 5.25H3.54541ZM8.24976 8.25C8.24976 7.83579 8.58554 7.5 8.99976 7.5H12.9998C13.414 7.5 13.7498 7.83579 13.7498 8.25C13.7498 8.66421 13.414 9 12.9998 9H8.99976C8.58554 9 8.24976 8.66421 8.24976 8.25Z" fill="#111111"/>
+                                                </svg>
+                                            </div>
+                                            <div class="text">Banner Management</div>
+                                        </a>
+                                  
+                                    </li>
+                            
+                                    <li class="menu-item ">
+                                        <a href="/admin/admin-testimonials" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-users"></i></div>
+                                            <div class="text">Testimonials Management</div>
+                                        </a>
+                              
+                                    </li>
+                                    <li class="menu-item ">
+                                        <a href="/admin/admin-courses" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-star-o"></i></div>
+                                            <div class="text">Course Management</div>
+                                        </a>
+                                  
+                                    </li>
+                                       </li>
+                                         <li class="menu-item  ">
+                                        <a href="/admin/admin-plans" class="menu-item-button">
+                                            <div class="icon"><i class="fa fa-address-book"></i></div>
+                                            <div class="text">Plan Management</div>
+                                        </a>
+                                  
+                                    </li>
+                              
+                             
+                            
+                                    <li class="menu-item">
+                                        <a href="/admin/logout" class="">
+                                            <div class="icon">
+                                                <svg width="24" height="22" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M8.125 18.6875C8.125 18.903 8.0394 19.1097 7.88702 19.262C7.73465 19.4144 7.52799 19.5 7.3125 19.5H1.625C1.19402 19.5 0.780698 19.3288 0.475951 19.024C0.171205 18.7193 0 18.306 0 17.875V1.625C0 1.19402 0.171205 0.780698 0.475951 0.475951C0.780698 0.171205 1.19402 0 1.625 0H7.3125C7.52799 0 7.73465 0.0856026 7.88702 0.237976C8.0394 0.390349 8.125 0.597012 8.125 0.8125C8.125 1.02799 8.0394 1.23465 7.88702 1.38702C7.73465 1.5394 7.52799 1.625 7.3125 1.625H1.625V17.875H7.3125C7.52799 17.875 7.73465 17.9606 7.88702 18.113C8.0394 18.2653 8.125 18.472 8.125 18.6875ZM19.2623 9.17516L15.1998 5.11266C15.0474 4.9602 14.8406 4.87455 14.625 4.87455C14.4094 4.87455 14.2026 4.9602 14.0502 5.11266C13.8977 5.26511 13.812 5.47189 13.812 5.6875C13.812 5.90311 13.8977 6.10989 14.0502 6.26234L16.7263 8.9375H7.3125C7.09701 8.9375 6.89035 9.0231 6.73798 9.17548C6.5856 9.32785 6.5 9.53451 6.5 9.75C6.5 9.96549 6.5856 10.1722 6.73798 10.3245C6.89035 10.4769 7.09701 10.5625 7.3125 10.5625H16.7263L14.0502 13.2377C13.8977 13.3901 13.812 13.5969 13.812 13.8125C13.812 14.0281 13.8977 14.2349 14.0502 14.3873C14.2026 14.5398 14.4094 14.6255 14.625 14.6255C14.8406 14.6255 15.0474 14.5398 15.1998 14.3873L19.2623 10.3248C19.3379 10.2494 19.3978 10.1598 19.4387 10.0611C19.4796 9.9625 19.5006 9.85678 19.5006 9.75C19.5006 9.64322 19.4796 9.5375 19.4387 9.43886C19.3978 9.34023 19.3379 9.25062 19.2623 9.17516Z" fill="#111111"/>
+                                                </svg>
+                                            </div>
+                                            <div class="text">Log out</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /section-menu-left -->
+                <!-- section-content-right -->
+                <div class="section-content-right">
+                    <!-- header-dashboard -->
+                    <div class="header-dashboard">
+                        <div class="wrap">
+                            <div class="header-left">
+                                <a href="/admin/dashboard">
+                                    <img style="width: 50px;" id="logo_header_mobile" alt=""
+                                        src="/img/pulpins/logo violet png.png" data-light="/img/pulpins/logo violet png.png"
+                                        data-dark="/img/pulpins/logo violet png.png">
+                                </a>
+                                <div class="button-show-hide">
+                                    <i class="icon-chevron-left"></i>
+                                </div>
+                            </div>
+                            <div class="header-item" style="width:100%;">
+                                <a href="/order_management" class="btn btn-warning fw-bold w-100" style="display:inline-flex;align-items:center;gap:0.5em;justify-content:center;">
+                                    <i class="fa fa-bolt" aria-hidden="true"></i> Quick Order View ⚡
+                                </a>
+                            </div>
+                            <div class="header-grid">
+                                <div class="header-item button-dark-light">
+                                    <i class="icon-moon"></i>
+                                </div>
+
+
+                                <div class="header-item button-zoom-maximize">
+                                    <div class="">
+                                        <i class="icon-maximize"></i>
+                                    </div>
+                                </div>
+                                <div class="popup-wrap user type-header">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="header-user wg-user">
+                                                <span class="image">
+                                                    <img src="admin-images/avatar/user-1.png" alt="">
+                                                </span>
+                                                <span class="flex flex-column">
+                                                    <span class="body-text text-main-dark">Shony Talks</span>
+                                                    <span class="text-tiny">Admin</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end has-content"
+                                            aria-labelledby="dropdownMenuButton3">
+
+                                            <li>
+                                                <a href="#" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-headphones"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Support</div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/logout" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-log-out"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Log out</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /header-dashboard -->
+                    <!-- main-content -->
+                    <!-- admin-blogs.ejs -->
+                    <div class="main-content">
+                        <div class="main-content-inner">
+                            <div class="main-content-wrap">
+                                <div class="flex items-center flex-wrap justify-between gap20 mb-30">
+                                    <h3>Blog Management</h3>
+                                    <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                                        <li><a href="/admin/dashboard">
+                                                <div class="text-tiny">Dashboard</div>
+                                            </a></li>
+                                        <li><i class="icon-chevron-right"></i></li>
+                                        <li>
+                                            <div class="text-tiny">Blogs</div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Blog Management -->
+                                <div class="wg-box">
+                                    <div class="flex items-center justify-between gap10 flex-wrap mb-6">
+                                        <div class="flex gap10">
+                                            <a class="tf-button style-1 w208" href="#" onclick="showAddBlogModal()">
+                                                <i class="icon-plus"></i>Add Blog
+                                            </a>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <!-- Blog Statistics -->
+                                            <div class="flex gap-2">
+                                                <span
+                                                    class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                                    <i class="icon-eye"></i> <span id="totalViews">0</span> Views
+                                                </span>
+                                                <span
+                                                    class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                                    <i class="icon-file-text"></i> <span id="totalBlogs">0</span> Blogs
+                                                </span>
+                                            </div>
+
+                                            <!-- Filter Controls -->
+                                            <select id="statusFilter" class="form-select text-sm"
+                                                onchange="fetchBlogs()">
+                                                <option value="">All Status</option>
+                                                <option value="draft">Draft</option>
+                                                <option value="published">Published</option>
+                                                <option value="archived">Archived</option>
+                                            </select>
+
+                                            <select id="categoryFilter" class="form-select text-sm"
+                                                onchange="fetchBlogs()">
+                                                <option value="">All Categories</option>
+                                            </select>
+
+                                            <input type="text" id="searchBlogs" class="form-input text-sm"
+                                                placeholder="Search blogs..." onkeyup="debouncedSearch()">
+                                        </div>
+                                    </div>
+
+                                    <div id="blog-list"
+                                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px 0;">
+                                        <!-- Blogs will be injected here dynamically -->
+                                    </div>
+
+                                    <!-- Pagination -->
+                                    <div id="blogPagination" class="flex justify-center mt-8"></div>
+                                </div>
+
+                              <!-- Add Blog Modal - Fixed label for attributes -->
+<div id="addBlogModal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <span class="close" onclick="closeModal('addBlogModal')">&times;</span>
+        <h4>Add New Blog</h4>
+        <form id="addBlogForm" enctype="multipart/form-data">
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Left Column -->
+                <div>
+                    <div class="form-group">
+                        <label for="blogTitle">Title *</label>
+                        <input type="text" id="blogTitle" name="title" class="w-full" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogSlug">Slug</label>
+                        <input type="text" id="blogSlug" name="slug" class="w-full">
+                        <small class="text-gray-500">Auto-generated from title if empty</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogExcerpt">Excerpt</label>
+                        <textarea id="blogExcerpt" name="excerpt" class="w-full" rows="2" maxlength="200"></textarea>
+                        <small class="text-gray-500">Brief summary (max 200 characters)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogStatus">Status</label>
+                        <select id="blogStatus" name="status" class="w-full">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogCategory">Category</label>
+                        <input type="text" id="blogCategory" name="category" class="w-full" list="categoriesList">
+                        <datalist id="categoriesList"></datalist>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogTags">Tags (comma separated)</label>
+                        <input type="text" id="blogTags" name="tags" class="w-full" placeholder="e.g. beauty, skincare, health">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogFeatured">Featured Post</label>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="blogFeatured" name="featured" value="true">
+                            <span class="text-sm">Mark as featured</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogPublishedAt">Publish Date</label>
+                        <input type="datetime-local" id="blogPublishedAt" name="publishedAt" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <div class="form-group">
+                        <label for="blogFeaturedImage">Featured Image</label>
+                        <input type="file" id="blogFeaturedImage" name="featuredImage" accept="image/*" class="w-full">
+                        <small class="text-gray-500">Main blog image (max 5MB)</small>
+                        <div id="featuredImagePreview" class="mt-2"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogGalleryImages">Gallery Images</label>
+                        <input type="file" id="blogGalleryImages" name="gallery" accept="image/*" multiple class="w-full">
+                        <small class="text-gray-500">Additional images (max 10, 5MB each)</small>
+                        <div id="galleryPreview" class="mt-2 grid grid-cols-3 gap-2"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogAuthorName">Author Name</label>
+                        <input type="text" id="blogAuthorName" name="author[name]" class="w-full">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blogAuthorBio">Author Bio</label>
+                        <textarea id="blogAuthorBio" name="author[bio]" class="w-full" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rich Text Editor -->
+            <div class="form-group mt-4">
+                <label for="editor">Content *</label>
+                <div id="editor" style="height: 400px;"></div>
+                <textarea id="blogContentHidden" name="content" style="display: none;"></textarea>
+            </div>
+
+            <!-- SEO Section -->
+            <div class="border-t pt-4 mt-4">
+                <h5 class="font-medium mb-3">SEO Settings</h5>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="blogMetaTitle">Meta Title</label>
+                        <input type="text" id="blogMetaTitle" name="metaTitle" class="w-full">
+                    </div>
+                    <div class="form-group">
+                        <label for="blogMetaKeywords">Meta Keywords</label>
+                        <input type="text" id="blogMetaKeywords" name="metaKeywords" class="w-full" placeholder="comma separated">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="blogMetaDescription">Meta Description</label>
+                    <textarea id="blogMetaDescription" name="metaDescription" class="w-full" rows="2" maxlength="160"></textarea>
+                    <small class="text-gray-500">Max 160 characters for search engines</small>
+                </div>
+            </div>
+
+            <!-- Custom Fields (Optional) -->
+            <div class="border-t pt-4 mt-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h5 class="font-medium">Custom Fields</h5>
+                    <button type="button" class="text-sm text-blue-600" onclick="addCustomField()">+ Add Field</button>
+                </div>
+                <div id="customFieldsContainer"></div>
+            </div>
+
+            <div class="flex gap-4 mt-6">
+                <button type="submit" class="tf-button style-1 flex-1">Create Blog</button>
+                <button type="button" class="tf-button style-2 flex-1" onclick="closeModal('addBlogModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Blog Modal - Fixed label for attributes -->
+<div id="editBlogModal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <span class="close" onclick="closeModal('editBlogModal')">&times;</span>
+        <h4>Edit Blog</h4>
+        <form id="editBlogForm" enctype="multipart/form-data">
+            <input type="hidden" id="editBlogId" name="id">
+
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Left Column -->
+                <div>
+                    <div class="form-group">
+                        <label for="editBlogTitle">Title *</label>
+                        <input type="text" id="editBlogTitle" name="title" class="w-full" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogSlug">Slug *</label>
+                        <input type="text" id="editBlogSlug" name="slug" class="w-full" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogExcerpt">Excerpt</label>
+                        <textarea id="editBlogExcerpt" name="excerpt" class="w-full" rows="2" maxlength="200"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogStatus">Status</label>
+                        <select id="editBlogStatus" name="status" class="w-full">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogCategory">Category</label>
+                        <input type="text" id="editBlogCategory" name="category" class="w-full" list="categoriesListEdit">
+                        <datalist id="categoriesListEdit"></datalist>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogTags">Tags (comma separated)</label>
+                        <input type="text" id="editBlogTags" name="tags" class="w-full">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogFeatured">Featured Post</label>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="editBlogFeatured" name="featured" value="true">
+                            <span class="text-sm">Mark as featured</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogPublishedAt">Publish Date</label>
+                        <input type="datetime-local" id="editBlogPublishedAt" name="publishedAt" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <div class="form-group">
+                        <label for="editBlogFeaturedImage">Featured Image</label>
+                        <input type="file" id="editBlogFeaturedImage" name="featuredImage" accept="image/*" class="w-full">
+                        <small class="text-gray-500">Leave empty to keep current image</small>
+                        <div id="editFeaturedImagePreview" class="mt-2"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogGalleryImages">Gallery Images</label>
+                        <input type="file" id="editBlogGalleryImages" name="gallery" accept="image/*" multiple class="w-full">
+                        <small class="text-gray-500">Add more images</small>
+                        <div id="editGalleryPreview" class="mt-2 grid grid-cols-3 gap-2"></div>
+                        <div id="currentGalleryImages" class="mt-2"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogAuthorName">Author Name</label>
+                        <input type="text" id="editBlogAuthorName" name="author[name]" class="w-full">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBlogAuthorBio">Author Bio</label>
+                        <textarea id="editBlogAuthorBio" name="author[bio]" class="w-full" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rich Text Editor -->
+            <div class="form-group mt-4">
+                <label for="editBlogContent">Content *</label>
+                <div id="editEditorToolbar" class="border border-gray-300 rounded-t-lg p-2 bg-gray-50">
+                    <button type="button" class="editor-btn" onclick="formatEditText('bold')"><b>B</b></button>
+                    <button type="button" class="editor-btn" onclick="formatEditText('italic')"><i>I</i></button>
+                    <button type="button" class="editor-btn" onclick="formatEditText('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onclick="formatEditText('insertUnorderedList')">• List</button>
+                    <button type="button" class="editor-btn" onclick="formatEditText('insertOrderedList')">1. List</button>
+                    <button type="button" class="editor-btn" onclick="insertEditImage()">📷 Image</button>
+                    <button type="button" class="editor-btn" onclick="formatEditText('createLink', prompt('Enter URL:'))">🔗 Link</button>
+                </div>
+                <div id="editBlogContent" contenteditable="true" class="w-full h-64 border border-gray-300 border-t-0 rounded-b-lg p-4 overflow-auto"></div>
+                <textarea id="editBlogContentHidden" name="content" style="display: none;"></textarea>
+            </div>
+
+            <!-- SEO Section -->
+            <div class="border-t pt-4 mt-4">
+                <h5 class="font-medium mb-3">SEO Settings</h5>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="editBlogMetaTitle">Meta Title</label>
+                        <input type="text" id="editBlogMetaTitle" name="metaTitle" class="w-full">
+                    </div>
+                    <div class="form-group">
+                        <label for="editBlogMetaKeywords">Meta Keywords</label>
+                        <input type="text" id="editBlogMetaKeywords" name="metaKeywords" class="w-full">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editBlogMetaDescription">Meta Description</label>
+                    <textarea id="editBlogMetaDescription" name="metaDescription" class="w-full" rows="2" maxlength="160"></textarea>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="border-t pt-4 mt-4">
+                <h5 class="font-medium mb-3">Statistics</h5>
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="text-center p-3 bg-gray-50 rounded">
+                        <div class="text-2xl font-bold" id="editBlogViews">0</div>
+                        <div class="text-sm text-gray-600">Views</div>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 rounded">
+                        <div class="text-2xl font-bold" id="editBlogLikes">0</div>
+                        <div class="text-sm text-gray-600">Likes</div>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 rounded">
+                        <div class="text-2xl font-bold" id="editBlogShares">0</div>
+                        <div class="text-sm text-gray-600">Shares</div>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 rounded">
+                        <div class="text-2xl font-bold" id="editBlogReadingTime">0</div>
+                        <div class="text-sm text-gray-600">min read</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 mt-6">
+                <button type="submit" class="tf-button style-1 flex-1">Update Blog</button>
+                <button type="button" class="tf-button style-3 flex-1" onclick="previewBlog()">Preview</button>
+                <button type="button" class="tf-button style-2 flex-1" onclick="closeModal('editBlogModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div id="previewModal" class="modal">
+    <div class="modal-content" style="max-width: 900px;">
+        <span class="close" onclick="closeModal('previewModal')">&times;</span>
+        <h4>Blog Preview</h4>
+        <div id="blogPreviewContent" class="mt-4 p-4 border rounded-lg"></div>
+    </div>
+</div>
+                                <script>
+                                    let blogs = [];
+                                    let currentPage = 1;
+                                    let totalPages = 1;
+                                    let categories = [];
+                                    let blogStats = {};
+                                    let searchTimeout;
+                                    let quill;
+                                
+                                    // Initialize on DOM ready
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                        fetchBlogStats();
+                                        fetchCategories();
+                                        fetchBlogs();
+                                        setupBlogFormHandlers();
+                                        setupImagePreviews();
+                                        initializeQuill(); // Initialize Quill properly
+                                        initializeEditors();
+                                    });
+                                
+                                    // ==================== CUSTOM FIELDS FUNCTIONS ====================
+                                    function addCustomField() {
+                                        const container = document.getElementById('customFieldsContainer');
+                                        const fieldCount = container.children.length;
+                                        const fieldId = `custom_field_${fieldCount}`;
+                                        
+                                        const fieldHtml = `
+                                            <div class="custom-field-item grid grid-cols-12 gap-2 mb-2" id="${fieldId}">
+                                                <div class="col-span-5">
+                                                    <input type="text" name="customFields[${fieldCount}][key]" placeholder="Field Name" 
+                                                           class="w-full p-2 border rounded text-sm">
+                                                </div>
+                                                <div class="col-span-5">
+                                                    <input type="text" name="customFields[${fieldCount}][value]" placeholder="Field Value" 
+                                                           class="w-full p-2 border rounded text-sm">
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <button type="button" onclick="removeCustomField('${fieldId}')" 
+                                                            class="w-full p-2 bg-red-100 text-red-600 rounded hover:bg-red-200">
+                                                        <i class="icon-trash-2"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        `;
+                                        
+                                        container.insertAdjacentHTML('beforeend', fieldHtml);
+                                    }
+                                
+                                    function removeCustomField(fieldId) {
+                                        const field = document.getElementById(fieldId);
+                                        if (field) {
+                                            field.remove();
+                                        }
+                                    }
+                                
+                                    // ==================== QUILL EDITOR INITIALIZATION ====================
+                                    function initializeQuill() {
+                                        const editorElement = document.getElementById('editor');
+                                        if (editorElement && !quill) {
+                                            quill = new Quill('#editor', {
+                                                theme: 'snow',
+                                                modules: {
+                                                    toolbar: [
+                                                        [{ 'header': [1, 2, 3, false] }],
+                                                        ['bold', 'italic', 'underline', 'strike'],
+                                                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                                        ['link', 'image', 'video'],
+                                                        ['clean'],
+                                                        [{ 'align': [] }],
+                                                        [{ 'color': [] }, { 'background': [] }],
+                                                        ['code-block']
+                                                    ]
+                                                },
+                                                placeholder: 'Write your blog content here...'
+                                            });
+                                            
+                                            // Update hidden field on content change
+                                            quill.on('text-change', function() {
+                                                const hiddenField = document.getElementById('blogContentHidden');
+                                                if (hiddenField) {
+                                                    hiddenField.value = quill.root.innerHTML;
+                                                }
+                                            });
+                                        }
+                                    }
+                                
+                                    // ==================== UTILITY FUNCTIONS ====================
+                                    function parseCommaList(value = "") {
+                                        if (!value) return [];
+                                        if (Array.isArray(value)) return value;
+                                        if (typeof value === 'string' && value.trim().startsWith('[')) {
+                                            try {
+                                                return JSON.parse(value);
+                                            } catch { }
+                                        }
+                                        return value.split(",").map(item => item.trim()).filter(Boolean);
+                                    }
+                                
+                                    function toCommaSeparated(items = []) {
+                                        if (!items) return "";
+                                        if (Array.isArray(items)) return items.join(", ");
+                                        if (typeof items === 'string') return items;
+                                        return "";
+                                    }
+                                
+                                    function formatDate(dateString) {
+                                        if (!dateString) return "";
+                                        try {
+                                            const date = new Date(dateString);
+                                            return date.toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'short',
+                                                day: 'numeric'
+                                            });
+                                        } catch {
+                                            return dateString;
+                                        }
+                                    }
+                                
+                                    function formatDateTime(dateString) {
+                                        if (!dateString) return "";
+                                        try {
+                                            const date = new Date(dateString);
+                                            return date.toISOString().slice(0, 16);
+                                        } catch {
+                                            return dateString;
+                                        }
+                                    }
+                                
+                                    function truncateText(text, maxLength = 100) {
+                                        if (!text) return "";
+                                        if (text.length <= maxLength) return text;
+                                        return text.substring(0, maxLength) + '...';
+                                    }
+                                
+                                    function setFieldValue(fieldId, value) {
+                                        const el = document.getElementById(fieldId);
+                                        if (!el) {
+                                            console.warn(`Field ${fieldId} not found`);
+                                            return;
+                                        }
+                                
+                                        if (el.type === 'checkbox') {
+                                            el.checked = Boolean(value);
+                                        } else if (el.tagName === 'SELECT') {
+                                            el.value = value || "";
+                                        } else {
+                                            el.value = value || "";
+                                        }
+                                        
+                                        el.dispatchEvent(new Event('change', { bubbles: true }));
+                                        el.dispatchEvent(new Event('input', { bubbles: true }));
+                                    }
+                                
+                                    // ==================== BLOG LIST FUNCTIONS ====================
+                                    async function fetchBlogStats() {
+                                        try {
+                                            const response = await fetch("/admin/blogs/blog-stats")
+                                            const data = await response.json();
+                                            if (data.success) {
+                                                blogStats = data.data;
+                                                document.getElementById('totalViews').textContent = blogStats.totalViews || 0;
+                                                document.getElementById('totalBlogs').textContent = blogStats.totalBlogs || 0;
+                                            }
+                                        } catch (error) {
+                                            console.error('Error fetching stats:', error);
+                                        }
+                                    }
+                                
+                                    async function fetchCategories() {
+                                        try {
+                                            const response = await fetch("/admin/blogs/blog-categories")
+                                            const data = await response.json();
+                                            if (data.success) {
+                                                categories = data.categories || [];
+                                                updateCategoryLists();
+                                                
+                                                // Update category filter dropdown
+                                                const categoryFilter = document.getElementById('categoryFilter');
+                                                if (categoryFilter) {
+                                                    categoryFilter.innerHTML = '<option value="">All Categories</option>' + 
+                                                        categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                                                }
+                                            }
+                                        } catch (error) {
+                                            console.error('Error fetching categories:', error);
+                                        }
+                                    }
+                                
+                                    function updateCategoryLists() {
+                                        const datalist = document.getElementById('categoriesList');
+                                        const datalistEdit = document.getElementById('categoriesListEdit');
+                                        const options = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+                                        
+                                        if (datalist) datalist.innerHTML = options;
+                                        if (datalistEdit) datalistEdit.innerHTML = options;
+                                    }
+                                
+                                    async function fetchBlogs(page = 1) {
+                                        try {
+                                            const status = document.getElementById('statusFilter')?.value || '';
+                                            const category = document.getElementById('categoryFilter')?.value || '';
+                                            const search = document.getElementById('searchBlogs')?.value || '';
+                                
+                                            let url = `/admin/blogs?page=${page}&limit=12`;
+                                            if (status) url += `&status=${status}`;
+                                            if (category) url += `&category=${category}`;
+                                            if (search) url += `&search=${encodeURIComponent(search)}`;
+                                
+                                            console.log('Fetching blogs from:', url);
+                                            const response = await fetch(url);
+                                            
+                                            if (!response.ok) {
+                                                throw new Error(`HTTP error! status: ${response.status}`);
+                                            }
+                                            
+                                            const data = await response.json();
+                                
+                                            if (data.success) {
+                                                blogs = data.data || [];
+                                                currentPage = data.pagination?.page || 1;
+                                                totalPages = data.pagination?.pages || 1;
+                                                renderBlogs();
+                                                renderPagination();
+                                            } else {
+                                                throw new Error(data.message || 'Failed to fetch blogs');
+                                            }
+                                        } catch (error) {
+                                            console.error('Error fetching blogs:', error);
+                                            showToast('Error loading blogs: ' + error.message, 'error');
+                                        }
+                                    }
+                                
+                                    function debouncedSearch() {
+                                        clearTimeout(searchTimeout);
+                                        searchTimeout = setTimeout(() => {
+                                            fetchBlogs(1);
+                                        }, 500);
+                                    }
+                                
+                                    function renderBlogs() {
+                                        const blogList = document.getElementById('blog-list');
+                                        if (!blogList) return;
+                                
+                                        if (!blogs.length) {
+                                            blogList.innerHTML = `
+                                                <div class="col-span-full text-center py-12">
+                                                    <i class="icon-file-text text-4xl text-gray-300 mb-4"></i>
+                                                    <h3 class="text-lg font-medium text-gray-500">No blogs found</h3>
+                                                    <p class="text-gray-400 mt-2">Click "Add Blog" to create your first blog post.</p>
+                                                </div>
+                                            `;
+                                            return;
+                                        }
+                                
+                                        blogList.innerHTML = blogs.map(blog => `
+                                            <div class="blog-card bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                                                <div class="relative">
+                                                    ${blog.featuredImage ?
+                                                        `<img src="${blog.featuredImage}" alt="${blog.title}" class="w-full h-48 object-cover">` :
+                                                        `<div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                                                            <i class="icon-image text-4xl text-gray-300"></i>
+                                                        </div>`
+                                                    }
+                                                    ${blog.featured ?
+                                                        `<span class="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">Featured</span>` :
+                                                        ''
+                                                    }
+                                                    <span class="absolute top-2 left-2 status-badge status-${blog.status}">
+                                                        ${blog.status?.charAt(0).toUpperCase() + blog.status?.slice(1) || 'Draft'}
+                                                    </span>
+                                                </div>
+                                                
+                                                <div class="p-4">
+                                                    <div class="flex justify-between items-start mb-2">
+                                                        <h3 class="font-semibold text-lg truncate" title="${blog.title || 'Untitled'}">${blog.title || 'Untitled'}</h3>
+                                                    </div>
+                                                    
+                                                    <p class="text-gray-600 text-sm mb-3 line-clamp-2">${blog.excerpt || truncateText(blog.content || '', 80)}</p>
+                                                    
+                                                    <div class="flex items-center justify-between text-sm text-gray-500 mb-3">
+                                                        <div class="flex items-center gap-2">
+                                                            <i class="icon-user text-xs"></i>
+                                                            <span>${blog.author?.name || 'Unknown'}</span>
+                                                        </div>
+                                                        <div class="flex items-center gap-2">
+                                                            <i class="icon-eye text-xs"></i>
+                                                            <span>${blog.views || 0}</span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                                                        <div>
+                                                            <i class="icon-calendar text-xs"></i>
+                                                            ${formatDate(blog.publishedAt || blog.createdAt)}
+                                                        </div>
+                                                        <div>
+                                                            <i class="icon-clock text-xs"></i>
+                                                            ${blog.readingTime || '--'} min read
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="flex gap-2">
+                                                        <button onclick="showEditBlogModal('${blog._id}')" 
+                                                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm transition">
+                                                            <i class="icon-edit mr-1"></i> Edit
+                                                        </button>
+                                                        <button onclick="previewBlogById('${blog._id}')" 
+                                                                class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded text-sm transition">
+                                                            <i class="icon-eye mr-1"></i> Preview
+                                                        </button>
+                                                        <button onclick="confirmDeleteBlog('${blog._id}')" 
+                                                                class="flex-1 bg-red-100 hover:bg-red-200 text-red-800 py-2 px-4 rounded text-sm transition">
+                                                            <i class="icon-trash-2 mr-1"></i> Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `).join('');
+                                    }
+                                
+                                    function renderPagination() {
+                                        const paginationContainer = document.getElementById('blogPagination');
+                                        if (!paginationContainer || totalPages <= 1) {
+                                            paginationContainer.innerHTML = '';
+                                            return;
+                                        }
+                                
+                                        let paginationHTML = `
+                                            <nav class="flex items-center gap-2">
+                                                <button onclick="changePage(${currentPage - 1})" 
+                                                        ${currentPage === 1 ? 'disabled' : ''}
+                                                        class="px-3 py-2 rounded border ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'hover:bg-gray-100'}">
+                                                    <i class="icon-chevron-left"></i>
+                                                </button>
+                                        `;
+                                
+                                        const maxVisible = 5;
+                                        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+                                        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+                                
+                                        if (endPage - startPage + 1 < maxVisible) {
+                                            startPage = Math.max(1, endPage - maxVisible + 1);
+                                        }
+                                
+                                        for (let i = startPage; i <= endPage; i++) {
+                                            paginationHTML += `
+                                                <button onclick="changePage(${i})" 
+                                                        class="px-4 py-2 rounded border ${currentPage === i ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}">
+                                                    ${i}
+                                                </button>
+                                            `;
+                                        }
+                                
+                                        paginationHTML += `
+                                                <button onclick="changePage(${currentPage + 1})" 
+                                                        ${currentPage === totalPages ? 'disabled' : ''}
+                                                        class="px-3 py-2 rounded border ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'hover:bg-gray-100'}">
+                                                    <i class="icon-chevron-right"></i>
+                                                </button>
+                                            </nav>
+                                        `;
+                                
+                                        paginationContainer.innerHTML = paginationHTML;
+                                    }
+                                
+                                    function changePage(page) {
+                                        if (page < 1 || page > totalPages) return;
+                                        fetchBlogs(page);
+                                    }
+                                
+                                    // ==================== BLOG FORM FUNCTIONS ====================
+                                    function showAddBlogModal() {
+                                        const form = document.getElementById('addBlogForm');
+                                        if (form) form.reset();
+                                
+                                        // Clear previews
+                                        document.getElementById('featuredImagePreview').innerHTML = '';
+                                        document.getElementById('galleryPreview').innerHTML = '';
+                                        
+                                        // Clear custom fields
+                                        document.getElementById('customFieldsContainer').innerHTML = '';
+                                
+                                        // Set default values
+                                        const now = new Date();
+                                        const formattedDate = now.toISOString().slice(0, 16);
+                                        document.getElementById('blogPublishedAt').value = formattedDate;
+                                
+                                        // Clear Quill editor
+                                        if (quill) {
+                                            quill.setText('');
+                                        }
+                                
+                                        document.getElementById('addBlogModal').style.display = 'block';
+                                    }
+                                
+                                    async function showEditBlogModal(id) {
+                                        try {
+                                            console.log('Opening edit modal for blog ID:', id);
+                                            
+                                            const response = await fetch(`/admin/blogs/${id}`);
+                                            if (!response.ok) {
+                                                throw new Error(`HTTP error! status: ${response.status}`);
+                                            }
+                                            
+                                            const data = await response.json();
+                                            console.log('Blog data received:', data);
+                                
+                                            if (!data.success || !data.data) {
+                                                throw new Error(data.message || 'Blog not found');
+                                            }
+                                
+                                            const blog = data.data;
+                                            console.log('Setting blog data:', blog);
+                                
+                                            // Set basic fields
+                                            setFieldValue('editBlogId', blog._id || blog.id);
+                                            setFieldValue('editBlogTitle', blog.title);
+                                            setFieldValue('editBlogSlug', blog.slug);
+                                            setFieldValue('editBlogExcerpt', blog.excerpt);
+                                            setFieldValue('editBlogStatus', blog.status || 'draft');
+                                            setFieldValue('editBlogCategory', blog.category || '');
+                                            setFieldValue('editBlogTags', toCommaSeparated(blog.tags));
+                                            setFieldValue('editBlogFeatured', blog.featured);
+                                            setFieldValue('editBlogPublishedAt', blog.publishedAt ? formatDateTime(blog.publishedAt) : '');
+                                            setFieldValue('editBlogMetaTitle', blog.metaTitle || blog.title);
+                                            setFieldValue('editBlogMetaDescription', blog.metaDescription || blog.excerpt);
+                                            setFieldValue('editBlogMetaKeywords', toCommaSeparated(blog.metaKeywords));
+                                            setFieldValue('editBlogAuthorName', blog.author?.name || '');
+                                            setFieldValue('editBlogAuthorBio', blog.author?.bio || '');
+                                
+                                            // Set content in editor
+                                            const editor = document.getElementById('editBlogContent');
+                                            if (editor) {
+                                                editor.innerHTML = blog.content || '';
+                                                // Update hidden field
+                                                document.getElementById('editBlogContentHidden').value = blog.content || '';
+                                            }
+                                
+                                            // Show featured image
+                                            const featuredImgPreview = document.getElementById('editFeaturedImagePreview');
+                                            if (featuredImgPreview) {
+                                                if (blog.featuredImage) {
+                                                    featuredImgPreview.innerHTML = `
+                                                        <p class="text-sm text-gray-600 mb-2">Current Featured Image:</p>
+                                                        <img src="${blog.featuredImage}" alt="Current featured image" class="max-h-40 object-contain rounded">
+                                                    `;
+                                                } else {
+                                                    featuredImgPreview.innerHTML = '<p class="text-sm text-gray-500">No featured image</p>';
+                                                }
+                                            }
+                                
+                                            // Show gallery images
+                                            const galleryContainer = document.getElementById('currentGalleryImages');
+                                            if (galleryContainer) {
+                                                if (blog.galleryImages && blog.galleryImages.length > 0) {
+                                                    galleryContainer.innerHTML = `
+                                                        <p class="text-sm font-medium mb-2">Current Gallery Images:</p>
+                                                        <div class="grid grid-cols-4 gap-2">
+                                                            ${blog.galleryImages.map((img, index) => `
+                                                                <div class="relative">
+                                                                    <img src="${img}" alt="Gallery image ${index + 1}" class="w-full h-20 object-cover rounded">
+                                                                    <button type="button" onclick="removeGalleryImage('${blog._id}', '${img}')" 
+                                                                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                                                                        ×
+                                                                    </button>
+                                                                </div>
+                                                            `).join('')}
+                                                        </div>
+                                                    `;
+                                                } else {
+                                                    galleryContainer.innerHTML = '<p class="text-gray-500 text-sm">No gallery images</p>';
+                                                }
+                                            }
+                                
+                                            // Show statistics
+                                            document.getElementById('editBlogViews').textContent = blog.views || 0;
+                                            document.getElementById('editBlogLikes').textContent = blog.likes || 0;
+                                            document.getElementById('editBlogShares').textContent = blog.shares || 0;
+                                            document.getElementById('editBlogReadingTime').textContent = blog.readingTime || '--';
+                                
+                                            // Show the modal
+                                            document.getElementById('editBlogModal').style.display = 'block';
+                                            console.log('Edit modal should be visible now');
+                                
+                                        } catch (error) {
+                                            console.error('Error loading blog:', error);
+                                            showToast('Error loading blog: ' + error.message, 'error');
+                                        }
+                                    }
+                                
+                                    function closeModal(modalId) {
+                                        document.getElementById(modalId).style.display = 'none';
+                                        
+                                        // If closing add modal, reset custom fields
+                                        if (modalId === 'addBlogModal') {
+                                            document.getElementById('customFieldsContainer').innerHTML = '';
+                                        }
+                                    }
+                                
+                                    // ==================== IMAGE HANDLING ====================
+                                    function setupImagePreviews() {
+                                        // Featured image preview for add form
+                                        const featuredInput = document.getElementById('blogFeaturedImage');
+                                        if (featuredInput) {
+                                            featuredInput.addEventListener('change', function (e) {
+                                                const preview = document.getElementById('featuredImagePreview');
+                                                preview.innerHTML = '';
+                                
+                                                if (this.files && this.files[0]) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = function (e) {
+                                                        preview.innerHTML = `
+                                                            <img src="${e.target.result}" alt="Preview" class="max-h-40 object-contain rounded">
+                                                        `;
+                                                    }
+                                                    reader.readAsDataURL(this.files[0]);
+                                                }
+                                            });
+                                        }
+                                
+                                        // Gallery images preview for add form
+                                        const galleryInput = document.getElementById('blogGalleryImages');
+                                        if (galleryInput) {
+                                            galleryInput.addEventListener('change', function (e) {
+                                                const preview = document.getElementById('galleryPreview');
+                                                preview.innerHTML = '';
+                                
+                                                for (let i = 0; i < Math.min(this.files.length, 10); i++) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = function (e) {
+                                                        preview.innerHTML += `
+                                                            <div>
+                                                                <img src="${e.target.result}" alt="Preview ${i + 1}" class="w-full h-20 object-cover rounded">
+                                                            </div>
+                                                        `;
+                                                    }
+                                                    reader.readAsDataURL(this.files[i]);
+                                                }
+                                            });
+                                        }
+                                
+                                        // Featured image preview for edit form
+                                        const editFeaturedInput = document.getElementById('editBlogFeaturedImage');
+                                        if (editFeaturedInput) {
+                                            editFeaturedInput.addEventListener('change', function (e) {
+                                                const preview = document.getElementById('editFeaturedImagePreview');
+                                                preview.innerHTML = '';
+                                
+                                                if (this.files && this.files[0]) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = function (e) {
+                                                        preview.innerHTML = `
+                                                            <p class="text-sm text-gray-600 mb-2">New Featured Image:</p>
+                                                            <img src="${e.target.result}" alt="Preview" class="max-h-40 object-contain rounded">
+                                                        `;
+                                                    }
+                                                    reader.readAsDataURL(this.files[0]);
+                                                }
+                                            });
+                                        }
+                                
+                                        // Gallery images preview for edit form
+                                        const editGalleryInput = document.getElementById('editBlogGalleryImages');
+                                        if (editGalleryInput) {
+                                            editGalleryInput.addEventListener('change', function (e) {
+                                                const preview = document.getElementById('editGalleryPreview');
+                                                preview.innerHTML = '';
+                                
+                                                for (let i = 0; i < Math.min(this.files.length, 10); i++) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = function (e) {
+                                                        preview.innerHTML += `
+                                                            <div>
+                                                                <img src="${e.target.result}" alt="Preview ${i + 1}" class="w-full h-20 object-cover rounded">
+                                                            </div>
+                                                        `;
+                                                    }
+                                                    reader.readAsDataURL(this.files[i]);
+                                                }
+                                            });
+                                        }
+                                    }
+                                
+                                    async function removeGalleryImage(blogId, imageUrl) {
+                                        if (!confirm('Are you sure you want to remove this image?')) return;
+                                
+                                        try {
+                                            const response = await fetch(`/admin/blogs/${blogId}/gallery/${encodeURIComponent(imageUrl)}`, {
+                                                method: 'DELETE'
+                                            });
+                                
+                                            const data = await response.json();
+                                            if (data.success) {
+                                                showToast('Image removed successfully', 'success');
+                                                showEditBlogModal(blogId); // Refresh the modal
+                                            } else {
+                                                throw new Error(data.message || 'Failed to remove image');
+                                            }
+                                        } catch (error) {
+                                            console.error('Error removing image:', error);
+                                            showToast('Error removing image: ' + error.message, 'error');
+                                        }
+                                    }
+                                
+                                    // ==================== TEXT EDITOR FUNCTIONS ====================
+                                    function initializeEditors() {
+                                        // Add placeholder to content editors
+                                        const editors = ['blogContent', 'editBlogContent'];
+                                        editors.forEach(editorId => {
+                                            const editor = document.getElementById(editorId);
+                                            if (editor) {
+                                                editor.setAttribute('data-placeholder', 'Write your blog content here...');
+                                                
+                                                editor.addEventListener('focus', function () {
+                                                    if (this.textContent === 'Write your blog content here...') {
+                                                        this.textContent = '';
+                                                    }
+                                                });
+                                                
+                                                editor.addEventListener('blur', function () {
+                                                    if (this.textContent === '') {
+                                                        this.textContent = 'Write your blog content here...';
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                
+                                    function formatText(command, value = null) {
+                                        const editor = document.getElementById('blogContent');
+                                        if (!editor) return;
+                                
+                                        document.execCommand(command, false, value);
+                                        editor.focus();
+                                
+                                        // Update hidden field
+                                        document.getElementById('blogContentHidden').value = editor.innerHTML;
+                                    }
+                                
+                                    function formatEditText(command, value = null) {
+                                        const editor = document.getElementById('editBlogContent');
+                                        if (!editor) return;
+                                
+                                        document.execCommand(command, false, value);
+                                        editor.focus();
+                                
+                                        // Update hidden field
+                                        document.getElementById('editBlogContentHidden').value = editor.innerHTML;
+                                    }
+                                
+                                    function insertImage() {
+                                        const url = prompt('Enter image URL:');
+                                        if (url) {
+                                            formatText('insertImage', url);
+                                        }
+                                    }
+                                
+                                    function insertEditImage() {
+                                        const url = prompt('Enter image URL:');
+                                        if (url) {
+                                            formatEditText('insertImage', url);
+                                        }
+                                    }
+                                
+                                    // ==================== FORM SUBMISSION ====================
+                                    function setupBlogFormHandlers() {
+                                        const addForm = document.getElementById('addBlogForm');
+                                        const editForm = document.getElementById('editBlogForm');
+                                
+                                        // Auto-generate slug from title (add form)
+                                        const titleInput = document.getElementById('blogTitle');
+                                        const slugInput = document.getElementById('blogSlug');
+                                        if (titleInput && slugInput) {
+                                            titleInput.addEventListener('input', function () {
+                                                if (!slugInput.value) {
+                                                    slugInput.value = slugify(this.value);
+                                                }
+                                            });
+                                        }
+                                
+                                        // Auto-generate slug from title (edit form)
+                                        const editTitleInput = document.getElementById('editBlogTitle');
+                                        const editSlugInput = document.getElementById('editBlogSlug');
+                                        if (editTitleInput && editSlugInput) {
+                                            editTitleInput.addEventListener('input', function () {
+                                                if (!editSlugInput.value || editSlugInput.value === slugify(this.value)) {
+                                                    editSlugInput.value = slugify(this.value);
+                                                }
+                                            });
+                                        }
+                                
+                                        function slugify(text) {
+                                            return text.toLowerCase()
+                                                .replace(/[^\w\s]/g, '')
+                                                .replace(/\s+/g, '-')
+                                                .replace(/--+/g, '-')
+                                                .trim();
+                                        }
+                                
+                                        if (addForm) {
+                                            addForm.addEventListener('submit', async function (e) {
+                                                e.preventDefault();
+                                
+                                                // Update hidden content field from Quill
+                                                if (quill) {
+                                                    document.getElementById('blogContentHidden').value = quill.root.innerHTML;
+                                                }
+                                
+                                                const formData = new FormData(this);
+                                
+                                                try {
+                                                    const response = await fetch('/admin/blogs', {
+                                                        method: 'POST',
+                                                        body: formData
+                                                    });
+                                
+                                                    const data = await response.json();
+                                
+                                                    if (data.success) {
+                                                        showToast('Blog created successfully!', 'success');
+                                                        closeModal('addBlogModal');
+                                                        fetchBlogs();
+                                                        fetchBlogStats();
+                                                    } else {
+                                                        throw new Error(data.message || 'Failed to create blog');
+                                                    }
+                                                } catch (error) {
+                                                    console.error('Error creating blog:', error);
+                                                    showToast('Error: ' + error.message, 'error');
+                                                }
+                                            });
+                                        }
+                                
+                                        if (editForm) {
+                                            editForm.addEventListener('submit', async function (e) {
+                                                e.preventDefault();
+                                
+                                                // Update hidden content field
+                                                const editor = document.getElementById('editBlogContent');
+                                                const hiddenContent = document.getElementById('editBlogContentHidden');
+                                                if (editor && hiddenContent) {
+                                                    hiddenContent.value = editor.innerHTML;
+                                                }
+                                
+                                                const formData = new FormData(this);
+                                                const blogId = document.getElementById('editBlogId').value;
+                                
+                                                try {
+                                                    const response = await fetch(`/admin/blogs/${blogId}`, {
+                                                        method: 'PUT',
+                                                        body: formData
+                                                    });
+                                
+                                                    const data = await response.json();
+                                
+                                                    if (data.success) {
+                                                        showToast('Blog updated successfully!', 'success');
+                                                        closeModal('editBlogModal');
+                                                        fetchBlogs();
+                                                    } else {
+                                                        throw new Error(data.message || 'Failed to update blog');
+                                                    }
+                                                } catch (error) {
+                                                    console.error('Error updating blog:', error);
+                                                    showToast('Error: ' + error.message, 'error');
+                                                }
+                                            });
+                                        }
+                                    }
+                                
+                                    // ==================== DELETE BLOG ====================
+                                    async function confirmDeleteBlog(id) {
+                                        if (!confirm('Are you sure you want to delete this blog? This action cannot be undone.')) {
+                                            return;
+                                        }
+                                
+                                        try {
+                                            const response = await fetch(`/admin/blogs/${id}`, {
+                                                method: 'DELETE'
+                                            });
+                                
+                                            const data = await response.json();
+                                
+                                            if (data.success) {
+                                                showToast('Blog deleted successfully!', 'success');
+                                                fetchBlogs();
+                                                fetchBlogStats();
+                                            } else {
+                                                throw new Error(data.message || 'Failed to delete blog');
+                                            }
+                                        } catch (error) {
+                                            console.error('Error deleting blog:', error);
+                                            showToast('Error: ' + error.message, 'error');
+                                        }
+                                    }
+                                
+                                    // ==================== PREVIEW FUNCTIONS ====================
+                                    async function previewBlogById(id) {
+                                        try {
+                                            const response = await fetch(`/admin/blogs/${id}`);
+                                            const data = await response.json();
+                                
+                                            if (data.success) {
+                                                showPreview(data.data);
+                                            }
+                                        } catch (error) {
+                                            console.error('Error previewing blog:', error);
+                                            showToast('Error previewing blog: ' + error.message, 'error');
+                                        }
+                                    }
+                                
+                                    function previewBlog() {
+                                        // Get data from edit form
+                                        const title = document.getElementById('editBlogTitle')?.value || '';
+                                        const content = document.getElementById('editBlogContent')?.innerHTML || '';
+                                        const author = document.getElementById('editBlogAuthorName')?.value || '';
+                                        const date = document.getElementById('editBlogPublishedAt')?.value || new Date().toISOString();
+                                
+                                        const previewData = {
+                                            title,
+                                            content,
+                                            author: { name: author },
+                                            publishedAt: date,
+                                            excerpt: document.getElementById('editBlogExcerpt')?.value || '',
+                                            featuredImage: document.getElementById('currentFeaturedImage')?.src || ''
+                                        };
+                                
+                                        showPreview(previewData);
+                                    }
+                                
+                                    function showPreview(blog) {
+                                        const previewContent = document.getElementById('blogPreviewContent');
+                                        if (!previewContent) return;
+                                
+                                        previewContent.innerHTML = `
+                                            <article class="prose max-w-none">
+                                                ${blog.featuredImage ?
+                                                    `<img src="${blog.featuredImage}" alt="${blog.title}" class="w-full h-auto mb-6 rounded-lg">` :
+                                                    ''
+                                                }
+                                                
+                                                <h1 class="text-3xl font-bold mb-4">${blog.title}</h1>
+                                                
+                                                <div class="flex items-center gap-4 text-gray-600 mb-6">
+                                                    ${blog.author?.name ?
+                                                        `<span class="flex items-center gap-2">
+                                                            <i class="icon-user"></i>
+                                                            ${blog.author.name}
+                                                        </span>` : ''
+                                                    }
+                                                    
+                                                    <span class="flex items-center gap-2">
+                                                        <i class="icon-calendar"></i>
+                                                        ${new Date(blog.publishedAt).toLocaleDateString('en-US', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric'
+                                                        })}
+                                                    </span>
+                                                    
+                                                    ${blog.readingTime ?
+                                                        `<span class="flex items-center gap-2">
+                                                            <i class="icon-clock"></i>
+                                                            ${blog.readingTime} min read
+                                                        </span>` : ''
+                                                    }
+                                                </div>
+                                                
+                                                ${blog.excerpt ?
+                                                    `<div class="bg-gray-50 p-4 rounded-lg mb-6 italic">
+                                                        ${blog.excerpt}
+                                                    </div>` : ''
+                                                }
+                                                
+                                                <div class="content mt-6">
+                                                    ${blog.content}
+                                                </div>
+                                                
+                                                ${blog.tags && blog.tags.length > 0 ?
+                                                    `<div class="mt-8 pt-6 border-t">
+                                                        <div class="flex flex-wrap gap-2">
+                                                            ${blog.tags.map(tag =>
+                                                                `<span class="px-3 py-1 bg-gray-100 rounded-full text-sm">${tag}</span>`
+                                                            ).join('')}
+                                                        </div>
+                                                    </div>` : ''
+                                                }
+                                            </article>
+                                        `;
+                                
+                                        document.getElementById('previewModal').style.display = 'block';
+                                    }
+                                
+                                    // ==================== TOAST NOTIFICATION ====================
+                                    function showToast(message, type = 'info') {
+                                        // Remove existing toast
+                                        const existingToast = document.querySelector('.toast');
+                                        if (existingToast) existingToast.remove();
+                                
+                                        // Create toast
+                                        const toast = document.createElement('div');
+                                        toast.className = `toast toast-${type} fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full`;
+                                        
+                                        // Get icon based on type
+                                        let icon = 'info';
+                                        if (type === 'success') icon = 'check-circle';
+                                        if (type === 'error') icon = 'alert-circle';
+                                        
+                                        toast.innerHTML = `
+                                            <div class="flex items-center gap-3">
+                                                <i class="icon-${icon}"></i>
+                                                <span class="text-sm font-medium">${message}</span>
+                                            </div>
+                                        `;
+                                
+                                        document.body.appendChild(toast);
+                                
+                                        // Animate in
+                                        setTimeout(() => toast.classList.remove('translate-x-full'), 10);
+                                
+                                        // Auto remove after 3 seconds
+                                        setTimeout(() => {
+                                            toast.classList.add('translate-x-full');
+                                            setTimeout(() => toast.remove(), 300);
+                                        }, 3000);
+                                    }
+                                
+                                    // ==================== BULK ACTIONS ====================
+                                    async function updateBlogStatus(ids, status) {
+                                        try {
+                                            const response = await fetch('/admin/blogs/bulk-status', {
+                                                method: 'PUT',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({ ids, status })
+                                            });
+                                
+                                            const data = await response.json();
+                                            if (data.success) {
+                                                showToast(`Updated ${ids.length} blog(s) successfully`, 'success');
+                                                fetchBlogs();
+                                            }
+                                        } catch (error) {
+                                            console.error('Error updating blog status:', error);
+                                            showToast('Error updating blogs', 'error');
+                                        }
+                                    }
+                                
+                                    // Close modal when clicking outside
+                                    window.onclick = function(event) {
+                                        const modals = ['addBlogModal', 'editBlogModal', 'previewModal'];
+                                        modals.forEach(modalId => {
+                                            const modal = document.getElementById(modalId);
+                                            if (event.target === modal) {
+                                                closeModal(modalId);
+                                            }
+                                        });
+                                    };
+                                
+                                    // Debug helper
+                                    window.debugBlogs = function() {
+                                        console.log('Blogs array:', blogs);
+                                        console.log('Current page:', currentPage);
+                                        console.log('Total pages:', totalPages);
+                                        console.log('Categories:', categories);
+                                        console.log('Stats:', blogStats);
+                                    };
+                                </script>
+                                   <style>
+                                    .modal {
+                                        display: none;
+                                        position: fixed;
+                                        z-index: 1000;
+                                        left: 0;
+                                        top: 0;
+                                        width: 100%;
+                                        height: 100%;
+                                        background-color: rgba(0, 0, 0, 0.5);
+                                    }
+
+                                    .modal-content {
+                                        background-color: white;
+                                        margin: 5% auto;
+                                        padding: 20px;
+                                        border-radius: 8px;
+                                        width: 90%;
+                                        max-width: 700px;
+                                        max-height: 90vh;
+                                        overflow-y: auto;
+                                    }
+
+                                    .close {
+                                        color: #aaa;
+                                        float: right;
+                                        font-size: 28px;
+                                        font-weight: bold;
+                                        cursor: pointer;
+                                    }
+
+                                    .close:hover {
+                                        color: black;
+                                    }
+
+                                    .form-group {
+                                        margin-bottom: 16px;
+                                    }
+
+                                    .form-group label {
+                                        display: block;
+                                        margin-bottom: 6px;
+                                        font-weight: 500;
+                                    }
+
+                                    .form-group input,
+                                    .form-group textarea,
+                                    .form-group select {
+                                        width: 100%;
+                                        padding: 8px 12px;
+                                        border: 1px solid #ddd;
+                                        border-radius: 4px;
+                                    }
+
+                                    .editor-btn {
+                                        padding: 6px 12px;
+                                        margin-right: 4px;
+                                        background: white;
+                                        border: 1px solid #ddd;
+                                        border-radius: 4px;
+                                        cursor: pointer;
+                                    }
+
+                                    .editor-btn:hover {
+                                        background: #f0f0f0;
+                                    }
+
+                                    .blog-card {
+                                        border: 1px solid #e5e7eb;
+                                        border-radius: 8px;
+                                        overflow: hidden;
+                                        transition: all 0.3s ease;
+                                    }
+
+                                    .blog-card:hover {
+                                        transform: translateY(-2px);
+                                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                                    }
+
+                                    .status-badge {
+                                        display: inline-block;
+                                        padding: 2px 8px;
+                                        border-radius: 12px;
+                                        font-size: 12px;
+                                        font-weight: 500;
+                                    }
+
+                                    .status-draft {
+                                        background: #fef3c7;
+                                        color: #92400e;
+                                    }
+
+                                    .status-published {
+                                        background: #d1fae5;
+                                        color: #065f46;
+                                    }
+
+                                    .status-archived {
+                                        background: #e5e7eb;
+                                        color: #374151;
+                                    }
+                                </style>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- /main-content -->
+                </div>
+                <!-- /section-content-right -->
+            </div>
+            <!-- /layout-wrap -->
+        </div>
+        <!-- /#page -->
+    </div>
+    <!-- /#wrapper -->
+    <!-- Javascript -->
+    <script src="/admin-js/jquery.min.js"></script>
+    <script src="/admin-js/bootstrap.min.js"></script>
+    <script src="/admin-js/bootstrap-select.min.js"></script>
+    <script src="/admin-js/zoom.js"></script>
+    <script src="/admin-js/switcher.js"></script>
+    <script defer src="/admin-js/theme-settings.js"></script>
+    <script defer src="/admin-js/main.js"></script>
+
+</body>
+
+</html>/
