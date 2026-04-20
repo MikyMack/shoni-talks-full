@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
         const startOfToday = new Date();
         startOfToday.setHours(0, 0, 0, 0); // today at 00:00:00
 
-        const [banners, blogs, testmonials] = await Promise.all([
+        const [banners, blogs, testimonials] = await Promise.all([
             Banner.find({ isActive: true }).sort({ createdAt: -1 }),
             Blog.find().sort({ createdAt: -1 }),
             Testimonial.find().sort({ date: -1 })
@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
             title: 'Home',
             banners,
             blogs,
-            testmonials
+            testimonials
         });
     } catch (error) {
         console.error(error);
