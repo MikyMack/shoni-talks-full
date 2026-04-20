@@ -48,12 +48,33 @@ router.get("/about", async (req, res) => {
 // programs page
 router.get("/programs", async (req, res) => {
   try {
+    const limit = 9;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
+    const [programs, totalPrograms] = await Promise.all([
+      Program.find({ status: "published", isActive: true })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Program.countDocuments({ status: "published", isActive: true }),
+    ]);
+
+    const totalPages = Math.ceil(totalPrograms / limit);
+
     res.render("user/programs", {
       title: "Programs",
+      programs,
+      currentPage: page,
+      totalPages: totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+      nextPage: page + 1,
+      prevPage: page - 1,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error loading program page data");
+    console.error("Programs Pagination Error:", error);
+    res.status(500).send("Error loading programs");
   }
 });
 
