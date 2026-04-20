@@ -155,7 +155,8 @@ router.get("/account", async (req, res) => {
 // Services pages
 router.get("/services", async (req, res) => {
   try {
-    res.render("user/services", { title: "Services" });
+    const testimonials = await Testimonial.find().sort({ date: -1 });
+    res.render("user/services", { title: "Services", testimonials });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error loading services page data");

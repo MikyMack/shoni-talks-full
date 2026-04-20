@@ -323,181 +323,71 @@
 
     <!-- Our Testimonial Section Start-->
     <div class="our-testimonial bg-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <!-- Testimonial Content Start-->
-                    <div class="testimonial-content">
-                        <!-- Section Title Start -->
-                        <div class="section-title">
-                            <h3 class="wow fadeInUp">Testimonials</h3>
-                            <h2 class="text-anime-style-3" data-cursor="-opaque">Stories of Transformation</h2>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="testimonial-content">
+              <div class="section-title">
+                <h3 class="wow fadeInUp">Testimonials</h3>
+                <h2 class="text-anime-style-3" data-cursor="-opaque">
+                  Stories of Transformation
+                </h2>
+              </div>
+              <div class="testimonial-boxes">
+                <% if (testimonials && testimonials.length > 0) { %>
+                  <% testimonials.forEach((item, index) => { %>
+                    <% if (item.isActive) { %>
+                      <div
+                        class="testimonial-item <%= index === 0 ? 'active' : '' %> wow fadeInUp"
+                        data-wow-delay="<%= (index * 0.2) %>s"
+                      >
+                        <div class="testimonial-item-content">
+                          <div class="testimonial-rating">
+                            <% for(let i = 0; i < 5; i++) { %>
+                              <i class="<%= i < item.rating ? 'fa-solid' : 'fa-regular' %> fa-star"></i>
+                            <% } %>
+                          </div>
+                          <div class="testimonial-info">
+                            <p>“<%= item.content %>”</p>
+                          </div>
                         </div>
-                        <!-- Section Title End -->
-
-                        <!-- Testimonial Boxes Start -->
-                        <div class="testimonial-boxes">
-                            <!-- Testimonial Item Start -->
-                            <div class="testimonial-item active wow fadeInUp" data-wow-delay="0.2s">
-                                <!-- Testimonial Item Content Start -->
-                                <div class="testimonial-item-content">
-                                    <div class="testimonial-rating">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <div class="testimonial-info">
-                                        <p>“I've struggled with chronic pain for years, but health coaching gave me the tools and support.”</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Item Content End -->
-
-                                <!-- Testimonial Author box Start -->
-                                <div class="testimonial-author-box">
-                                    <div class="testimonial-author-iamge">
-                                        <figure class="image-anime">
-                                            <img src="images/author-1.jpg" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="testimonial-author-content">
-                                        <h3>Bessie cooper</h3>
-                                        <p>Co-Founder</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Author box End -->
-                            </div>
-                            <!-- Testimonial Item End -->
-                            
-                            <!-- Testimonial Item Start -->
-                            <div class="testimonial-item wow fadeInUp" data-wow-delay="0.4s">
-                                <!-- Testimonial Item Content Start -->
-                                <div class="testimonial-item-content">
-                                    <div class="testimonial-rating">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <div class="testimonial-info">
-                                        <p>“I've struggled with chronic pain for years, but health coaching gave me the tools and support.”</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Item Content End -->
-
-                                <!-- Testimonial Author box Start -->
-                                <div class="testimonial-author-box">
-                                    <div class="testimonial-author-iamge">
-                                        <figure class="image-anime">
-                                            <img src="images/author-2.jpg" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="testimonial-author-content">
-                                        <h3>Floyd miles</h3>
-                                        <p>Chairman</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Author box End -->
-                            </div>
-                            <!-- Testimonial Item End -->
-                            
-                            <!-- Testimonial Item Start -->
-                            <div class="testimonial-item wow fadeInUp" data-wow-delay="0.6s">
-                                <!-- Testimonial Item Content Start -->
-                                <div class="testimonial-item-content">
-                                    <div class="testimonial-rating">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <div class="testimonial-info">
-                                        <p>“I've struggled with chronic pain for years, but health coaching gave me the tools and support.”</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Item Content End -->
-
-                                <!-- Testimonial Author box Start -->
-                                <div class="testimonial-author-box">
-                                    <div class="testimonial-author-iamge">
-                                        <figure class="image-anime">
-                                            <img src="images/author-3.jpg" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="testimonial-author-content">
-                                        <h3>Kathryn murphy</h3>
-                                        <p>CEO</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Author box End -->
-                            </div>
-                            <!-- Testimonial Item End -->
-                            
-                            <!-- Testimonial Item Start -->
-                            <div class="testimonial-item wow fadeInUp" data-wow-delay="0.8s">
-                                <!-- Testimonial Item Content Start -->
-                                <div class="testimonial-item-content">
-                                    <div class="testimonial-rating">
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                        <i class="fa-solid fa-star"></i>
-                                    </div>
-                                    <div class="testimonial-info">
-                                        <p>“I've struggled with chronic pain for years, but health coaching gave me the tools and support.”</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Item Content End -->
-
-                                <!-- Testimonial Author box Start -->
-                                <div class="testimonial-author-box">
-                                    <div class="testimonial-author-iamge">
-                                        <figure class="image-anime">
-                                            <img src="images/author-4.jpg" alt="">
-                                        </figure>
-                                    </div>
-                                    <div class="testimonial-author-content">
-                                        <h3>Jerome bell</h3>
-                                        <p>Finance director</p>
-                                    </div>
-                                </div>
-                                <!-- Testimonial Author box End -->
-                            </div>
-                            <!-- Testimonial Item End -->
+                        <div class="testimonial-author-box">
+                          <div class="testimonial-author-iamge">
+                            <figure class="image-anime">
+                              <img src="<%= item.imageUrl %>" alt="<%= item.name %>" />
+                            </figure>
+                          </div>
+                          <div class="testimonial-author-content">
+                            <h3><%= item.name %></h3>
+                            <p><%= item.designation %></p>
+                          </div>
                         </div>
-                        <!-- Testimonial Boxes End -->
-                    </div>
-                    <!-- Testimonial Content End-->
-                </div>
-                
-                <div class="col-lg-6">
-                    <!-- Why Choose Image Start -->
-                    <div class="testimonial-images">
-                        <div class="testimonial-img-1">
-                            <figure class="image-anime">
-                                <img src="images/test-1.jpg" alt="">
-                            </figure>
-                        </div>                        
-                        <div class="testimonial-img-2">
-                            <figure class="image-anime">
-                                <img src="images/test-2.jpg" alt="">
-                            </figure>
                         </div>
-                        <!-- <div class="testimonial-img-3">
-                            <figure class="image-anime">
-                                <img src="images/testimonial-image-3.jpg" alt="">
-                            </figure>
-                        </div> -->
+                      <% } %>
+                  <% }) %>
+                <% } else { %>
+                  <p>No testimonials available at the moment.</p>
+                <% } %>
+              </div>
+              </div>
+            </div>
 
-                    </div>
-                    <!-- Why Choose Image End -->
-                </div>
+          <div class="col-lg-6">
+            <div class="testimonial-images">
+              <div class="testimonial-img-1">
+                <figure class="image-anime">
+                  <img src="images/test-1.jpg" alt="" />
+                </figure>
+              </div>
+              <div class="testimonial-img-2">
+                <figure class="image-anime">
+                  <img src="images/test-2.jpg" alt="" />
+                </figure>
+              </div>
+            </div>
             </div>
         </div>
+      </div>
     </div>
     <!-- Our Testimonial Section End-->
 
