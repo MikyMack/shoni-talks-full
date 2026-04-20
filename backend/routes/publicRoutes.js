@@ -13,9 +13,9 @@ router.get('/', async (req, res) => {
         startOfToday.setHours(0, 0, 0, 0); // today at 00:00:00
 
         const [banners, blogs, testimonials] = await Promise.all([
-            Banner.find({ isActive: true }).sort({ createdAt: -1 }),
-            Blog.find().sort({ createdAt: -1 }),
-            Testimonial.find().sort({ date: -1 })
+          Banner.find({ isActive: true }).sort({ createdAt: -1 }),
+          Blog.find({ status: "published" }).sort({ createdAt: -1 }).limit(3),
+          Testimonial.find().sort({ date: -1 }),
         ]);
 
         res.render('user/home', {
