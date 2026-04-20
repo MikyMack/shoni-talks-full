@@ -155,221 +155,70 @@
     </div>
     <!-- Page Header End -->
 
-    <!-- Page Programs Start -->
+    <!-- Programs Section Start -->
     <div class="page-programs">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <!-- Program Item Start -->
-                    <div class="program-item wow fadeInUp" data-wow-delay="0.2s">
-                        <!-- Program Image Start -->
-                        <div class="program-image">
-                            <a href="program-single.html" data-cursor-text="View">
-                                <figure class="image-anime">
-                                    <img src="images/programs/program3.jpg" alt="">
-                                </figure>
-                            </a>
-                        </div>
-                        <!-- Program Image End -->
-                
-                        <!-- Program Body Start -->
-                        <div class="program-body">
-                            <!-- Program Content Start -->
-                            <div class="program-content">
-                                <h3><a href="program-single.html">Prana - Breath of Change</a></h3>
+                <% if (programs && programs.length > 0) { %>
+                    <% programs.forEach((program, index) => { %>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="program-item wow fadeInUp" data-wow-delay="<%= (index % 3) * 0.2 %>s">
+                                <div class="program-image">
+                                    <a href="/program-details/<%= program.slug %>" data-cursor-text="View">
+                                        <figure class="image-anime">
+                                            <img src="<%= program.image %>" alt="<%= program.title %>">
+                                        </figure>
+                                    </a>
+                                </div>
+                                <div class="program-body">
+                                    <div class="program-content">
+                                        <h3><a href="/program-details/<%= program.slug %>"><%= program.title %></a></h3>
+                                        <% if (program.shortDescription) { %>
+                                            <p><%= program.shortDescription %></p>
+                                        <% } %>
+                                    </div>
+                                    <div class="program-readmore-btn">
+                                        <a href="/program-details/<%= program.slug %>" class="btn-default btn-highlighted">read more</a>
+                                    </div>
+                                    </div>
+                                </div>
                             </div>
-                            <!-- Program Content End -->
-                
-                            <!-- Program Social List Start -->
-                            <div class="program-readmore-btn">
-                                <a href="program-single.html" class="btn-default btn-highlighted">read more</a>
-                            </div>
-                            <!-- Program Social List End -->
-                        </div>
-                        <!-- Program Body End -->                        
-                    </div>
-                    <!-- Program Item End -->
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <!-- Program Item Start -->
-                    <div class="program-item wow fadeInUp" data-wow-delay="0.2s">
-                        <!-- Program Image Start -->
-                        <div class="program-image">
-                            <a href="program-single.html" data-cursor-text="View">
-                                <figure class="image-anime">
-                                    <img src="images/programs/program3.jpg" alt="">
-                                </figure>
-                            </a>
-                        </div>
-                        <!-- Program Image End -->
-                
-                        <!-- Program Body Start -->
-                        <div class="program-body">
-                            <!-- Program Content Start -->
-                            <div class="program-content">
-                                <h3><a href="program-single.html">Prana - Breath of Change</a></h3>
-                            </div>
-                            <!-- Program Content End -->
-                
-                            <!-- Program Social List Start -->
-                            <div class="program-readmore-btn">
-                                <a href="program-single.html" class="btn-default btn-highlighted">read more</a>
-                            </div>
-                            <!-- Program Social List End -->
-                        </div>
-                        <!-- Program Body End -->                        
-                    </div>
-                    <!-- Program Item End -->
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <!-- Program Item Start -->
-                    <div class="program-item wow fadeInUp" data-wow-delay="0.2s">
-                        <!-- Program Image Start -->
-                        <div class="program-image">
-                            <a href="program-single.html" data-cursor-text="View">
-                                <figure class="image-anime">
-                                    <img src="images/programs/program3.jpg" alt="">
-                                </figure>
-                            </a>
-                        </div>
-                        <!-- Program Image End -->
-                
-                        <!-- Program Body Start -->
-                        <div class="program-body">
-                            <!-- Program Content Start -->
-                            <div class="program-content">
-                                <h3><a href="program-single.html">Prana - Breath of Change</a></h3>
-                            </div>
-                            <!-- Program Content End -->
-                
-                            <!-- Program Social List Start -->
-                            <div class="program-readmore-btn">
-                                <a href="program-single.html" class="btn-default btn-highlighted">read more</a>
-                            </div>
-                            <!-- Program Social List End -->
-                        </div>
-                        <!-- Program Body End -->                        
-                    </div>
-                    <!-- Program Item End -->
-                </div>
+                    <% }) %>
 
-                <div class="col-lg-4 col-md-6">
-                    <!-- Program Item Start -->
-                    <div class="program-item wow fadeInUp" data-wow-delay="0.2s">
-                        <!-- Program Image Start -->
-                        <div class="program-image">
-                            <a href="program-single.html" data-cursor-text="View">
-                                <figure class="image-anime">
-                                    <img src="images/programs/program3.jpg" alt="">
-                                </figure>
-                            </a>
-                        </div>
-                        <!-- Program Image End -->
-                
-                        <!-- Program Body Start -->
-                        <div class="program-body">
-                            <!-- Program Content Start -->
-                            <div class="program-content">
-                                <h3><a href="program-single.html">Prana - Breath of Change</a></h3>
-                            </div>
-                            <!-- Program Content End -->
-                
-                            <!-- Program Social List Start -->
-                            <div class="program-readmore-btn">
-                                <a href="program-single.html" class="btn-default btn-highlighted">read more</a>
-                            </div>
-                            <!-- Program Social List End -->
-                        </div>
-                        <!-- Program Body End -->                        
-                    </div>
-                    <!-- Program Item End -->
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <!-- Program Item Start -->
-                    <div class="program-item wow fadeInUp" data-wow-delay="0.2s">
-                        <!-- Program Image Start -->
-                        <div class="program-image">
-                            <a href="program-single.html" data-cursor-text="View">
-                                <figure class="image-anime">
-                                    <img src="images/programs/program3.jpg" alt="">
-                                </figure>
-                            </a>
-                        </div>
-                        <!-- Program Image End -->
-                
-                        <!-- Program Body Start -->
-                        <div class="program-body">
-                            <!-- Program Content Start -->
-                            <div class="program-content">
-                                <h3><a href="program-single.html">Prana - Breath of Change</a></h3>
-                            </div>
-                            <!-- Program Content End -->
-                
-                            <!-- Program Social List Start -->
-                            <div class="program-readmore-btn">
-                                <a href="program-single.html" class="btn-default btn-highlighted">read more</a>
-                            </div>
-                            <!-- Program Social List End -->
-                        </div>
-                        <!-- Program Body End -->                        
-                    </div>
-                    <!-- Program Item End -->
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <!-- Program Item Start -->
-                    <div class="program-item wow fadeInUp" data-wow-delay="0.2s">
-                        <!-- Program Image Start -->
-                        <div class="program-image">
-                            <a href="program-single.html" data-cursor-text="View">
-                                <figure class="image-anime">
-                                    <img src="images/programs/program3.jpg" alt="">
-                                </figure>
-                            </a>
-                        </div>
-                        <!-- Program Image End -->
-                
-                        <!-- Program Body Start -->
-                        <div class="program-body">
-                            <!-- Program Content Start -->
-                            <div class="program-content">
-                                <h3><a href="program-single.html">Prana - Breath of Change</a></h3>
-                            </div>
-                            <!-- Program Content End -->
-                
-                            <!-- Program Social List Start -->
-                            <div class="program-readmore-btn">
-                                <a href="program-single.html" class="btn-default btn-highlighted">read more</a>
-                            </div>
-                            <!-- Program Social List End -->
-                        </div>
-                        <!-- Program Body End -->                        
-                    </div>
-                    <!-- Program Item End -->
-                </div>
+                    <% if (totalPages > 1) { %>
+                        <div class="col-lg-12">
+                            <div class="page-pagination wow fadeInUp" data-wow-delay="0.6s">
+                                <ul class="pagination">
+                                    <% if (hasPrevPage) { %>
+                                        <li><a href="/programs?page=<%= prevPage %>"><i class="fa-solid fa-arrow-left-long"></i></a></li>
+                                    <% } %>
 
-                <div class="col-lg-12">
-                    <!-- Page Pagination Start -->
-                    <div class="page-pagination wow fadeInUp" data-wow-delay="1.2s">
-                        <ul class="pagination">
-                            <li><a href="#"><i class="fa-solid fa-arrow-left-long"></i></a></li>
-                            <li class="active"><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#"><i class="fa-solid fa-arrow-right-long"></i></a></li>
-                        </ul>
-                    </div>
-                    <!-- Page Pagination End -->
-                </div>
+                                    <% for(let i = 1; i <= totalPages; i++) { %>
+                                        <li class="<%= currentPage === i ? 'active' : '' %>">
+                                            <a href="/programs?page=<%= i %>"><%= i %></a>
+                                        </li>
+                                    <% } %>
 
-                
+                                    <% if (hasNextPage) { %>
+                                        <li><a href="/programs?page=<%= nextPage %>"><i class="fa-solid fa-arrow-right-long"></i></a></li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                            </div>
+                    <% } %>
+
+                <% } else { %>
+                    <div class="col-lg-12 text-center">
+                        <div class="no-programs-found py-5">
+                            <h3>No programs available right now.</h3>
+                            <p>Please check back later or contact us for upcoming schedules.</p>
+                        </div>
+                    </div>
+                <% } %>
             </div>
         </div>
     </div>
-    <!-- Page Programs End -->
+    <!-- Program Section End -->
 
     <!-- Main Footer Section Start -->
     <footer class="main-footer bg-section dark-section">
