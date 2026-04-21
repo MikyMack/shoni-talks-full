@@ -24,6 +24,7 @@ app.use(
 app.use("/uploads", express.static("uploads"));
 // Routes
 const adminRoutes = require("./routes/adminRoutes");
+const authRoutes = require("./routes/authRoutes");
 const programRoutes = require("./routes/programRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
@@ -33,6 +34,7 @@ const bannerRoutes = require("./routes/bannerRoutes");
 const publicRoutes = require("./routes/publicRoutes");
 
 app.use("/admin", adminRoutes);
+app.use("/auth", authRoutes);
 app.use("/admin/programs", programRoutes);
 app.use("/banner", bannerRoutes);
 app.use("/testimonial", testimonialRoutes);

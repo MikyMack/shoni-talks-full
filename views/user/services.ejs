@@ -34,6 +34,9 @@
 	<link rel="stylesheet" href="css/mousecursor.css">
 	<!-- Main Custom Css -->
 	<link href="css/custom.css" rel="stylesheet" media="screen">
+
+    <!-- toastify CSS -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
 
@@ -49,12 +52,12 @@
     <!-- Floating Icon End --> 
 
     <!-- Header Start -->
-	<header class="main-header bg-section">
+	   <header class="main-header bg-section">
       <div class="header-sticky">
         <nav class="navbar navbar-expand-lg">
           <div class="container">
             <!-- Logo Start -->
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="/">
               <img class="logo-img" src="images/logo.png" alt="Logo" />
             </a>
             <!-- Logo End -->
@@ -64,60 +67,66 @@
               <div class="nav-menu-wrapper">
                 <ul class="navbar-nav mr-auto" id="menu">
                   <li class="nav-item">
-                    <a class="nav-link" href="index.html">HOME</a>
+                    <a class="nav-link" href="/">HOME</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="about.html">ABOUT US</a>
+                    <a class="nav-link" href="/about">ABOUT US</a>
                   </li>
-                    <li class="nav-item submenu"><a class="nav-link" href="services.html">SERVICES</a>
+                  <li class="nav-item submenu">
+                    <a class="nav-link" href="/services">SERVICES</a>
                     <ul>
                       <li class="nav-item">
-                        <a class="nav-link" href="personal-service.html"
+                        <a class="nav-link" href="/personal-service"
                           >Personal Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="family-service.html"
+                        <a class="nav-link" href="/family-service"
                           >Family Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="student-service.html"
+                        <a class="nav-link" href="/student-service"
                           >Student Support</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="organization-service.html"
+                        <a class="nav-link" href="/organization-service"
                           >Corporate Wellness</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="workspace-service.html"
+                        <a class="nav-link" href="/workspace-service"
                           >Workplace Wellness</a
                         >
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="frontline-service.html"
+                        <a class="nav-link" href="/frontline-service"
                           >Healthcare Support</a
                         >
                       </li>
                     </ul>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="programs.html">PROGRAMS</a>
+                    <a class="nav-link" href="/programs">PROGRAMS</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="course.html">COURSES</a>
+                    <a class="nav-link" href="/courses">COURSES</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="contact.html">CONTACT US</a>
+                    <a class="nav-link" href="/contact">CONTACT US</a>
                   </li>
                 </ul>
               </div>
 
               <!-- Header Btn Start -->
               <div class="header-btn">
-                <a href="account.html" class="profile-icon">
+                <a
+                  href="#"
+                  class="profile-icon"
+                  data-bs-toggle="modal"
+                  data-bs-target="#authModal"
+                >
                   <i class="fa fa-user"></i>
                 </a>
               </div>
@@ -140,12 +149,12 @@
                     <!-- Page Header Box Start -->
                     <div class="page-header-box">
                         <h1 class="text-anime-style-3" data-cursor="-opaque">Services</h1>
-                        <!-- <nav class="wow fadeInUp">
+                        <nav class="wow fadeInUp">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index-2.html">home</a></li>
+                                <li class="breadcrumb-item"><a href="/">home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">services</li>
                             </ol>
-                        </nav> -->
+                        </nav>
                     </div>
                     <!-- Page Header Box End -->
                 </div>
@@ -161,7 +170,7 @@
                 <div class="col-lg-4 col-md-6">
                     <!-- Service Item Start -->
                     <div class="service-item wow fadeInUp" data-wow-delay="0.4s">
-                        <a href="personal-service.html" class="service-card-link">
+                        <a href="/personal-service" class="service-card-link">
                             <div class="service-image" style="background-image: url('images/per-service.jpg');"></div>
                             
                             <div class="service-item-content">
@@ -178,7 +187,7 @@
                 <div class="col-lg-4 col-md-6">
                     <!-- Service Item Start -->
                     <div class="service-item wow fadeInUp" data-wow-delay="0.4s">
-                        <a href="family-service.html" class="service-card-link">
+                        <a href="/family-service" class="service-card-link">
                             <div class="service-image" style="background-image: url('images/fam-service.jpg');"></div>
                             
                             <div class="service-item-content">
@@ -195,7 +204,7 @@
                 <div class="col-lg-4 col-md-6">
                     <!-- Service Item Start -->
                     <div class="service-item wow fadeInUp" data-wow-delay="0.4s">
-                        <a href="student-service.html" class="service-card-link">
+                        <a href="/student-service" class="service-card-link">
                             <div class="service-image" style="background-image: url('images/stud-service.jpg');"></div>
                             
                             <div class="service-item-content">
@@ -212,7 +221,7 @@
                 <div class="col-lg-4 col-md-6">
                     <!-- Service Item Start -->
                     <div class="service-item wow fadeInUp" data-wow-delay="0.4s">
-                        <a href="organization-service.html" class="service-card-link">
+                        <a href="/organization-service" class="service-card-link">
                             <div class="service-image" style="background-image: url('images/org-service.jpg');"></div>
                             
                             <div class="service-item-content">
@@ -230,7 +239,7 @@
                 <div class="col-lg-4 col-md-6">
                     <!-- Service Item Start -->
                     <div class="service-item wow fadeInUp" data-wow-delay="0.4s">
-                        <a href="workspace-service.html" class="service-card-link">
+                        <a href="/workspace-service" class="service-card-link">
                             <div class="service-image" style="background-image: url('images/off-service.jpg');"></div>
                             
                             <div class="service-item-content">
@@ -247,7 +256,7 @@
                 <div class="col-lg-4 col-md-6">
                     <!-- Service Item Start -->
                     <div class="service-item wow fadeInUp" data-wow-delay="0.4s">
-                        <a href="frontline-service.html" class="service-card-link">
+                        <a href="/frontline-service" class="service-card-link">
                             <div class="service-image" style="background-image: url('images/hosp-service.jpg');"></div>
                             
                             <div class="service-item-content">
@@ -354,7 +363,7 @@
                         <div class="testimonial-author-box">
                           <div class="testimonial-author-iamge">
                             <figure class="image-anime">
-                              <img src="<%= item.imageUrl %>" alt="<%= item.name %>" />
+                              <img src="/uploads/<%= item.imageUrl %>" alt="<%= item.name %>" />
                             </figure>
                           </div>
                           <div class="testimonial-author-content">
@@ -391,7 +400,7 @@
     </div>
     <!-- Our Testimonial Section End-->
 
-    <!-- Main Footer Section Start -->
+     <!-- Main Footer Section Start -->
     <footer class="main-footer bg-section dark-section">
       <div class="container">
         <div class="row">
@@ -417,13 +426,13 @@
 
                 <div class="footer-menu">
                   <ul>
-                    <li><a href="index.html">home</a></li>
-                    <li><a href="about.html">about us</a></li>
-                    <li><a href="services.html">services</a></li>
-                    <li><a href="programs.html">programs</a></li>
-                    <li><a href="course.html">courses</a></li>
-                    <li><a href="blog.html">blogs</a></li>
-                    <li><a href="contact.html">contact</a></li>
+                    <li><a href="/">home</a></li>
+                    <li><a href="/about">about us</a></li>
+                    <li><a href="/services">services</a></li>
+                    <li><a href="/programs">programs</a></li>
+                    <li><a href="/courses">courses</a></li>
+                    <li><a href="/blogs">blogs</a></li>
+                    <li><a href="/contact">contact</a></li>
                   </ul>
                 </div>
               </div>
@@ -435,18 +444,18 @@
                   <h3>Our Services</h3>
                   <ul>
                     <li>
-                      <a href="personal-service.html">Personal Support</a>
+                      <a href="/personal-service">Personal Support</a>
                     </li>
-                    <li><a href="family-service.html">Family Support</a></li>
-                    <li><a href="student-service.html">Student Support</a></li>
+                    <li><a href="/family-service">Family Support</a></li>
+                    <li><a href="/student-service">Student Support</a></li>
                     <li>
-                      <a href="organization-service.html">Corporate Wellness</a>
-                    </li>
-                    <li>
-                      <a href="workspace-service.html">Workplace Wellness</a>
+                      <a href="/organization-service">Corporate Wellness</a>
                     </li>
                     <li>
-                      <a href="frontline-service.html">Healthcare Support</a>
+                      <a href="/workspace-service">Workplace Wellness</a>
+                    </li>
+                    <li>
+                      <a href="/frontline-service">Healthcare Support</a>
                     </li>
                   </ul>
                 </div>
@@ -532,7 +541,7 @@
                 <ul>
                   <li><a href="#">Privacy Policy</a></li>
                   <li><a href="#">Terms & Conditions</a></li>
-                  <li><a href="contact.html">Support</a></li>
+                  <li><a href="/contact">Support</a></li>
                 </ul>
               </div>
             </div>
@@ -543,7 +552,7 @@
     <!-- Main Footer Section End -->
 
      <!-- Login modal start -->
-    <div class="modal fade" id="authModal" tabindex="-1">
+    <div class="modal fade" id="authModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content auth-modal">
           <!-- Close -->
@@ -572,30 +581,16 @@
                 <!-- STEP 1 -->
                 <form id="loginForm">
                   <div class="mb-3">
-                    <input
-                      type="text"
-                      class="form-control"
-                      placeholder="Full Name"
-                      required
-                    />
+                    <input type="text" id="name" class="form-control" placeholder="Full Name" required />
                   </div>
 
                   <div class="mb-3">
-                    <input
-                      type="email"
-                      class="form-control"
-                      placeholder="Email Address"
-                      required
-                    />
+                    <input type="email" id="email" class="form-control" placeholder="Email Address" required />
                   </div>
 
-                  <button
-                    type="button"
-                    class="btn-default btn-highlighted w-100"
-                    onclick="showOtp()"
-                  >
-                    Get OTP
-                  </button>
+                  <button id="otpBtn" type="button" onclick="sendOtp()" class="btn-default btn-highlighted w-100">
+                  Get OTP
+                </button>
                 </form>
 
                 <!-- STEP 2 OTP -->
@@ -603,16 +598,17 @@
                   <p class="mb-2">Enter OTP sent to your email</p>
 
                   <div class="otp-box mb-3">
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
                   </div>
 
-                  <button class="btn-default btn-highlighted w-100 mb-3">Verify OTP</button>
-
+                <button id="verifyBtn" type="button" onclick="verifyOtp()" class="btn-default btn-highlighted w-100 mb-3">
+                  Verify OTP
+                </button>
                   <div class="text-center">
                     <a href="#" onclick="resendOtp()">Resend OTP</a>
                   </div>
@@ -641,31 +637,35 @@
 
     <!-- Mobile Bottom Navbar Start -->
     <nav class="mobile-bottom-navbar d-lg-none">
-      <a href="index.html" class="mobile-nav-item">
+      <a href="/" class="mobile-nav-item">
         <span class="mobile-nav-icon"><i class="fa-solid fa-house"></i></span>
         <span>Home</span>
       </a>
-      <a href="services.html" class="mobile-nav-item">
+      <a href="/services" class="mobile-nav-item">
         <span class="mobile-nav-icon"
           ><i class="fa-solid fa-hand-holding-medical"></i
         ></span>
         <span>Services</span>
       </a>
-      <a href="programs.html" class="mobile-nav-item">
+      <a href="/programs" class="mobile-nav-item">
         <span class="mobile-nav-icon"
           ><i class="fa-solid fa-list-check"></i
         ></span>
         <span>Programs</span>
       </a>
-      <a href="course.html" class="mobile-nav-item">
+      <a href="/courses" class="mobile-nav-item">
         <span class="mobile-nav-icon"
           ><i class="fa-solid fa-certificate"></i
         ></span>
         <span>Courses</span>
       </a>
-      <a href="" class="mobile-nav-item" data-bs-toggle="modal"
-                  data-bs-target="#authModal">
-        <span class="mobile-nav-icon" ><i class="fa-solid fa-user"></i></span>
+      <a
+        href=""
+        class="mobile-nav-item"
+        data-bs-toggle="modal"
+        data-bs-target="#authModal"
+      >
+        <span class="mobile-nav-icon"><i class="fa-solid fa-user"></i></span>
         <span>Login</span>
       </a>
     </nav>
@@ -702,6 +702,9 @@
     <script src="js/wow.min.js"></script>
     <!-- Main Custom js file -->
     <script src="js/function.js"></script>
+    <script src="js/auth.js"></script>
+    <!-- toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 
 <!-- Mirrored from html.awaikenthemes.com/healix/services.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:35:59 GMT -->

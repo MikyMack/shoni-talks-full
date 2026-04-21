@@ -699,6 +699,7 @@ function openCourseModal(course = null) {
         document.getElementById("courseCertificate").checked = course.hasCertificate;
 
         document.getElementById("courseLearnings").value = course.learnings?.join(", ");
+        document.getElementById("courseVideo").value = course.previewVideo || "";
         document.getElementById("courseIncludes").value = course.includes?.join(", ");
 
         if (course.image) {
@@ -729,6 +730,10 @@ async function saveCourse() {
     formData.append("category", document.getElementById("courseCategory").value);
     formData.append("description", document.getElementById("courseDescription").value);
     formData.append("shortDescription", document.getElementById("courseShortDescription").value);
+    formData.append(
+  "previewVideo",
+  document.getElementById("courseVideo").value
+);
 
     const priceVal = document.getElementById("coursePrice").value;
 const offerPriceVal = document.getElementById("courseOfferPrice").value;
