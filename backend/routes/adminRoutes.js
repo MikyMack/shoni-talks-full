@@ -26,15 +26,17 @@ router.get("/logout", (req, res) => {
 
 router.get("/admin-dashboard", isAuthenticated, async (req, res) => {
   try {
-    const [ blog, testimonials, enquiries] =
+    const [banner, blog, testimonials, enquiries] =
       await Promise.all([
-        Blog.find().sort({ createdAt: -1 }),
+        Banner.find().sort({ createdAt: -1 }),
+        Blog.find().sort({ createdAt: -1 }),    
         Testimonial.find().sort({ createdAt: -1 }),
         AdmissionEnquiry.find().sort({ createdAt: -1 }),
       ]);
 
     res.render("admin-dashboard", {
       title: "Admin Dashboard",
+      banner,
       blog,
       testimonials,
       enquiries
@@ -43,6 +45,7 @@ router.get("/admin-dashboard", isAuthenticated, async (req, res) => {
     console.error(error);
     res.status(500).render("admin-dashboard", {
       title: "Admin Dashboard",
+      banner: [],
       blog: [],
       testimonials: [],
       error: "Failed to load dashboard data",
