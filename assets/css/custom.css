@@ -1544,6 +1544,49 @@ header.main-header .header-sticky.active{
 	z-index: 1;
 }
 
+/* Ensure the link container fills the space and uses flex to push text to the bottom */
+.service-card-link {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	/* Pushes text to the bottom */
+	padding: 30px;
+	height: 350px;
+	/* Set a fixed height so they don't shrink */
+	text-decoration: none;
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+}
+
+/* Create the dark overlay directly on the image area */
+.service-image::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	/* Dark gradient: clear at top, dark at bottom for text readability */
+	background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8));
+	z-index: 1;
+}
+
+.service-item-content {
+	position: relative;
+	z-index: 2;
+	/* Sits above the gradient */
+	margin-bottom: 0;
+	/* Cleaned up margin */
+}
+
+.service-item-content h3,
+.service-item-content p {
+	color: #ffffff !important;
+	/* Forces white text */
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+	/* Adds extra pop */
+}
 .page-cta-box{
 	position: relative;
 	background: url('../images/programs/program7.jpg') no-repeat;
@@ -5211,6 +5254,12 @@ header.main-header .header-sticky.active{
 /***      34. Responsive css      ***/
 /************************************/
 
+@media only screen and (max-width: 1121px){
+	.service-card-link{
+		border-radius: 20px;
+	}
+}
+
 @media only screen and (max-width: 1820px){
 
 	.bg-section{
@@ -8206,7 +8255,6 @@ header.main-header .header-sticky.active{
 	}
 }
 
-/* Responsive: Move icons if they block content on small screens */
 @media (max-width: 768px) {
 	.floating-contact {
 		right: 15px;
@@ -8220,7 +8268,7 @@ header.main-header .header-sticky.active{
 	}
 }
 
-<style>
+
 .btn-loading {
   opacity: 0.7;
   pointer-events: none;
@@ -8240,4 +8288,183 @@ header.main-header .header-sticky.active{
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-</style>
+
+.why-choose-us {
+	padding: 100px 0;
+	overflow: hidden;
+}
+
+/* .strength-main-container {
+	margin-top: 80px;
+} */
+
+.strength-image-wrapper {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.strength-image-wrapper img {
+	max-width: 100%;
+	height: auto;
+	filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.3));
+	transition: transform 0.5s ease;
+}
+.large-center-img {
+	width: 120%;
+	max-width: none;
+	margin-left: -10%;
+	filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.5));
+	z-index: 5;
+}
+
+/* .strength-image-wrapper:hover img {
+	transform: translateY(-10px);
+} */
+
+/* Individual Strength Items */
+.strength-item {
+	margin-bottom: 60px;
+}
+
+.strength-number {
+	font-size: 54px;
+	font-weight: 800;
+	color: var(--accent-color);
+	opacity: 0.2;
+	margin-bottom: -5px;
+	font-family: 'Playfair Display', serif;
+}
+
+.strength-text-box h3 {
+	font-size: 24px;
+	font-weight: 600;
+	color: #ffffff;
+	margin-bottom: 12px;
+}
+
+.strength-text-box p {
+	color: rgba(255, 255, 255, 0.7);
+	line-height: 1.6;
+}
+
+@media (min-width: 992px) {
+	.strength-item.left-align {
+		text-align: right;
+		padding-right: 20px;
+	}
+
+	.strength-item.right-align {
+		text-align: left;
+		padding-left: 20px;
+	}
+
+	.col-lg-4.order-lg-2 {
+		padding: 0;
+	}
+}
+
+@media (max-width: 991px) {
+	.large-center-img {
+		width: 50%;
+		margin-left: 0;
+	}
+
+	.strength-item {
+		text-align: center;
+		margin-bottom: 40px;
+	}
+}
+
+.journey-grid-container {
+	/* margin-top: 80px; */
+	position: relative;
+}
+
+/* Central Founder Image */
+.central-founder-img {
+	width: 100%;
+	border-radius: 50% 50% 0 0;
+	padding: 10px;
+	filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+}
+
+/* Journey Item Styling */
+.journey-item {
+	position: relative;
+	padding: 20px;
+}
+
+.journey-number {
+	font-size: 60px;
+	font-weight: 800;
+	color: var(--accent-color);
+	opacity: 0.15;
+	font-family: 'Playfair Display', serif;
+	line-height: 1;
+	margin-bottom: -20px;
+	/* Overlap effect */
+}
+
+.journey-content h3 {
+	font-size: 24px;
+	color: #ffffff;
+	margin-bottom: 15px;
+}
+
+.journey-content p {
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 16px;
+}
+
+/* Specific Alignments */
+.bottom-item {
+	text-align: center;
+	margin-top: 40px;
+}
+
+@media (min-width: 992px) {
+	.journey-item.left-align {
+		text-align: right;
+	}
+
+
+
+	.journey-item.right-align {
+		text-align: left;
+	}
+
+	.founder-image-wrapper {
+		padding: 0 20px;
+	}
+}
+
+/* Responsive Fix for Mobile */
+@media (max-width: 991px) {
+	.journey-item {
+		text-align: center;
+		margin-bottom: 20px;
+	}
+
+	.central-founder-img {
+		width: 50%;
+	}
+
+		.bottom-item {
+			margin-top: 40px;
+		}
+
+	.founder-image-wrapper {
+		margin-bottom: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+@media (max-width: 768px) {
+	.journey-item{
+		margin: 0px;
+	}
+
+}
