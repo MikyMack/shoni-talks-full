@@ -8467,3 +8467,21 @@ header.main-header .header-sticky.active{
 	}
 
 }
+
+.nav-item.submenu {
+	position: relative;
+}
+
+.nav-item.submenu ul {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background: var(--accent-color);
+	min-width: 200px;
+	z-index: 999;
+}
+
+.nav-item.submenu:hover>ul {
+	display: block;
+}

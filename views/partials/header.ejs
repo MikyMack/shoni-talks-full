@@ -53,8 +53,21 @@
                       </li>
                     </ul>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/programs">PROGRAMS</a>
+                  <li class="nav-item submenu">
+                   <a class="nav-link" href="/programs">PROGRAMS</a>
+                    <ul>
+                      <% if (allPrograms && allPrograms.length > 0) { %>
+                        <% allPrograms.forEach(program => { %>
+                          <li class="nav-item">
+                            <a class="nav-link" href="/program/<%= program.slug %>">
+                              <%= program.title %>
+                            </a>
+                          </li>
+                        <% }) %>
+                      <% } else { %>
+                        <li class="nav-item"><a class="nav-link" href="#">No Programs Available</a></li>
+                      <% } %>
+                    </ul>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/courses">COURSES</a>

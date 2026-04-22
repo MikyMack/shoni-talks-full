@@ -3,6 +3,7 @@ const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
+const programMiddleware = require('./middleware/programMiddleware');
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../assets")));
 app.set("view engine", "ejs");
+app.use(programMiddleware);
 
 // Sessions
 app.use(
