@@ -372,7 +372,7 @@ body{
 
 .bg-section.dark-section{
 	position: relative;
-	background-color: var(--accent-color);
+	background: linear-gradient(90deg, #2c2116 0%, #5d4715 100%);
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: cover;
@@ -385,7 +385,7 @@ body{
 	left: 0;
 	bottom: 0;
 	right: 0;
-	background-color: var(--accent-color);
+	background: linear-gradient(90deg, #2c2116 0%, #5d4715 100%);
 	border-radius: 50px;
 	height: 100%;
 	width: 100%;
@@ -888,7 +888,7 @@ header.main-header .header-sticky.active{
 	background: url('../images/hero.jpg') no-repeat;
 	background-position: center center;
 	background-size: cover;
-	padding: 35px 0 40px;
+	padding: 35px 0 0px;
 	overflow: hidden;
 }
 
@@ -2296,8 +2296,98 @@ header.main-header .header-sticky.active{
 	color: white;
 	max-width: 800px;
 }
+.how-it-work {
+	padding: 100px 0;
+}
 
+/* Timeline */
+.journey-container {
+	padding-top: 40px;
+}
 
+.journey-wrapper {
+	position: relative;
+	padding-left: 80px;
+}
+
+.journey-wrapper::before {
+	content: '';
+	position: absolute;
+	left: 26px;
+	top: 0;
+	bottom: 0;
+	width: 2px;
+	background: white;
+}
+
+.journey-intro {
+	color: #fff;
+	margin-bottom: 40px;
+}
+
+.journey-item {
+	position: relative;
+	margin-bottom: 50px;
+}
+
+.journey-number {
+	position: absolute;
+	left: -80px;
+	width: 50px;
+	height: 50px;
+	background: var(--accent-color);
+	color: #fff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+}
+
+.journey-content h3 {
+	color: #fff;
+	margin-bottom: 10px;
+}
+
+.journey-content p {
+	color: #ccc;
+}
+
+/* Founder */
+.founder-box {
+	text-align: center;
+	position: sticky;
+	top: 120px;
+}
+
+.founder-box img {
+	width: 100%;          /* take full column width */
+	height: auto;         /* maintain aspect ratio */
+	object-fit: cover;
+	border-radius: 12px;
+}
+
+.founder-box h4 {
+	color: #fff;
+	margin-bottom: 5px;
+}
+
+.founder-box p {
+	color: #aaa;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+	.founder-box {
+		position: static;
+		margin-top: 40px;
+	}
+}
+@media (max-width: 991px) {
+	.founder-box {
+		display: none;
+	}
+}
 
 /************************************/
 /***   13. Book Appointment css   ***/
@@ -8129,3 +8219,25 @@ header.main-header .header-sticky.active{
 		font-size: 20px;
 	}
 }
+
+<style>
+.btn-loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.6s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>
