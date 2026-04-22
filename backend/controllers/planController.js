@@ -21,7 +21,7 @@ exports.createPlan = async (req, res) => {
   try {
     const {
       title,
-      course,
+      courses,
       price,
       offerPrice,
       duration,
@@ -31,23 +31,43 @@ exports.createPlan = async (req, res) => {
     } = req.body;
 
     // ===== VALIDATION =====
-    if (!title || !course || !price || !duration?.value || !duration?.unit) {
+    if (!title || !courses || !duration?.value || !duration?.unit) {
+      await session.abortTransaction();
+      session.endSession();
       return sendResponse(res, 400, "Required fields missing");
     }
 
-    if (!isValidId(course)) {
-      return sendResponse(res, 400, "Invalid course ID");
+    if (!Array.isArray(courses) || courses.length === 0) {
+      await session.abortTransaction();
+      session.endSession();
+      return sendResponse(res, 400, "Courses required");
     }
 
-    const courseExists = await Course.findById(course).session(session);
-    if (!courseExists) {
-      return sendResponse(res, 404, "Course not found");
+    for (let id of courses) {
+      if (!isValidId(id)) {
+        await session.abortTransaction();
+        session.endSession();
+        return sendResponse(res, 400, "Invalid course ID");
+      }
+    }
+
+    const courseExists = await Course.find({
+      _id: { $in: courses },
+    }).session(session);
+
+    if (courseExists.length !== courses.length) {
+      await session.abortTransaction();
+      session.endSession();
+      return sendResponse(res, 404, "One or more courses not found");
     }
 
     const numericPrice = Number(price);
-    const numericOffer = offerPrice !== undefined ? Number(offerPrice) : undefined;
+    const numericOffer =
+      offerPrice !== undefined ? Number(offerPrice) : undefined;
 
     if (numericOffer && numericOffer > numericPrice) {
+      await session.abortTransaction();
+      session.endSession();
       return sendResponse(res, 400, "Offer price must be <= price");
     }
 
@@ -56,22 +76,25 @@ exports.createPlan = async (req, res) => {
       [
         {
           title,
-          course,
+          courses,
           price: numericPrice,
           offerPrice: numericOffer,
           duration,
-          features: features || [],
+          features: Array.isArray(features)
+            ? features
+            : typeof features === "string"
+            ? features.split(",").map((f) => f.trim()).filter(Boolean)
+            : [],
           sessions: sessions ? Number(sessions) : undefined,
           isPopular: !!isPopular,
-          createdBy: req.session?.user?.id,
         },
       ],
       { session }
     );
 
-    // ===== LINK TO COURSE =====
-    await Course.findByIdAndUpdate(
-      course,
+    // ===== LINK TO COURSES =====
+    await Course.updateMany(
+      { _id: { $in: courses } },
       { $addToSet: { plans: plan[0]._id } },
       { session }
     );
@@ -80,7 +103,6 @@ exports.createPlan = async (req, res) => {
     session.endSession();
 
     return sendResponse(res, 201, "Plan created successfully", plan[0]);
-
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
@@ -88,14 +110,13 @@ exports.createPlan = async (req, res) => {
     console.error("CREATE PLAN ERROR:", err);
 
     if (err.name === "ValidationError") {
-      const messages = Object.values(err.errors).map(e => e.message);
+      const messages = Object.values(err.errors).map((e) => e.message);
       return sendResponse(res, 400, messages.join(", "));
     }
 
     return sendResponse(res, 500, "Failed to create plan");
   }
 };
-
 
 // ================= GET ALL =================
 exports.getPlans = async (req, res) => {
@@ -105,7 +126,7 @@ exports.getPlans = async (req, res) => {
     const query = {};
 
     if (course && isValidId(course)) {
-      query.course = course;
+      query.courses = course;
     }
 
     if (active !== undefined) {
@@ -113,40 +134,38 @@ exports.getPlans = async (req, res) => {
     }
 
     const plans = await Plan.find(query)
-      .populate("course", "title category")
+      .populate("courses", "title category")
       .sort({ createdAt: -1 });
 
     return sendResponse(res, 200, "Plans fetched", plans);
-
   } catch (err) {
     console.error("GET PLANS ERROR:", err);
     return sendResponse(res, 500, "Failed to fetch plans");
   }
 };
 
-
 // ================= GET ONE =================
-exports.getPlanById  = async (req, res) => {
+exports.getPlanById = async (req, res) => {
   try {
     if (!isValidId(req.params.id)) {
       return sendResponse(res, 400, "Invalid plan ID");
     }
 
-    const plan = await Plan.findById(req.params.id)
-      .populate("course", "title");
+    const plan = await Plan.findById(req.params.id).populate(
+      "courses",
+      "title"
+    );
 
     if (!plan) {
       return sendResponse(res, 404, "Plan not found");
     }
 
     return sendResponse(res, 200, "Plan fetched", plan);
-
   } catch (err) {
     console.error("GET PLAN ERROR:", err);
     return sendResponse(res, 500, "Failed to fetch plan");
   }
 };
-
 
 // ================= UPDATE =================
 exports.updatePlan = async (req, res) => {
@@ -162,7 +181,7 @@ exports.updatePlan = async (req, res) => {
 
     const updates = { ...req.body };
 
-    // ===== NUMERIC SANITIZE =====
+    // ===== PRICE =====
     const price =
       updates.price !== undefined
         ? Number(updates.price)
@@ -189,6 +208,15 @@ exports.updatePlan = async (req, res) => {
         updates.isPopular === true || updates.isPopular === "true";
     }
 
+    if (updates.features) {
+      updates.features = Array.isArray(updates.features)
+        ? updates.features
+        : updates.features
+            .split(",")
+            .map((f) => f.trim())
+            .filter(Boolean);
+    }
+
     const plan = await Plan.findByIdAndUpdate(
       req.params.id,
       updates,
@@ -196,19 +224,17 @@ exports.updatePlan = async (req, res) => {
     );
 
     return sendResponse(res, 200, "Plan updated", plan);
-
   } catch (err) {
     console.error("UPDATE PLAN ERROR:", err);
 
     if (err.name === "ValidationError") {
-      const messages = Object.values(err.errors).map(e => e.message);
+      const messages = Object.values(err.errors).map((e) => e.message);
       return sendResponse(res, 400, messages.join(", "));
     }
 
     return sendResponse(res, 500, "Failed to update plan");
   }
 };
-
 
 // ================= DELETE =================
 exports.deletePlan = async (req, res) => {
@@ -223,20 +249,19 @@ exports.deletePlan = async (req, res) => {
       return sendResponse(res, 404, "Plan not found");
     }
 
-    await Course.findByIdAndUpdate(plan.course, {
-      $pull: { plans: plan._id },
-    });
+    await Course.updateMany(
+      { _id: { $in: plan.courses } },
+      { $pull: { plans: plan._id } }
+    );
 
     return sendResponse(res, 200, "Plan deleted");
-
   } catch (err) {
     console.error("DELETE PLAN ERROR:", err);
     return sendResponse(res, 500, "Failed to delete plan");
   }
 };
 
-
-// ================= TOGGLE ACTIVE =================
+// ================= TOGGLE =================
 exports.togglePlan = async (req, res) => {
   try {
     if (!isValidId(req.params.id)) {
@@ -253,7 +278,6 @@ exports.togglePlan = async (req, res) => {
     await plan.save();
 
     return sendResponse(res, 200, "Plan status updated", plan);
-
   } catch (err) {
     console.error("TOGGLE PLAN ERROR:", err);
     return sendResponse(res, 500, "Failed to toggle plan");
