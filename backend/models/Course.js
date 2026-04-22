@@ -47,15 +47,23 @@ const courseSchema = new mongoose.Schema(
       default: "",
     },
 
-    previewVideo: {
-      type: String, // YouTube embed URL
-      validate: {
-        validator: function (v) {
-          return !v || v.includes("youtube.com/embed");
+    videos: [
+      {
+        title: String,
+        url: {
+          type: String,
+          required: true,
         },
-        message: "Preview video must be a valid YouTube embed URL",
+        isPreview: {
+          type: Boolean,
+          default: false,
+        },
+        order: {
+          type: Number,
+          required: true,
+        },
       },
-    },
+    ],
 
     // ================= PRICING =================
     price: {
@@ -64,26 +72,26 @@ const courseSchema = new mongoose.Schema(
       default: 0,
     },
 
-   offerPrice: {
-  type: Number,
-  validate: {
-    validator: function (value) {
-      // When using update
-      if (this instanceof mongoose.Query) {
-        const update = this.getUpdate();
+    offerPrice: {
+      type: Number,
+      validate: {
+        validator: function (value) {
+          // When using update
+          if (this instanceof mongoose.Query) {
+            const update = this.getUpdate();
 
-        const price = update.price ?? update.$set?.price;
-        if (!price) return true;
+            const price = update.price ?? update.$set?.price;
+            if (!price) return true;
 
-        return value <= price;
-      }
+            return value <= price;
+          }
 
-      // Normal document validation
-      return value <= this.price;
+          // Normal document validation
+          return value <= this.price;
+        },
+        message: "Offer price must be less than or equal to price",
+      },
     },
-    message: "Offer price must be less than or equal to price",
-  }
-},
 
     // ================= COURSE CONTENT =================
     learnings: [
@@ -109,9 +117,17 @@ const courseSchema = new mongoose.Schema(
       min: 0,
     },
 
-    lifetimeAccess: {
-      type: Boolean,
-      default: false,
+    directAccessType: {
+      type: String,
+      enum: ["lifetime", "limited"],
+      default: "lifetime",
+    },
+    directAccessDuration: {
+      value: Number,
+      unit: {
+        type: String,
+        enum: ["days", "weeks", "months"],
+      },
     },
 
     hasCertificate: {
@@ -126,14 +142,10 @@ const courseSchema = new mongoose.Schema(
         trim: true,
       },
     ],
-
-    // ================= RELATIONS =================
-    plans: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Plan",
-      },
-    ],
+    allowDirectPurchase: {
+      type: Boolean,
+      default: true,
+    },
 
     // ================= FLAGS =================
     isFeatured: {
@@ -148,13 +160,11 @@ const courseSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
-
 
 // ================= INDEXES =================
 courseSchema.index({ title: "text", description: "text" });
-
 
 // ================= SLUG GENERATION =================
 courseSchema.pre("save", function (next) {
@@ -166,7 +176,6 @@ courseSchema.pre("save", function (next) {
   }
   next();
 });
-
 
 // ================= EXPORT =================
 module.exports = mongoose.model("Course", courseSchema);

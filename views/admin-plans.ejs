@@ -471,7 +471,7 @@
                                             <div class="st-program-header">
                                                 <h3><%= plan.title %></h3>
                                                 <span class="st-category">
-                                                    <%= plan.course?.title || "No Course" %>
+                                                    <%= plan.courses?.map(c => c.title).join(", ") || "No Course" %>
                                                 </span>
                                             </div>
 
@@ -547,11 +547,12 @@
 
                             <div class="form-group">
                                 <label>Course</label>
-                                <select id="planCourse" required>
+                                <select id="planCourse" multiple size="5" required>
                                 <% courses.forEach(c => { %>
                                     <option value="<%= c._id %>"><%= c.title %></option>
                                 <% }) %>
                                 </select>
+                                <small>Hold Ctrl (Windows) or Cmd (Mac) to select multiple</small>
                             </div>
 
                             <div class="form-group">
@@ -622,16 +623,18 @@
                 
 <script>
 
-
 function openPlanModal(plan = null) {
+
+    
     document.getElementById("planModal").style.display = "flex";
+
+    const form = document.getElementById("planForm");
 
     if (plan) {
         document.getElementById("planModalTitle").innerText = "Edit Plan";
 
         document.getElementById("planId").value = plan._id;
         document.getElementById("planTitle").value = plan.title;
-        document.getElementById("planCourse").value = plan.course?._id;
 
         document.getElementById("planPrice").value = plan.price;
         document.getElementById("planOfferPrice").value = plan.offerPrice || "";
@@ -645,11 +648,38 @@ function openPlanModal(plan = null) {
         document.getElementById("planFeatures").value =
             plan.features?.join(", ") || "";
 
+        // ✅ MULTI SELECT FIX
+        const select = document.getElementById("planCourse");
+
+        // First clear all selections
+        Array.from(select.options).forEach(option => {
+            option.selected = false;
+        });
+
+        // Then select matching ones
+        if (plan.courses && plan.courses.length > 0) {
+            const selectedIds = plan.courses.map(c => c._id.toString());
+
+            Array.from(select.options).forEach(option => {
+                if (selectedIds.includes(option.value)) {
+                    option.selected = true;                    
+                }
+            });
+        }
+        
+
     } else {
-        document.getElementById("planForm").reset();
+        form.reset();
         document.getElementById("planId").value = "";
+
+        // clear multi-select
+        const select = document.getElementById("planCourse");
+        Array.from(select.options).forEach(option => {
+            option.selected = false;
+        });
     }
 }
+
 
 function closePlanModal() {
     document.getElementById("planModal").style.display = "none";
@@ -661,9 +691,13 @@ async function savePlan() {
 
     const id = document.getElementById("planId").value;
 
+    const selectedCourses = Array.from(
+    document.getElementById("planCourse").selectedOptions
+).map(option => option.value);
+
     const body = {
         title: document.getElementById("planTitle").value,
-        course: document.getElementById("planCourse").value,
+        courses: selectedCourses,
         price: document.getElementById("planPrice").value,
         offerPrice: document.getElementById("planOfferPrice").value,
         duration: {

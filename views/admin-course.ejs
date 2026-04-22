@@ -580,9 +580,10 @@
                         </div>
 
                         <!-- VIDEO -->
-                        <div class="form-group">
-                            <label>YouTube Embed URL</label>
-                            <input type="text" id="courseVideo">
+                        <div class="form-group full-width">
+                            <label>Course Videos</label>
+                            <div id="videoContainer"></div>
+                            <button type="button" onclick="addVideoField()">+ Add Video</button>
                         </div>
 
                         <!-- PRICING -->
@@ -609,11 +610,23 @@
 
                         <!-- CHECKBOX -->
                         <div class="form-group">
-                            <label>
-                            <input type="checkbox" id="courseLifetime"> Lifetime Access
-                            </label>
+                            <label>Access Type</label>
+                            <select id="courseAccessType">
+                                <option value="lifetime">Lifetime</option>
+                                <option value="limited">Limited</option>
+                            </select>
                         </div>
 
+                        <div class="form-group" id="accessDurationBox">
+                            <label>Access Duration</label>
+                            <input type="number" id="courseAccessValue" placeholder="e.g. 30">
+
+                            <select id="courseAccessUnit">
+                                <option value="days">Days</option>
+                                <option value="weeks">Weeks</option>
+                                <option value="months">Months</option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label>
                             <input type="checkbox" id="courseCertificate"> Certificate Available
@@ -680,6 +693,9 @@ function openCourseModal(course = null) {
 
     const preview = document.getElementById("courseImagePreview");
 
+    // CLEAR VIDEO LIST
+    document.getElementById("videoContainer").innerHTML = "";
+
     if (course) {
         document.getElementById("courseModalTitle").innerText = "Edit Course";
 
@@ -689,19 +705,33 @@ function openCourseModal(course = null) {
         document.getElementById("courseDescription").value = course.description;
         document.getElementById("courseShortDescription").value = course.shortDescription;
 
-        document.getElementById("coursePrice").value = course.price;
-        document.getElementById("courseOfferPrice").value = course.offerPrice;
+        document.getElementById("coursePrice").value = course.price || "";
+        document.getElementById("courseOfferPrice").value = course.offerPrice || "";
 
-        document.getElementById("courseDuration").value = course.duration;
-        document.getElementById("courseResources").value = course.resourcesCount;
+        document.getElementById("courseDuration").value = course.duration || "";
+        document.getElementById("courseResources").value = course.resourcesCount || "";
 
-        document.getElementById("courseLifetime").checked = course.lifetimeAccess;
-        document.getElementById("courseCertificate").checked = course.hasCertificate;
+        document.getElementById("courseLearnings").value = course.learnings?.join(", ") || "";
+        document.getElementById("courseIncludes").value = course.includes?.join(", ") || "";
 
-        document.getElementById("courseLearnings").value = course.learnings?.join(", ");
-        document.getElementById("courseVideo").value = course.previewVideo || "";
-        document.getElementById("courseIncludes").value = course.includes?.join(", ");
+        // ===== VIDEOS =====
+        if (course.videos && course.videos.length > 0) {
+            course.videos.forEach(v => addVideoField(v));
+        } else {
+            addVideoField();
+        }
 
+        // ===== ACCESS =====
+        document.getElementById("courseAccessType").value = course.directAccessType || "lifetime";
+
+        if (course.directAccessDuration) {
+            document.getElementById("courseAccessValue").value = course.directAccessDuration.value || "";
+            document.getElementById("courseAccessUnit").value = course.directAccessDuration.unit || "days";
+        } else {
+            document.getElementById("courseAccessValue").value = "";
+        }
+
+        // IMAGE PREVIEW
         if (course.image) {
             preview.src = `/uploads/${course.image}`;
             preview.style.display = "block";
@@ -710,14 +740,48 @@ function openCourseModal(course = null) {
     } else {
         document.getElementById("courseForm").reset();
         document.getElementById("courseId").value = "";
+
+        document.getElementById("videoContainer").innerHTML = "";
+        addVideoField();
+
+        document.getElementById("courseAccessType").value = "lifetime";
+        document.getElementById("courseAccessValue").value = "";
+        document.getElementById("courseAccessUnit").value = "days";
+
         preview.style.display = "none";
     }
 }
+
 
 // CLOSE
 function closeCourseModal() {
     document.getElementById("courseModal").style.display = "none";
 }
+
+// add video field
+function addVideoField(video = {}) {
+    const container = document.getElementById("videoContainer");
+
+    const div = document.createElement("div");
+    div.classList.add("video-item");
+
+    div.innerHTML = `
+        <input type="text" placeholder="Title" class="video-title" value="${video.title || ""}">
+        <input type="text" placeholder="YouTube URL" class="video-url" value="${video.url || ""}">
+        
+        <label>
+            Preview:
+            <input type="checkbox" class="video-preview" ${video.isPreview ? "checked" : ""}>
+        </label>
+
+        <input type="number" placeholder="Order" class="video-order" value="${video.order || ""}">
+        
+        <button type="button" onclick="this.parentElement.remove()">Remove</button>
+    `;
+
+    container.appendChild(div);
+}
+
 
 // SAVE
 async function saveCourse() {
@@ -730,32 +794,62 @@ async function saveCourse() {
     formData.append("category", document.getElementById("courseCategory").value);
     formData.append("description", document.getElementById("courseDescription").value);
     formData.append("shortDescription", document.getElementById("courseShortDescription").value);
-    formData.append(
-  "previewVideo",
-  document.getElementById("courseVideo").value
-);
 
+    // ===== PRICE =====
     const priceVal = document.getElementById("coursePrice").value;
-const offerPriceVal = document.getElementById("courseOfferPrice").value;
+    const offerPriceVal = document.getElementById("courseOfferPrice").value;
 
-if (priceVal) formData.append("price", priceVal);
-if (offerPriceVal) formData.append("offerPrice", offerPriceVal);
+    if (priceVal) formData.append("price", priceVal);
+    if (offerPriceVal) formData.append("offerPrice", offerPriceVal);
 
+    // ===== STRUCTURED =====
     formData.append("duration", document.getElementById("courseDuration").value);
     formData.append("resourcesCount", document.getElementById("courseResources").value);
 
-    formData.append("lifetimeAccess", document.getElementById("courseLifetime").checked);
-    formData.append("hasCertificate", document.getElementById("courseCertificate").checked);
-
+    // ===== ARRAYS =====
     const learnings = document.getElementById("courseLearnings").value;
-    formData.append("learnings", JSON.stringify(learnings.split(",").map(i => i.trim()).filter(Boolean)));
+    formData.append("learnings", JSON.stringify(
+        learnings.split(",").map(i => i.trim()).filter(Boolean)
+    ));
 
     const includes = document.getElementById("courseIncludes").value;
-    formData.append("includes", JSON.stringify(includes.split(",").map(i => i.trim()).filter(Boolean)));
+    formData.append("includes", JSON.stringify(
+        includes.split(",").map(i => i.trim()).filter(Boolean)
+    ));
 
+    // ===== VIDEOS =====
+    const videos = [];
+
+    document.querySelectorAll(".video-item").forEach((el, index) => {
+        const title = el.querySelector(".video-title").value;
+        const url = el.querySelector(".video-url").value;
+        const isPreview = el.querySelector(".video-preview").checked;
+        const order = el.querySelector(".video-order").value || index;
+
+        if (url) {
+            videos.push({ title, url, isPreview, order });
+        }
+    });
+
+    formData.append("videos", JSON.stringify(videos));
+
+    // ===== ACCESS =====
+    const accessType = document.getElementById("courseAccessType").value;
+
+    formData.append("directAccessType", accessType);
+
+    if (accessType === "limited") {
+        formData.append("directAccessDuration", JSON.stringify({
+            value: document.getElementById("courseAccessValue").value,
+            unit: document.getElementById("courseAccessUnit").value
+        }));
+    }
+
+    // ===== IMAGE =====
     const image = document.getElementById("courseImage").files[0];
     if (image) formData.append("image", image);
 
+    // ===== API =====
     const url = id ? `/admin/courses/${id}` : `/admin/courses`;
     const method = id ? "PUT" : "POST";
 
@@ -764,13 +858,16 @@ if (offerPriceVal) formData.append("offerPrice", offerPriceVal);
         body: formData
     });
 
+    const data = await res.json();
+
     if (res.ok) {
-        alert("Saved");
+        alert("Saved successfully");
         location.reload();
     } else {
-        alert("Error");
+        alert(data.message || "Error");
     }
 }
+
 
 // EDIT
 async function editCourse(id) {
