@@ -67,15 +67,29 @@
 
               <!-- Header Btn Start -->
               <div class="header-btn">
-                <a
-                  href="#"
-                  class="profile-icon"
-                  data-bs-toggle="modal"
-                  data-bs-target="#authModal"
-                >
-                  <i class="fa fa-user"></i>
-                </a>
-              </div>
+
+  <% if (!user) { %>
+
+    <a
+      href="#"
+      class="profile-icon"
+      data-bs-toggle="modal"
+      data-bs-target="#authModal"
+    >
+      <i class="fa fa-user"></i>
+    </a>
+
+  <% } else { %>
+
+    <div class="dropdown">
+      <a href="/account" class="profile-icon">
+        <i class="fa fa-user"></i>
+      </a>
+    </div>
+
+  <% } %>
+
+</div>
               <!-- Header Btn End -->
             </div>
             <!-- Main Menu End -->

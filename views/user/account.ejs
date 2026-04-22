@@ -94,6 +94,7 @@
                 <li onclick="showTab(event, 'courses')">My Courses</li>
                 <li onclick="showTab(event, 'plans')">My Plans</li>
                 <li onclick="showTab(event, 'profile')">Edit Profile</li>
+                <li><a href="/auth/logout" class="text-danger">Logout</a></li>
               </ul>
             </div>
           </div>
@@ -242,76 +243,37 @@
 
                 <div id="courseGridView">
                   <div class="row">
-                    <div class="col-md-4 mb-4">
-                      <div
-                        class="video-card h-100"
-                        onclick="viewCourse('Mastering EQ')"
-                      >
-                        <div class="video-thumb">
-                          <img
-                            src="images/course-1.jpg"
-                            alt="Course"
-                            class="img-fluid rounded"
-                          />
-                          <div class="video-overlay">
-                            <i class="fa fa-play"></i>
-                          </div>
-                        </div>
-                        <div class="video-info">
-                          <h5>Mastering EQ</h5>
-                          <p class="small text-muted mb-0">
-                            12/15 Lessons Completed
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                      <div
-                        class="video-card h-100"
-                        onclick="viewCourse('Yoga Fundamentals')"
-                      >
-                        <div class="video-thumb">
-                          <img
-                            src="images/course-1.jpg"
-                            alt="Course"
-                            class="img-fluid rounded"
-                          />
-                          <div class="video-overlay">
-                            <i class="fa fa-play"></i>
-                          </div>
-                        </div>
-                        <div class="video-info">
-                          <h5>Yoga Fundamentals</h5>
-                          <p class="small text-muted mb-0">
-                            2/10 Lessons Completed
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                      <div
-                        class="video-card h-100"
-                        onclick="viewCourse('Deep Meditation')"
-                      >
-                        <div class="video-thumb">
-                          <img
-                            src="images/course-1.jpg"
-                            alt="Course"
-                            class="img-fluid rounded"
-                          />
-                          <div class="video-overlay">
-                            <i class="fa fa-play"></i>
-                          </div>
-                        </div>
-                        <div class="video-info">
-                          <h5>Deep Meditation</h5>
-                          <p class="small text-muted mb-0">
-                            0/8 Lessons Completed
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+  <% courses.forEach(course => { %>
+
+    <div class="col-md-4 mb-4">
+      <div class="video-card h-100" onclick="viewCourse('<%= course._id %>')">
+
+        <div class="video-thumb">
+          <img src="/uploads/<%= course.image %>" class="img-fluid rounded" />
+          <div class="video-overlay">
+            <i class="fa fa-play"></i>
+          </div>
+        </div>
+
+        <div class="video-info">
+          <h5><%= course.title %></h5>
+
+          <% if (course.isExpired) { %>
+            <p class="text-danger small">Access Expired</p>
+          <% } else if (course.expiresAt) { %>
+            <p class="text-muted small">
+              Valid till <%= course.expiresAt.toDateString() %>
+            </p>
+          <% } else { %>
+            <p class="text-success small">Lifetime Access</p>
+          <% } %>
+
+        </div>
+      </div>
+    </div>
+
+  <% }) %>
+</div>
 
                   <div class="pagination-wrapper mt-3">
                     <ul class="pagination justify-content-center">
@@ -491,6 +453,7 @@
           <li onclick="handleTabClick(event, 'courses')">My Courses</li>
           <li onclick="handleTabClick(event, 'plans')">My Plans</li>
           <li onclick="handleTabClick(event, 'profile')">Edit Profile</li>
+          <li><a href="/auth/logout" class="text-danger">Logout</a></li>
         </ul>
       </div>
     </div>

@@ -22,6 +22,13 @@ app.use(
   }),
 );
 app.use("/uploads", express.static("uploads"));
+
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
+
+
 // Routes
 const adminRoutes = require("./routes/adminRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -42,6 +49,7 @@ app.use("/admin/courses", courseRoutes);
 app.use("/admin/plans", planRoutes);
 app.use("/admin/blogs", blogRoutes);
 app.use("/", publicRoutes);
+
 
 app.use(async (req, res) => {
   res.status(404).render("error", { title: "Page Not Found" });

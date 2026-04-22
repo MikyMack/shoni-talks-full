@@ -7,6 +7,16 @@ const Program = require("../models/Program");
 const Course = require("../models/Course");
 const Plan = require("../models/Plan");
 const { isAuthenticated } = require("../middleware/auth");
+const Purchase = require("../models/Purchase");
+const UserAccess = require("../models/UserAccess");
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const { default: mongoose } = require("mongoose");
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY,
+  key_secret: process.env.RAZORPAY_SECRET,
+});
 
 // home page
 router.get("/", async (req, res) => {
@@ -254,23 +264,35 @@ router.get("/contact", async (req, res) => {
 });
 
 // account page
-router.get("/account", async (req, res) => {
+router.get("/account", isAuthenticated, async (req, res) => {
   try {
+    const accesses = await UserAccess.find({
+      user: req.user._id,
+    }).populate("course");
 
-    const plans = await Plan.find({ isActive: true })
-      .populate("course")
-      .sort({ price: 1 });
+    const courses = accesses.map(a => ({
+      _id: a.course._id,
+      title: a.course.title,
+      image: a.course.image,
+      expiresAt: a.expiresAt,
+      isExpired: a.expiresAt && a.expiresAt < new Date(),
+    }));
+
+    const plans = await Plan.find({ isActive: true });
 
     res.render("user/account", {
       title: "Account",
+      courses,
       plans,
-      user: req.user || null,
+      user: req.user,
     });
-  } catch (error) {
-    console.error("Account Page Error:", error);
-    res.status(500).send("Error loading account page data");
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading account page");
   }
 });
+
 // Services pages
 router.get("/services", async (req, res) => {
   try {
@@ -334,6 +356,35 @@ router.get("/frontline-service", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Error loading frontline services page data");
+  }
+});
+
+
+// checkout page
+router.get("/checkout/:type/:id", async (req, res) => {
+  try {
+    const { type, id } = req.params;
+
+    let item = null;
+
+    if (type === "course") {
+      item = await Course.findById(id);
+    } else if (type === "plan") {
+      item = await Plan.findById(id);
+    }
+
+    if (!item) {
+      return res.status(404).send("Item not found");
+    }
+
+    res.render("user/checkout", {
+      type,
+      item,
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
   }
 });
 
