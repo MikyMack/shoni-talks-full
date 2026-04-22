@@ -894,7 +894,7 @@ header.main-header .header-sticky.active{
 
 @media (max-width: 767.98px) {
 	.hero.hero-bg-image {
-		padding: 195px  180px;
+		padding: 195px  180px 195px 0px;
 	}
 }
 
@@ -936,7 +936,7 @@ header.main-header .header-sticky.active{
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: cover;
-    padding: 285px 0 180px;
+    padding: 285px 0 0px;
 }
 
 .hero.hero-bg-image.hero-slider-layout .hero-slide.slide-2{
@@ -5327,11 +5327,11 @@ header.main-header .header-sticky.active{
 	}
 
 	.hero.hero-bg-image{
-		padding: 180px 0 100px;
+		padding: 180px 0 0px;
 	}
 	
 	.hero.hero-bg-image.hero-slider-layout .hero-slide{
-		padding: 200px 0 120px;
+		padding: 200px 0 0px;
 	}
 
 	.hero.hero-bg-image.hero-slider-layout .hero-pagination{

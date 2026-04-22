@@ -5,6 +5,7 @@ const Blog = require("../models/Blog");
 const Testimonial = require("../models/Testimonial");
 const Program = require("../models/program");
 const Course = require("../models/Course");
+const Plan = require("../models/Plan");
 
 // home page
 router.get("/", async (req, res) => {
@@ -71,8 +72,8 @@ router.get("/programs", async (req, res) => {
       totalPages,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error loading program page data");
+    console.error("Programs Pagination Error:", error);
+    res.status(500).send("Error loading programs");
   }
 });
 
@@ -254,13 +255,21 @@ router.get("/contact", async (req, res) => {
 // account page
 router.get("/account", async (req, res) => {
   try {
-    res.render("user/account", { title: "Account" });
+
+    const plans = await Plan.find({ isActive: true })
+      .populate("course")
+      .sort({ price: 1 });
+
+    res.render("user/account", {
+      title: "Account",
+      plans,
+      user: req.user || null,
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Account Page Error:", error);
     res.status(500).send("Error loading account page data");
   }
 });
-
 // Services pages
 router.get("/services", async (req, res) => {
   try {
