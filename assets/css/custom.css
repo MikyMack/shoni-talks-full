@@ -8376,3 +8376,95 @@ header.main-header .header-sticky.active{
 		margin-bottom: 40px;
 	}
 }
+
+.journey-grid-container {
+	/* margin-top: 80px; */
+	position: relative;
+}
+
+/* Central Founder Image */
+.central-founder-img {
+	width: 100%;
+	border-radius: 50% 50% 0 0;
+	padding: 10px;
+	filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+}
+
+/* Journey Item Styling */
+.journey-item {
+	position: relative;
+	padding: 20px;
+}
+
+.journey-number {
+	font-size: 60px;
+	font-weight: 800;
+	color: var(--accent-color);
+	opacity: 0.15;
+	font-family: 'Playfair Display', serif;
+	line-height: 1;
+	margin-bottom: -20px;
+	/* Overlap effect */
+}
+
+.journey-content h3 {
+	font-size: 24px;
+	color: #ffffff;
+	margin-bottom: 15px;
+}
+
+.journey-content p {
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 16px;
+}
+
+/* Specific Alignments */
+.bottom-item {
+	text-align: center;
+	margin-top: 40px;
+}
+
+@media (min-width: 992px) {
+	.journey-item.left-align {
+		text-align: right;
+	}
+
+
+
+	.journey-item.right-align {
+		text-align: left;
+	}
+
+	.founder-image-wrapper {
+		padding: 0 20px;
+	}
+}
+
+/* Responsive Fix for Mobile */
+@media (max-width: 991px) {
+	.journey-item {
+		text-align: center;
+		margin-bottom: 20px;
+	}
+
+	.central-founder-img {
+		width: 50%;
+	}
+
+		.bottom-item {
+			margin-top: 40px;
+		}
+
+	.founder-image-wrapper {
+		margin-bottom: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+@media (max-width: 768px) {
+	.journey-item{
+		margin: 0px;
+	}
+
+}
