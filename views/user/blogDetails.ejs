@@ -324,39 +324,7 @@
     <!-- Login modal end -->
 
     <!-- Mobile Bottom Navbar Start -->
-    <nav class="mobile-bottom-navbar d-lg-none">
-      <a href="/" class="mobile-nav-item">
-        <span class="mobile-nav-icon"><i class="fa-solid fa-house"></i></span>
-        <span>Home</span>
-      </a>
-      <a href="/services" class="mobile-nav-item">
-        <span class="mobile-nav-icon"
-          ><i class="fa-solid fa-hand-holding-medical"></i
-        ></span>
-        <span>Services</span>
-      </a>
-      <a href="/programs" class="mobile-nav-item">
-        <span class="mobile-nav-icon"
-          ><i class="fa-solid fa-list-check"></i
-        ></span>
-        <span>Programs</span>
-      </a>
-      <a href="/courses" class="mobile-nav-item">
-        <span class="mobile-nav-icon"
-          ><i class="fa-solid fa-certificate"></i
-        ></span>
-        <span>Courses</span>
-      </a>
-      <a
-        href=""
-        class="mobile-nav-item"
-        data-bs-toggle="modal"
-        data-bs-target="#authModal"
-      >
-        <span class="mobile-nav-icon"><i class="fa-solid fa-user"></i></span>
-        <span>Login</span>
-      </a>
-    </nav>
+    <%- include('../partials/mobileNav.ejs') %>
     <!-- Mobile Bottom Navbar End -->
 
     <!-- Jquery Library File -->
