@@ -1544,6 +1544,49 @@ header.main-header .header-sticky.active{
 	z-index: 1;
 }
 
+/* Ensure the link container fills the space and uses flex to push text to the bottom */
+.service-card-link {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	/* Pushes text to the bottom */
+	padding: 30px;
+	height: 350px;
+	/* Set a fixed height so they don't shrink */
+	text-decoration: none;
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+}
+
+/* Create the dark overlay directly on the image area */
+.service-image::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	/* Dark gradient: clear at top, dark at bottom for text readability */
+	background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8));
+	z-index: 1;
+}
+
+.service-item-content {
+	position: relative;
+	z-index: 2;
+	/* Sits above the gradient */
+	margin-bottom: 0;
+	/* Cleaned up margin */
+}
+
+.service-item-content h3,
+.service-item-content p {
+	color: #ffffff !important;
+	/* Forces white text */
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+	/* Adds extra pop */
+}
 .page-cta-box{
 	position: relative;
 	background: url('../images/programs/program7.jpg') no-repeat;
