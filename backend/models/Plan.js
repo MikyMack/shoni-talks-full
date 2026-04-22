@@ -8,12 +8,7 @@ const planSchema = new mongoose.Schema(
       trim: true,
     },
 
-    course: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
-      required: true,
-      index: true,
-    },
+    courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
 
     price: {
       type: Number,
