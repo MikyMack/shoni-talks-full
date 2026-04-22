@@ -48,6 +48,35 @@ exports.createCourse = async (req, res) => {
       return sendResponse(res, 409, "Course already exists");
     }
 
+    // 🔹 Parse videos
+    let videos = [];
+    if (req.body.videos) {
+      try {
+        videos = JSON.parse(req.body.videos);
+        videos.sort((a, b) => a.order - b.order);
+      } catch {
+        return sendResponse(res, 400, "Invalid videos format");
+      }
+    }
+
+    // 🔹 Parse duration
+    let directAccessDuration;
+    if (req.body.directAccessDuration) {
+      try {
+        directAccessDuration = JSON.parse(req.body.directAccessDuration);
+      } catch {
+        return sendResponse(res, 400, "Invalid duration format");
+      }
+    }
+
+    // 🔹 Validation
+    if (
+      req.body.directAccessType === "limited" &&
+      !directAccessDuration
+    ) {
+      return sendResponse(res, 400, "Duration required for limited access");
+    }
+
     const course = await Course.create({
       title,
       slug,
@@ -57,7 +86,7 @@ exports.createCourse = async (req, res) => {
 
       image: req.file?.filename || "",
 
-      previewVideo: req.body.previewVideo,
+      videos,
 
       price,
       offerPrice,
@@ -69,13 +98,19 @@ exports.createCourse = async (req, res) => {
       videoHours: req.body.videoHours,
       resourcesCount: req.body.resourcesCount,
 
-      lifetimeAccess: req.body.lifetimeAccess === "true",
-      hasCertificate: req.body.hasCertificate === "true",
+      directAccessType: req.body.directAccessType || "lifetime",
+      directAccessDuration,
 
+      allowDirectPurchase:
+        req.body.allowDirectPurchase === "true" ||
+        req.body.allowDirectPurchase === true,
+
+      hasCertificate:
+        req.body.hasCertificate === "true" ||
+        req.body.hasCertificate === true,
     });
 
     return sendResponse(res, 201, "Course created", course);
-
   } catch (err) {
     console.error("CREATE COURSE ERROR:", err);
     return sendResponse(res, 500, "Server error");
@@ -85,12 +120,7 @@ exports.createCourse = async (req, res) => {
 // ================= GET ALL =================
 exports.getCourses = async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 10,
-      search,
-      category,
-    } = req.query;
+    const { page = 1, limit = 10, search, category } = req.query;
 
     const query = { isActive: true };
 
@@ -101,7 +131,6 @@ exports.getCourses = async (req, res) => {
     }
 
     const courses = await Course.find(query)
-      .populate("plans")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
@@ -116,7 +145,6 @@ exports.getCourses = async (req, res) => {
         pages: Math.ceil(total / limit),
       },
     });
-
   } catch (err) {
     console.error("GET COURSES ERROR:", err);
     return sendResponse(res, 500, "Failed to fetch courses");
@@ -126,28 +154,24 @@ exports.getCourses = async (req, res) => {
 // ================= GET ONE =================
 exports.getCourse = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.id)
-      .populate("plans");
+    const course = await Course.findById(req.params.id);
 
     if (!course || !course.isActive) {
       return sendResponse(res, 404, "Course not found");
     }
 
     return sendResponse(res, 200, "Course fetched", course);
-
   } catch (err) {
     console.error("GET COURSE ERROR:", err);
     return sendResponse(res, 500, "Failed to fetch course");
   }
 };
 
+// ================= UPDATE COURSE =================
 exports.updateCourse = async (req, res) => {
   try {
     const updates = { ...req.body };
     const mongoose = require("mongoose");
-
-    console.log(updates.price , updates.offerPrice);
-    
 
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return sendResponse(res, 400, "Invalid course ID");
@@ -158,7 +182,7 @@ exports.updateCourse = async (req, res) => {
       return sendResponse(res, 404, "Course not found");
     }
 
-    // ================= SAFE NUMBER HANDLING =================
+    // 🔹 PRICE HANDLING
     const price =
       updates.price !== undefined && updates.price !== ""
         ? Number(updates.price)
@@ -169,62 +193,63 @@ exports.updateCourse = async (req, res) => {
         ? Number(updates.offerPrice)
         : existingCourse.offerPrice;
 
-    // ================= VALIDATION =================
-    if (
-      offerPrice !== undefined &&
-      price !== undefined &&
-      offerPrice > price
-    ) {
-      return sendResponse(
-        res,
-        400,
-        "Offer price cannot be greater than price"
-      );
+    if (offerPrice > price) {
+      return sendResponse(res, 400, "Offer price cannot be greater than price");
     }
 
-    // ================= CLEAN EMPTY VALUES =================
     if (updates.price === "") delete updates.price;
     if (updates.offerPrice === "") delete updates.offerPrice;
 
-    // ================= TYPE CAST =================
-    if (updates.price !== undefined) {
-      updates.price = Number(updates.price);
-    }
-
-    if (updates.offerPrice !== undefined) {
+    if (updates.price !== undefined) updates.price = Number(updates.price);
+    if (updates.offerPrice !== undefined)
       updates.offerPrice = Number(updates.offerPrice);
-    }
-    
 
-    if (updates.resourcesCount !== undefined && updates.resourcesCount !== "") {
-      updates.resourcesCount = Number(updates.resourcesCount);
+    // 🔹 VIDEOS
+    if (updates.videos) {
+      try {
+        updates.videos = JSON.parse(updates.videos);
+        updates.videos.sort((a, b) => a.order - b.order);
+      } catch {
+        return sendResponse(res, 400, "Invalid videos format");
+      }
     }
 
-    if (updates.videoHours !== undefined && updates.videoHours !== "") {
-      updates.videoHours = Number(updates.videoHours);
+    // 🔹 DIRECT ACCESS
+    if (updates.directAccessDuration) {
+      try {
+        updates.directAccessDuration = JSON.parse(
+          updates.directAccessDuration
+        );
+      } catch {
+        return sendResponse(res, 400, "Invalid duration format");
+      }
     }
 
-    // ================= BOOLEAN =================
-    if (updates.lifetimeAccess !== undefined) {
-      updates.lifetimeAccess =
-        updates.lifetimeAccess === "true" || updates.lifetimeAccess === true;
+    if (
+      updates.directAccessType === "limited" &&
+      !updates.directAccessDuration
+    ) {
+      return sendResponse(res, 400, "Duration required for limited access");
+    }
+
+    // 🔹 BOOLEAN
+    if (updates.allowDirectPurchase !== undefined) {
+      updates.allowDirectPurchase =
+        updates.allowDirectPurchase === "true" ||
+        updates.allowDirectPurchase === true;
     }
 
     if (updates.hasCertificate !== undefined) {
       updates.hasCertificate =
-        updates.hasCertificate === "true" || updates.hasCertificate === true;
+        updates.hasCertificate === "true" ||
+        updates.hasCertificate === true;
     }
 
-    // ================= ARRAYS =================
-    if (updates.learnings) {
-      updates.learnings = parseArray(updates.learnings);
-    }
+    // 🔹 ARRAYS
+    if (updates.learnings) updates.learnings = parseArray(updates.learnings);
+    if (updates.includes) updates.includes = parseArray(updates.includes);
 
-    if (updates.includes) {
-      updates.includes = parseArray(updates.includes);
-    }
-
-    // ================= SLUG =================
+    // 🔹 SLUG
     if (updates.title) {
       updates.slug = slugify(updates.title, {
         lower: true,
@@ -241,28 +266,23 @@ exports.updateCourse = async (req, res) => {
       }
     }
 
-    // ================= IMAGE =================
+    // 🔹 IMAGE
     if (req.file) {
       updates.image = req.file.filename;
     }
 
-    // ================= UPDATE =================
     const course = await Course.findByIdAndUpdate(
       req.params.id,
       updates,
-      {
-        new: true,
-        runValidators: true,
-      }
+      { new: true, runValidators: true }
     );
 
     return sendResponse(res, 200, "Course updated successfully", course);
-
   } catch (err) {
     console.error("UPDATE COURSE ERROR:", err);
 
     if (err.name === "ValidationError") {
-      const messages = Object.values(err.errors).map(e => e.message);
+      const messages = Object.values(err.errors).map((e) => e.message);
       return sendResponse(res, 400, messages.join(", "));
     }
 

@@ -58,7 +58,10 @@ const courseSchema = new mongoose.Schema(
           type: Boolean,
           default: false,
         },
-        order: Number,
+        order: {
+          type: Number,
+          required: true,
+        },
       },
     ],
 
@@ -119,6 +122,13 @@ const courseSchema = new mongoose.Schema(
       enum: ["lifetime", "limited"],
       default: "lifetime",
     },
+    directAccessDuration: {
+      value: Number,
+      unit: {
+        type: String,
+        enum: ["days", "weeks", "months"],
+      },
+    },
 
     hasCertificate: {
       type: Boolean,
@@ -130,14 +140,6 @@ const courseSchema = new mongoose.Schema(
       {
         type: String,
         trim: true,
-      },
-    ],
-
-    // ================= RELATIONS =================
-    plans: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Plan",
       },
     ],
     allowDirectPurchase: {
