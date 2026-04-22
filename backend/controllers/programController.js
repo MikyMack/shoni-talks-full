@@ -10,11 +10,10 @@ const sendResponse = (res, status, message, data = null) => {
   });
 };
 
-// Clean schedules (important)
+// ================== PARSE SCHEDULES ==================
 const parseSchedules = (schedules) => {
   if (!schedules) return [];
 
-  // If coming from form-data (string)
   if (typeof schedules === "string") {
     try {
       schedules = JSON.parse(schedules);
@@ -23,28 +22,44 @@ const parseSchedules = (schedules) => {
     }
   }
 
-  return schedules.map((s) => ({
-    startDate: s.startDate,
-    endDate: s.endDate || null,
-    location: s.location,
-    venue: s.venue || "",
-    price: s.price || 0,
-    offerPrice: s.offerPrice || 0,
-    seats: s.seats || 0,
-    joinLink: s.joinLink || "",
-    status: s.status || "upcoming",
-    isActive: true,
-  }));
+  return schedules
+    .filter((s) => s.startDate && s.location) // required fields
+    .map((s) => ({
+      startDate: s.startDate,
+      endDate: s.endDate || null,
+      location: s.location,
+      venue: s.venue || "",
+      price: Number(s.price) || 0,
+      offerPrice: Number(s.offerPrice) || 0,
+      seats: Number(s.seats) || 0,
+      joinLink: s.joinLink || "",
+      status: s.status || "upcoming",
+      isActive: true,
+    }));
 };
 
 // ================== CREATE ==================
 exports.createProgram = async (req, res) => {
   try {
-    const { title, description, duration, category, features, schedules } =
-      req.body;
+    const {
+      title,
+      subtitle,
+      shortDescription,
+      description,
+      duration,
+      category,
+      status,
+      isFeatured,
+      features,
+      schedules,
+    } = req.body;
 
     if (!title || !description) {
       return sendResponse(res, 400, "Title and description are required");
+    }
+
+    if (!req.file) {
+      return sendResponse(res, 400, "Image is required");
     }
 
     const slug = slugify(title, { lower: true, strict: true });
@@ -57,15 +72,19 @@ exports.createProgram = async (req, res) => {
     const program = new Program({
       title,
       slug,
+      subtitle,
+      shortDescription,
       description,
       duration,
       category,
+      status: status || "draft",
+      isFeatured: isFeatured === "true",
       features:
         typeof features === "string"
           ? JSON.parse(features).map((f) => f.trim())
-          : features,
+          : features || [],
       schedules: parseSchedules(schedules),
-      image: req.file?.filename || "",
+      image: req.file.filename,
     });
 
     await program.save();
@@ -82,17 +101,18 @@ exports.getPrograms = async (req, res) => {
   try {
     const { page = 1, limit = 10, search, category } = req.query;
 
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+
     const query = { isActive: true };
 
     if (category) query.category = category;
-    if (search) {
-      query.title = { $regex: search, $options: "i" };
-    }
+    if (search) query.title = { $regex: search, $options: "i" };
 
     const programs = await Program.find(query)
       .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
+      .skip((pageNum - 1) * limitNum)
+      .limit(limitNum);
 
     const total = await Program.countDocuments(query);
 
@@ -100,8 +120,8 @@ exports.getPrograms = async (req, res) => {
       programs,
       pagination: {
         total,
-        page: parseInt(page),
-        pages: Math.ceil(total / limit),
+        page: pageNum,
+        pages: Math.ceil(total / limitNum),
       },
     });
   } catch (err) {
@@ -110,6 +130,7 @@ exports.getPrograms = async (req, res) => {
   }
 };
 
+// ================== GET ONE ==================
 exports.getProgram = async (req, res) => {
   try {
     const program = await Program.findOne({
@@ -133,36 +154,62 @@ exports.updateProgram = async (req, res) => {
   try {
     const updates = { ...req.body };
 
+    // SLUG UPDATE + DUPLICATE CHECK
     if (updates.title) {
-      updates.slug = slugify(updates.title, {
+      const newSlug = slugify(updates.title, {
         lower: true,
         strict: true,
       });
+
+      const existing = await Program.findOne({
+        slug: newSlug,
+        _id: { $ne: req.params.id },
+      });
+
+      if (existing) {
+        return sendResponse(res, 409, "Another program with this title exists");
+      }
+
+      updates.slug = newSlug;
     }
 
+    // FEATURES
+    if (updates.features) {
+      if (typeof updates.features === "string") {
+        try {
+          updates.features = JSON.parse(updates.features).map((f) => f.trim());
+        } catch {
+          updates.features = updates.features
+            .split(",")
+            .map((f) => f.trim())
+            .filter(Boolean);
+        }
+      }
+    }
+
+    // BOOLEAN FIX
+    if (updates.isFeatured !== undefined) {
+      updates.isFeatured = updates.isFeatured === "true";
+    }
+
+    // SCHEDULES
     if (updates.schedules) {
       updates.schedules = parseSchedules(updates.schedules);
     }
 
-    if (updates.features && typeof updates.features === "string") {
-      try {
-        updates.features = JSON.parse(updates.features).map((f) => f.trim());
-      } catch {
-        updates.features = updates.features
-          .split(",")
-          .map((f) => f.trim())
-          .filter(Boolean);
-      }
-    }
-
+    // IMAGE UPDATE
     if (req.file) {
       updates.image = req.file.filename;
     }
 
-    const program = await Program.findByIdAndUpdate(req.params.id, updates, {
-      new: true,
-      runValidators: true,
-    });
+    const program = await Program.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!program) {
       return sendResponse(res, 404, "Program not found");
@@ -175,13 +222,13 @@ exports.updateProgram = async (req, res) => {
   }
 };
 
-// ================== DELETE ==================
+// ================== DELETE (SOFT) ==================
 exports.deleteProgram = async (req, res) => {
   try {
     const program = await Program.findByIdAndUpdate(
       req.params.id,
       { isActive: false },
-      { new: true },
+      { new: true }
     );
 
     if (!program) {
