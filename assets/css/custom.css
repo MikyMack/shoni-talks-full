@@ -2373,7 +2373,7 @@ header.main-header .header-sticky.active{
 	margin-bottom: 50px;
 }
 
-.journey-number {
+/* .journey-number {
 	position: absolute;
 	left: -80px;
 	width: 50px;
@@ -2385,7 +2385,7 @@ header.main-header .header-sticky.active{
 	align-items: center;
 	justify-content: center;
 	font-weight: bold;
-}
+} */
 
 .journey-content h3 {
 	color: #fff;
@@ -8396,7 +8396,7 @@ header.main-header .header-sticky.active{
 	padding: 20px;
 }
 
-.journey-number {
+ /* .journey-number {
 	font-size: 60px;
 	font-weight: 800;
 	color: var(--accent-color);
@@ -8404,8 +8404,7 @@ header.main-header .header-sticky.active{
 	font-family: 'Playfair Display', serif;
 	line-height: 1;
 	margin-bottom: -20px;
-	/* Overlap effect */
-}
+ } */
 
 .journey-content h3 {
 	font-size: 24px;
