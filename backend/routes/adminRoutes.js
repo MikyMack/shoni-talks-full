@@ -351,7 +351,7 @@ router.get("/admin-plans", isAuthenticated, async (req, res) => {
 
     // 📦 FETCH PLANS
     const plans = await Plan.find(query)
-      .populate("course", "title")
+      .populate("courses", "title")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);

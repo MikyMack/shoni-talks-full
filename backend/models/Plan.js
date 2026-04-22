@@ -8,11 +8,9 @@ const planSchema = new mongoose.Schema(
       trim: true,
     },
 
-    course: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
-      required: true,
-      index: true,
+    courses: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+      validate: (v) => v.length > 0,
     },
 
     price: {
@@ -25,22 +23,22 @@ const planSchema = new mongoose.Schema(
       type: Number,
       min: [0, "Offer price cannot be negative"],
       validate: {
-          validator: function (value) {
-            // When using update
-            if (this instanceof mongoose.Query) {
-              const update = this.getUpdate();
-      
-              const price = update.price ?? update.$set?.price;
-              if (!price) return true;
-      
-              return value <= price;
-            }
-      
-            // Normal document validation
-            return value <= this.price;
-          },
-          message: "Offer price must be less than or equal to price",
+        validator: function (value) {
+          // When using update
+          if (this instanceof mongoose.Query) {
+            const update = this.getUpdate();
+
+            const price = update.price ?? update.$set?.price;
+            if (!price) return true;
+
+            return value <= price;
+          }
+
+          // Normal document validation
+          return value <= this.price;
         },
+        message: "Offer price must be less than or equal to price",
+      },
     },
 
     duration: {
@@ -77,7 +75,7 @@ const planSchema = new mongoose.Schema(
       index: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Plan", planSchema);
