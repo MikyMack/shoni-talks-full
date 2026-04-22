@@ -2,7 +2,13 @@ const Program = require("../models/Program.js");
 
 const fetchProgramsForHeader = async (req, res, next) => {
   try {
-    const headerPrograms = await Program.find({}).select("title slug");
+    const headerPrograms = await Program.find({
+      status: "published",
+      isActive: true,
+    })
+      .select("title slug")
+      .limit(6)
+      .sort({ createdAt: -1 });
 
     res.locals.allPrograms = headerPrograms;
 
