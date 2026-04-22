@@ -3,7 +3,7 @@ const router = express.Router();
 const Banner = require("../models/Banner");
 const Blog = require("../models/Blog");
 const Testimonial = require("../models/Testimonial");
-const Program = require("../models/program");
+const Program = require("../models/Program");
 const Course = require("../models/Course");
 const Plan = require("../models/Plan");
 
