@@ -6,6 +6,7 @@ const Testimonial = require("../models/Testimonial");
 const Program = require("../models/Program");
 const Course = require("../models/Course");
 const Plan = require("../models/Plan");
+const { isAuthenticated } = require("../middleware/auth");
 
 // home page
 router.get("/", async (req, res) => {
@@ -335,5 +336,251 @@ router.get("/frontline-service", async (req, res) => {
     res.status(500).send("Error loading frontline services page data");
   }
 });
+
+
+// ================= CREATE ORDER =================
+router.post("/create-order", isAuthenticated, async (req, res) => {
+  try {
+    const { type, id } = req.body;
+
+    if (!["course", "plan"].includes(type)) {
+      return res.status(400).json({ message: "Invalid type" });
+    }
+
+    let item;
+
+    if (type === "course") {
+      item = await Course.findById(id);
+    } else {
+      item = await Plan.findById(id);
+    }
+
+    if (!item || !item.isActive) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    const amount = item.offerPrice || item.price;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ message: "Invalid price" });
+    }
+
+    // ✅ Prevent duplicate purchase
+    const alreadyPurchased = await Purchase.findOne({
+      user: req.user._id,
+      ...(type === "course" ? { course: id } : { plan: id }),
+      status: "completed",
+    });
+
+    if (alreadyPurchased) {
+      return res.status(400).json({ message: "Already purchased" });
+    }
+
+    // ✅ Create Razorpay order
+    const order = await razorpay.orders.create({
+      amount: amount * 100,
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+      notes: {
+        type,
+        itemId: id,
+        userId: req.user._id.toString(),
+      },
+    });
+
+    return res.json({
+      success: true,
+      orderId: order.id,
+      amount,
+      key: process.env.RAZORPAY_KEY,
+    });
+
+  } catch (err) {
+    console.error("CREATE ORDER ERROR:", err);
+    res.status(500).json({ message: "Order creation failed" });
+  }
+});
+
+// ================= VERIFY PAYMENT =================
+router.post("/verify-payment", isAuthenticated, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = req.body;
+
+    // ===== SIGNATURE VERIFY =====
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_SECRET)
+      .update(body)
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({ message: "Invalid payment signature" });
+    }
+
+    // ===== FETCH ORDER FROM RAZORPAY =====
+    const order = await razorpay.orders.fetch(razorpay_order_id);
+
+    if (!order) {
+      return res.status(400).json({ message: "Invalid order" });
+    }
+
+    // ===== VALIDATE USER =====
+    if (order.notes.userId !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Unauthorized order" });
+    }
+
+    const type = order.notes.type;
+    const id = order.notes.itemId;
+
+    let item;
+
+    if (type === "course") {
+      item = await Course.findById(id);
+    } else {
+      item = await Plan.findById(id).populate("courses");
+    }
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    const amount = item.offerPrice || item.price;
+
+    // ===== AMOUNT CHECK =====
+    if (order.amount !== amount * 100) {
+      return res.status(400).json({ message: "Amount mismatch" });
+    }
+
+    // ===== PREVENT DUPLICATE PAYMENT =====
+    const existingPayment = await Purchase.findOne({
+      paymentId: razorpay_payment_id,
+    });
+
+    if (existingPayment) {
+      return res.json({ message: "Already processed" });
+    }
+
+    // ===== PREVENT DUPLICATE PURCHASE =====
+    const alreadyPurchased = await Purchase.findOne({
+      user: req.user._id,
+      ...(type === "course" ? { course: id } : { plan: id }),
+      status: "completed",
+    });
+
+    if (alreadyPurchased) {
+      return res.json({ message: "Already purchased" });
+    }
+
+    // ===== CREATE PURCHASE =====
+    const purchase = await Purchase.create([{
+      user: req.user._id,
+      type,
+      course: type === "course" ? id : null,
+      plan: type === "plan" ? id : null,
+      amount,
+      status: "completed",
+      paymentId: razorpay_payment_id,
+    }], { session });
+
+    // ===== GRANT ACCESS =====
+    if (type === "course") {
+      await grantCourseAccess(req.user._id, item, session);
+    } else {
+      await grantPlanAccess(req.user._id, item, session);
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.json({
+      success: true,
+      purchase: purchase[0],
+    });
+
+  } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+
+    console.error("VERIFY PAYMENT ERROR:", err);
+    res.status(500).json({ message: "Verification failed" });
+  }
+});
+
+// ================= ACCESS HELPERS =================
+
+// COURSE ACCESS
+async function grantCourseAccess(userId, course, session) {
+  let expiresAt = null;
+
+  if (course.directAccessType === "limited") {
+    const { value, unit } = course.directAccessDuration;
+
+    const now = new Date();
+
+    if (unit === "days") now.setDate(now.getDate() + value);
+    if (unit === "weeks") now.setDate(now.getDate() + value * 7);
+    if (unit === "months") now.setMonth(now.getMonth() + value);
+
+    expiresAt = now;
+  }
+
+  const existing = await UserAccess.findOne({
+    user: userId,
+    course: course._id,
+  }).session(session);
+
+  if (existing) {
+    // extend expiry
+    if (existing.expiresAt && expiresAt) {
+      existing.expiresAt = expiresAt;
+      await existing.save({ session });
+    }
+  } else {
+    await UserAccess.create([{
+      user: userId,
+      course: course._id,
+      expiresAt,
+    }], { session });
+  }
+}
+
+// PLAN ACCESS
+async function grantPlanAccess(userId, plan, session) {
+  const { value, unit } = plan.duration;
+
+  let expiresAt = new Date();
+
+  if (unit === "days") expiresAt.setDate(expiresAt.getDate() + value);
+  if (unit === "weeks") expiresAt.setDate(expiresAt.getDate() + value * 7);
+  if (unit === "months") expiresAt.setMonth(expiresAt.getMonth() + value);
+  if (unit === "hours") expiresAt.setHours(expiresAt.getHours() + value);
+
+  for (let course of plan.courses) {
+    const existing = await UserAccess.findOne({
+      user: userId,
+      course: course._id,
+    }).session(session);
+
+    if (existing) {
+      existing.expiresAt = expiresAt;
+      await existing.save({ session });
+    } else {
+      await UserAccess.create([{
+        user: userId,
+        course: course._id,
+        expiresAt,
+      }], { session });
+    }
+  }
+}
+
 
 module.exports = router;

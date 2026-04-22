@@ -1,6 +1,11 @@
-function isAuthenticated(req, res, next) {
-    if (req.session.user) return next();
-    return res.redirect('/admin/login');
-  }
-  module.exports = { isAuthenticated };
-  
+// middleware/isAuthenticated.js
+
+exports.isAuthenticated = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            message: "Login required"
+        });
+    }
+    next();
+};
