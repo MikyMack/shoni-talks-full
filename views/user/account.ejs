@@ -259,68 +259,55 @@
             <!-- PLANS -->
             <div id="plans" class="profile-tab d-none">
               <div class="profile-card">
-                <h3>My Plans</h3>
+                <h3>Available Plans</h3>
 
                 <div class="row mt-3">
-                  <!-- BASIC PLAN -->
-                  <div class="col-md-6">
-                    <div class="plan-card">
-                      <div class="plan-header">
-                        <h4>Basic Plan</h4>
-                        <span class="plan-badge">Free</span>
-                      </div>
+                  <% if (plans && plans.length > 0) { %>
+                    <% plans.forEach(plan => { %>
+                      <div class="col-md-6 mb-4">
+                        <div class="plan-card <%= plan.isPopular ? 'highlight' : '' %>">
+                          <div class="plan-header">
+                            <h4><%= plan.title %></h4>
+                            <span class="plan-badge">
+                              <% if (plan.price === 0) { %>
+                                Free
+                              <% } else if (plan.offerPrice) { %>
+                                <small class="text-decoration-line-through text-muted">₹<%= plan.price %></small> 
+                                ₹<%= plan.offerPrice %>/<%= plan.duration.unit.replace(/s$/, '') %>
+                              <% } else { %>
+                                ₹<%= plan.price %>/<%= plan.duration.unit.replace(/s$/, '') %>
+                              <% } %>
+                            </span>
+                          </div>
 
-                      <ul class="plan-features">
-                        <li>✔ Access to limited videos</li>
-                        <li>✔ Community support</li>
-                        <li>✖ Advanced programs</li>
-                      </ul>
+                          <ul class="plan-features">
+                            <% if (plan.features && plan.features.length > 0) { %>
+                              <% plan.features.forEach(feature => { %>
+                                <li>✔ <%= feature %></li>
+                              <% }) %>
+                            <% } %>
+                            
+                            <% if (plan.sessions) { %>
+                              <li>✔ <%= plan.sessions %> Live Sessions</li>
+                            <% } %>
+                          </ul>
 
-                      <div class="plan-footer">
-                        <span class="status active">Active</span>
+                          <div class="plan-footer">
+                            <% if (plan.isPopular) { %>
+                              <span class="status upcoming">Best Value</span>
+                            <% } else { %>
+                              <span class="status active">Available</span>
+                            <% } %>
+                            <a href="/checkout/<%= plan._id %>" class="btn-link ms-auto">Select Plan</a>
+                          </div>
+                        </div>
                       </div>
+                    <% }) %>
+                  <% } else { %>
+                    <div class="col-12">
+                      <p class="text-muted">No subscription plans are available at this time.</p>
                     </div>
-                  </div>
-
-                  <!-- GOLD PLAN -->
-                  <div class="col-md-6">
-                    <div class="plan-card highlight">
-                      <div class="plan-header">
-                        <h4>Gold Plan</h4>
-                        <span class="plan-badge">₹999/month</span>
-                      </div>
-
-                      <ul class="plan-features">
-                        <li>✔ All basic features</li>
-                        <li>✔ Full video access</li>
-                        <li>✔ Live sessions</li>
-                      </ul>
-
-                      <div class="plan-footer">
-                        <span class="status upcoming">Upgrade Available</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- PREMIUM PLAN -->
-                  <div class="col-md-6">
-                    <div class="plan-card">
-                      <div class="plan-header">
-                        <h4>Premium Plan</h4>
-                        <span class="plan-badge">₹1999/month</span>
-                      </div>
-
-                      <ul class="plan-features">
-                        <li>✔ Everything in Gold</li>
-                        <li>✔ 1-on-1 coaching</li>
-                        <li>✔ Priority support</li>
-                      </ul>
-
-                      <div class="plan-footer">
-                        <span class="status locked">Locked</span>
-                      </div>
-                    </div>
-                  </div>
+                  <% } %>
                 </div>
               </div>
             </div>
@@ -333,7 +320,7 @@
                 >
                   <h3 id="courseTabTitle">My Courses</h3>
                   <div id="courseActions">
-                    <a href="/course" class="btn-default btn-sm"
+                    <a href="/courses" class="btn-default btn-sm"
                       >More Courses</a
                     >
                   </div>
