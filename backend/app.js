@@ -3,6 +3,7 @@ const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
+const programMiddleware = require('./middleware/programMiddleware');
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../assets")));
 app.set("view engine", "ejs");
+app.use(programMiddleware);
 
 // Sessions
 app.use(
@@ -22,6 +24,13 @@ app.use(
   }),
 );
 app.use("/uploads", express.static("uploads"));
+
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
+
+
 // Routes
 const adminRoutes = require("./routes/adminRoutes");
 const authRoutes = require("./routes/authRoutes");
@@ -42,6 +51,7 @@ app.use("/admin/courses", courseRoutes);
 app.use("/admin/plans", planRoutes);
 app.use("/admin/blogs", blogRoutes);
 app.use("/", publicRoutes);
+
 
 app.use(async (req, res) => {
   res.status(404).render("error", { title: "Page Not Found" });

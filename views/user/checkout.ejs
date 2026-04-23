@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zxx">
+  <!-- Mirrored from html.awaikenthemes.com/healix/blog.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:00 GMT -->
+  <head>
+    <!-- Meta -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="Awaiken" />
+    <!-- Page Title -->
+    <title>Shony Talks - Course Details</title>
+    <!-- Favicon Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
+    <!-- Google Fonts Css-->
+    <link rel="preconnect" href="https://fonts.googleapis.com/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=Epilogue:ital,wght@0,100..900;1,100..900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Css -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <!-- SlickNav Css -->
+    <link href="/css/slicknav.min.css" rel="stylesheet" />
+    <!-- Swiper Css -->
+    <link rel="stylesheet" href="/css/swiper-bundle.min.css" />
+    <!-- Font Awesome Icon Css-->
+    <link href="/css/all.min.css" rel="stylesheet" media="screen" />
+    <!-- Animated Css -->
+    <link href="/css/animate.css" rel="stylesheet" />
+    <!-- Magnific Popup Core Css File -->
+    <link rel="stylesheet" href="/css/magnific-popup.css" />
+    <!-- Mouse Cursor Css File -->
+    <link rel="stylesheet" href="/css/mousecursor.css" />
+    <!-- Main Custom Css -->
+    <link href="/css/custom.css" rel="stylesheet" media="screen" />
+
+     <!-- toastify CSS -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  </head>
+  <body>
+
+    <!-- Floating Icon Start-->
+    <div class="floating-contact">
+        <a href="https://wa.me/919744975574" class="floating-icon whatsapp" target="_blank" title="WhatsApp Us">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <a href="tel:+919744975574" class="floating-icon phone" title="Call Us">
+            <i class="fa fa-phone"></i>
+        </a>
+    </div>
+    <!-- Floating Icon End -->
+    <!-- Header Start -->
+    <%- include('../partials/header.ejs') %>
+    <!-- Header End -->
+
+    <!-- Page Header Start -->
+    <div class="page-header bg-section dark-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- Page Header Box Start -->
+            <div class="page-header-box">
+              <h1 class="text-anime-style-3" data-cursor="-opaque">
+                Checkout
+              </h1>
+              
+            </div>
+            <!-- Page Header Box End -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page Header End -->
+
+    
+        <div class="checkout-page py-5">
+            <div class="container">
+                    <div class="row">
+                       <input type="hidden" id="type" value="<%= type %>">
+                        <input type="hidden" id="itemId" value="<%= item._id %>">
+                        <input type="hidden" id="amount" value="<%= item.offerPrice || item.price %>">
+
+                        <div class="col-lg-12">
+                            <div class="checkout-summary-box wow fadeInUp" data-wow-delay="0.2s">
+                                <h3 class="checkout-title">Your Order</h3>
+                                <div class="order-summary-table">
+                                    <ul class="list-unstyled">
+                                        <li class="d-flex justify-content-between align-items-center">
+                                            <span><%= item.title %></span>
+                                            <strong>₹<%= item.offerPrice || item.price %></strong>
+                                        </li>
+                                        <li class="d-flex justify-content-between align-items-center border-top pt-2 mt-2">
+                                            <span>Subtotal</span>
+                                            <span>₹<%= item.offerPrice || item.price %></span>
+                                        </li>
+
+                                        <li class="d-flex justify-content-between align-items-center total-price border-top pt-2 mt-2">
+                                            <strong>Total</strong>
+                                            <strong class="text-primary fs-4">
+                                                ₹<%= item.offerPrice || item.price %>
+                                            </strong>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="payment-methods mt-4">
+                                    <h4 class="mb-3 fs-6">Payment Method</h4>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="payment" id="upi" checked>
+                                        <label class="form-check-label" for="upi">UPI / Net Banking</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="payment" id="card">
+                                        <label class="form-check-label" for="card">Credit / Debit Card</label>
+                                    </div>
+                                </div>
+
+                                <div class="checkout-btn mt-4">
+                                    <button 
+                                    type="button" 
+                                    class="btn-default w-100 border-0"
+                                    onclick="handleCheckout(event)"
+                                    >
+                                    Complete Purchase
+                                    </button>     
+                                 </div>
+                                
+                                <div class="secure-payment text-center mt-3">
+                                    <small class="text-muted"><i class="fa fa-lock me-1"></i> 100% Secure SSL Encrypted Payment</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+    
+
+    <!-- Main Footer Section Start -->
+     <%- include('../partials/footer.ejs') %>
+    <!-- Main Footer Section End -->
+
+    <!-- Jquery Library File -->
+    <script>
+      function showTab(e, id) {
+        document.querySelectorAll(".profile-tab").forEach((tab) => {
+          tab.classList.add("d-none");
+        });
+
+        document.getElementById(id).classList.remove("d-none");
+
+        document.querySelectorAll(".profile-sidebar li").forEach((li) => {
+          li.classList.remove("active");
+        });
+
+        e.target.classList.add("active");
+      }
+    </script>
+
+    <!-- course purchase -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+async function handleCheckout() {
+  const type = document.getElementById("type").value;
+  const id = document.getElementById("itemId").value;
+
+  try {
+    // 1. Create order
+    const res = await fetch("/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, id })
+    });
+
+    const data = await res.json();
+
+    if (!data.orderId) {
+      showToast(data.message || "Order failed",'error');
+      return;
+    }
+
+    // 2. Open Razorpay
+    const options = {
+      key: data.key,
+      amount: data.amount * 100,
+      currency: "INR",
+      order_id: data.orderId,
+
+      handler: async function (response) {
+
+        // 3. VERIFY PAYMENT
+        const verify = await fetch("/verify-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...response,
+            type,
+            id
+          })
+        });
+
+        const result = await verify.json();
+
+        if (result.success) {
+          showToast("Payment successful!", 'success');
+          window.location.href = "/account";
+        } else {
+          showToast("Payment verification failed", 'error');
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+
+  } catch (err) {
+    console.error(err);
+    showToast("Something went wrong", 'error');
+  }
+}
+</script>
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <!-- Circle Progress Js File -->
+    <script src="/js/circle-progress.min.js"></script>
+    <!-- Bootstrap js file -->
+    <script src="/js/bootstrap.min.js"></script>
+    <!-- Validator js file -->
+    <script src="/js/validator.min.js"></script>
+    <!-- SlickNav js file -->
+    <script src="/js/jquery.slicknav.js"></script>
+    <!-- Swiper js file -->
+    <script src="/js/swiper-bundle.min.js"></script>
+    <!-- Counter js file -->
+    <script src="/js/jquery.waypoints.min.js"></script>
+    <script src="/js/jquery.counterup.min.js"></script>
+    <!-- Magnific js file -->
+    <script src="/js/jquery.magnific-popup.min.js"></script>
+    <!-- Parallax js -->
+    <script src="/js/parallaxie.js"></script>
+    <!-- MagicCursor js file -->
+    <script src="/js/gsap.min.js"></script>
+    <script src="/js/magiccursor.js"></script>
+    <!-- Text Effect js file -->
+    <script src="/js/SplitText.js"></script>
+    <script src="/js/ScrollTrigger.min.js"></script>
+    <!-- YTPlayer js File -->
+    <script src="/js/jquery.mb.YTPlayer.min.js"></script>
+    <!-- Wow js file -->
+    <script src="/js/wow.min.js"></script>
+    <!-- Main Custom js file -->
+    <script src="/js/function.js"></script>
+    <script src="/js/auth.js"></script>
+     <!-- toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  </body>
+
+  <!-- Mirrored from html.awaikenthemes.com/healix/blog.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:00 GMT -->
+</html>

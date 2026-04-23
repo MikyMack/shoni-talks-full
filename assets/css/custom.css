@@ -2373,7 +2373,7 @@ header.main-header .header-sticky.active{
 	margin-bottom: 50px;
 }
 
-.journey-number {
+/* .journey-number {
 	position: absolute;
 	left: -80px;
 	width: 50px;
@@ -2385,7 +2385,7 @@ header.main-header .header-sticky.active{
 	align-items: center;
 	justify-content: center;
 	font-weight: bold;
-}
+} */
 
 .journey-content h3 {
 	color: #fff;
@@ -8396,7 +8396,7 @@ header.main-header .header-sticky.active{
 	padding: 20px;
 }
 
-.journey-number {
+ /* .journey-number {
 	font-size: 60px;
 	font-weight: 800;
 	color: var(--accent-color);
@@ -8404,8 +8404,7 @@ header.main-header .header-sticky.active{
 	font-family: 'Playfair Display', serif;
 	line-height: 1;
 	margin-bottom: -20px;
-	/* Overlap effect */
-}
+ } */
 
 .journey-content h3 {
 	font-size: 24px;
@@ -8467,4 +8466,200 @@ header.main-header .header-sticky.active{
 		margin: 0px;
 	}
 
+}
+
+.nav-item.submenu {
+	position: relative;
+}
+
+.nav-item.submenu ul {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background: var(--accent-color);
+	min-width: 200px;
+	z-index: 999;
+}
+
+.nav-item.submenu:hover>ul {
+	display: block;
+}
+
+.video-wrapper {
+  position: relative;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 250px;
+  border: none;
+}
+
+/* 🔝 Block YouTube logo (top-right) */
+.yt-block-top {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 60px;
+  z-index: 10;
+}
+
+/* 🔻 Block bottom-right YouTube link */
+.yt-block-bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 150px;
+  height: 60px;
+  z-index: 10;
+}
+
+/* safer coverage */
+.yt-block-top {
+  width: 140px;
+  height: 70px;
+}
+
+.yt-block-bottom {
+  width: 180px;
+  height: 80px;
+}.video-wrapper {
+  position: relative;
+}
+
+.video-wrapper iframe {
+  width: 100%;
+  height: 250px;
+  border: none;
+}
+
+/* 🔝 FULL TOP BAR (title + youtube link) */
+.yt-block-top-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 10;
+}
+
+/* 🔻 BOTTOM CENTER (title/link area) */
+.yt-block-bottom-center {
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  width: 50%;
+  height: 70px;
+  z-index: 10;
+}
+
+/* 🔻 BOTTOM RIGHT (logo/share) */
+.yt-block-bottom-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 160px;
+  height: 80px;
+  z-index: 10;
+}
+
+.plan-card-modern {
+  background: #fff;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+  position: relative;
+  height: 100%;
+}
+
+.plan-card-modern:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.plan-card-modern.popular {
+  border: 2px solid var(--accent-color);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.plan-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.plan-price {
+  margin-bottom: 10px;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  margin-right: 8px;
+}
+
+.new-price {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.plan-duration {
+  font-size: 14px;
+  color: #666;
+}
+
+.plan-features-modern {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.plan-features-modern li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.course-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.course-pill {
+  background: #f1f1f1;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.course-pill.more {
+  background: #ddd;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 5px 8px;
+  border-radius: 20px;
+}
+
+.badge.bg-success {
+  background: linear-gradient(45deg, #00c853, #69f0ae);
+  color: #000;
+}
+
+.badge.bg-primary {
+  background: linear-gradient(45deg, #2979ff, #82b1ff);
 }
