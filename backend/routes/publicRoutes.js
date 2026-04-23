@@ -266,25 +266,134 @@ router.get("/contact", async (req, res) => {
 // account page
 router.get("/account", isAuthenticated, async (req, res) => {
   try {
+    // =========================
+    // 1. GET USER ACCESS
+    // =========================
     const accesses = await UserAccess.find({
       user: req.user._id,
-    }).populate("course");
+    })
+      .populate("course")
+      .populate("plan"); // ⚠️ IMPORTANT (for source tracking)
 
-    const courses = accesses.map(a => ({
-      _id: a.course._id,
-      title: a.course.title,
-      image: a.course.image,
-      expiresAt: a.expiresAt,
-      isExpired: a.expiresAt && a.expiresAt < new Date(),
+    // =========================
+    // 2. BUILD COURSE MAP (MERGE LOGIC)
+    // =========================
+    const courseMap = {};
+
+    accesses.forEach((a) => {
+      if (!a.course) return;
+
+      const courseId = a.course._id.toString();
+
+      const sourceType = a.plan ? "plan" : "direct";
+      const sourceName = a.plan?.title || "Direct Purchase";
+
+      if (!courseMap[courseId]) {
+        courseMap[courseId] = {
+          _id: a.course._id,
+          title: a.course.title,
+          image: a.course.image,
+          expiresAt: a.expiresAt || null,
+          sources: [
+            {
+              type: sourceType,
+              name: sourceName,
+            },
+          ],
+        };
+      } else {
+        const existing = courseMap[courseId];
+
+        // ✅ BEST EXPIRY LOGIC
+        if (!existing.expiresAt || !a.expiresAt) {
+          existing.expiresAt = null; // lifetime wins
+        } else if (a.expiresAt > existing.expiresAt) {
+          existing.expiresAt = a.expiresAt;
+        }
+
+        // ✅ ADD SOURCE (avoid duplicates)
+        const alreadyExists = existing.sources.some(
+          (s) => s.name === sourceName
+        );
+
+        if (!alreadyExists) {
+          existing.sources.push({
+            type: sourceType,
+            name: sourceName,
+          });
+        }
+      }
+    });
+
+    const courses = Object.values(courseMap).map((c) => ({
+      ...c,
+      isExpired: c.expiresAt && c.expiresAt < new Date(),
     }));
 
-    const plans = await Plan.find({ isActive: true });
+    // =========================
+    // 3. PURCHASED PLANS
+    // =========================
+    const purchases = await Purchase.find({
+      user: req.user._id,
+      type: "plan",
+      status: "completed",
+    }).populate({
+      path: "plan",
+      populate: {
+        path: "courses",
+        model: "Course",
+      },
+    });
 
+    const purchasedPlans = purchases.map((p) => {
+      const plan = p.plan;
+
+      const coursesWithAccess = plan.courses.map((course) => {
+        const access = accesses.find(
+          (a) =>
+            a.course &&
+            a.course._id.toString() === course._id.toString()
+        );
+
+        return {
+          _id: course._id,
+          title: course.title,
+          image: course.image,
+          expiresAt: access?.expiresAt || null,
+          isExpired: access?.expiresAt && access.expiresAt < new Date(),
+        };
+      });
+
+      const expiryDates = coursesWithAccess
+        .map((c) => c.expiresAt)
+        .filter(Boolean);
+
+      const planExpiry = expiryDates.length
+        ? new Date(Math.max(...expiryDates.map((d) => new Date(d))))
+        : null;
+
+      return {
+        ...plan.toObject(),
+        courses: coursesWithAccess,
+        expiresAt: planExpiry,
+        isExpired: planExpiry && planExpiry < new Date(),
+      };
+    });
+
+    // =========================
+    // 4. ALL AVAILABLE PLANS (FIXED)
+    // =========================
+    const allPlans = await Plan.find({ isActive: true }).populate("courses");
+
+    // =========================
+    // 5. RENDER
+    // =========================
     res.render("user/account", {
       title: "Account",
-      courses,
-      plans,
       user: req.user,
+      courses,
+      purchasedPlans,
+      allPlans,
     });
 
   } catch (err) {
@@ -359,7 +468,6 @@ router.get("/frontline-service", async (req, res) => {
   }
 });
 
-
 // checkout page
 router.get("/checkout/:type/:id", async (req, res) => {
   try {
@@ -381,13 +489,11 @@ router.get("/checkout/:type/:id", async (req, res) => {
       type,
       item,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
   }
 });
-
 
 // ================= CREATE ORDER =================
 router.post("/create-order", isAuthenticated, async (req, res) => {
@@ -445,7 +551,6 @@ router.post("/create-order", isAuthenticated, async (req, res) => {
       amount,
       key: process.env.RAZORPAY_KEY,
     });
-
   } catch (err) {
     console.error("CREATE ORDER ERROR:", err);
     res.status(500).json({ message: "Order creation failed" });
@@ -458,11 +563,8 @@ router.post("/verify-payment", isAuthenticated, async (req, res) => {
   session.startTransaction();
 
   try {
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-    } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
 
     // ===== SIGNATURE VERIFY =====
     const body = razorpay_order_id + "|" + razorpay_payment_id;
@@ -531,15 +633,20 @@ router.post("/verify-payment", isAuthenticated, async (req, res) => {
     }
 
     // ===== CREATE PURCHASE =====
-    const purchase = await Purchase.create([{
-      user: req.user._id,
-      type,
-      course: type === "course" ? id : null,
-      plan: type === "plan" ? id : null,
-      amount,
-      status: "completed",
-      paymentId: razorpay_payment_id,
-    }], { session });
+    const purchase = await Purchase.create(
+      [
+        {
+          user: req.user._id,
+          type,
+          course: type === "course" ? id : null,
+          plan: type === "plan" ? id : null,
+          amount,
+          status: "completed",
+          paymentId: razorpay_payment_id,
+        },
+      ],
+      { session },
+    );
 
     // ===== GRANT ACCESS =====
     if (type === "course") {
@@ -555,7 +662,6 @@ router.post("/verify-payment", isAuthenticated, async (req, res) => {
       success: true,
       purchase: purchase[0],
     });
-
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
@@ -595,11 +701,16 @@ async function grantCourseAccess(userId, course, session) {
       await existing.save({ session });
     }
   } else {
-    await UserAccess.create([{
-      user: userId,
-      course: course._id,
-      expiresAt,
-    }], { session });
+    await UserAccess.create(
+      [
+        {
+          user: userId,
+          course: course._id,
+          expiresAt,
+        },
+      ],
+      { session },
+    );
   }
 }
 
@@ -624,14 +735,48 @@ async function grantPlanAccess(userId, plan, session) {
       existing.expiresAt = expiresAt;
       await existing.save({ session });
     } else {
-      await UserAccess.create([{
-        user: userId,
-        course: course._id,
-        expiresAt,
-      }], { session });
+      await UserAccess.create(
+        [
+          {
+            user: userId,
+            course: course._id,
+            plan: plan._id,
+            expiresAt,
+          },
+        ],
+        { session },
+      );
     }
   }
 }
 
+// get course videos (with access check)
+router.get("/course/:id/videos", isAuthenticated, async (req, res) => {
+  try {
+    const access = await UserAccess.findOne({
+      user: req.user._id,
+      course: req.params.id,
+    });
+
+    if (!access) {
+      return res.status(403).json({ message: "No access" });
+    }
+
+    const isExpired = access.expiresAt && access.expiresAt < new Date();
+
+    const course = await Course.findById(req.params.id);
+
+    const videos = course.videos.map((v) => ({
+      title: v.title,
+      url: v.url,
+      isPreview: v.isPreview,
+      isUnlocked: !isExpired,
+    }));
+
+    res.json({ videos });
+  } catch (err) {
+    res.status(500).json({ message: "Error loading videos" });
+  }
+});
 
 module.exports = router;

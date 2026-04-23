@@ -39,6 +39,9 @@
     <link rel="stylesheet" href="/css/mousecursor.css" />
     <!-- Main Custom Css -->
     <link href="/css/custom.css" rel="stylesheet" media="screen" />
+
+     <!-- toastify CSS -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   </head>
   <body>
 
@@ -179,7 +182,7 @@ async function handleCheckout() {
     const data = await res.json();
 
     if (!data.orderId) {
-      alert(data.message || "Order failed");
+      showToast(data.message || "Order failed",'error');
       return;
     }
 
@@ -206,10 +209,10 @@ async function handleCheckout() {
         const result = await verify.json();
 
         if (result.success) {
-          alert("Payment successful!");
-          window.location.href = "/my-courses";
+          showToast("Payment successful!", 'success');
+          window.location.href = "/account";
         } else {
-          alert("Payment verification failed");
+          showToast("Payment verification failed", 'error');
         }
       }
     };
@@ -219,7 +222,7 @@ async function handleCheckout() {
 
   } catch (err) {
     console.error(err);
-    alert("Something went wrong");
+    showToast("Something went wrong", 'error');
   }
 }
 </script>
@@ -253,6 +256,9 @@ async function handleCheckout() {
     <script src="/js/wow.min.js"></script>
     <!-- Main Custom js file -->
     <script src="/js/function.js"></script>
+    <script src="/js/auth.js"></script>
+     <!-- toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   </body>
 
   <!-- Mirrored from html.awaikenthemes.com/healix/blog.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:00 GMT -->
