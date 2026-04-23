@@ -139,36 +139,73 @@ exports.updateProgram = async (req, res) => {
     const updates = { ...req.body };
     const programId = req.params.id;
 
-    // 1. Handle Main Image
-    if (req.files && req.files['image']) {
-      updates.image = req.files['image'][0].filename;
+    // 1. Fetch the current program to see what's currently in the folder/DB
+    const oldProgram = await Program.findById(programId);
+    if (!oldProgram) return sendResponse(res, 404, "Program not found");
+
+    // --- MAIN IMAGE CLEANUP ---
+    if (req.files && req.files["image"]) {
+      // Delete the old main image from disk if it's being replaced
+      const oldMainPath = path.join(__dirname, "../../uploads/", oldProgram.image);
+      if (fs.existsSync(oldMainPath)) fs.unlinkSync(oldMainPath);
+
+      updates.image = req.files["image"][0].filename;
     }
 
-    // 2. Handle Gallery Logic (The tricky part)
+    // --- GALLERY CLEANUP (THE KEY FIX) ---
     let finalGallery = [];
-    
-    // Get filenames we want to KEEP (sent from frontend)
     if (updates.existingGallery) {
-      finalGallery = JSON.parse(updates.existingGallery);
+      const keepList = JSON.parse(updates.existingGallery);
+
+      // Identify images to delete: present in oldProgram.gallery but NOT in keepList
+      const imagesToDelete = oldProgram.gallery.filter(
+        (img) => !keepList.includes(img),
+      );
+
+      // Physically delete those removed images from the /uploads folder
+      imagesToDelete.forEach((filename) => {
+        const filePath = path.join(__dirname, "../../uploads/", filename);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      });
+
+      finalGallery = keepList;
     }
 
-    // Add NEWLY uploaded gallery images
-    const newFiles = getGalleryFiles(req);
-    finalGallery = [...finalGallery, ...newFiles];
-    
+    // Add NEWLY uploaded gallery images to the final list
+    if (req.files && req.files["gallery"]) {
+      const newFiles = req.files["gallery"].map((file) => file.filename);
+      finalGallery = [...finalGallery, ...newFiles];
+    }
+
     updates.gallery = finalGallery;
 
-    // 3. Standard parsing (same as your original code)
-    if (updates.title) updates.slug = slugify(updates.title, { lower: true, strict: true });
-    if (updates.features) updates.features = typeof updates.features === "string" ? JSON.parse(updates.features) : updates.features;
-    if (updates.schedules) updates.schedules = parseSchedules(updates.schedules);
-    if (updates.isFeatured !== undefined) updates.isFeatured = updates.isFeatured === "true";
+    // --- REST OF UPDATES ---
+    if (updates.title)
+      updates.slug = slugify(updates.title, { lower: true, strict: true });
+    if (updates.features)
+      updates.features =
+        typeof updates.features === "string"
+          ? JSON.parse(updates.features)
+          : updates.features;
+    if (updates.schedules)
+      updates.schedules = parseSchedules(updates.schedules);
+    if (updates.isFeatured !== undefined)
+      updates.isFeatured = updates.isFeatured === "true";
 
-    const program = await Program.findByIdAndUpdate(programId, updates, { new: true });
-    
-    if (!program) return sendResponse(res, 404, "Program not found");
-    return sendResponse(res, 200, "Program updated successfully", program);
+    const updatedProgram = await Program.findByIdAndUpdate(programId, updates, {
+      new: true,
+    });
+
+    return sendResponse(
+      res,
+      200,
+      "Program updated successfully",
+      updatedProgram,
+    );
   } catch (err) {
+    console.error("UPDATE ERROR:", err);
     return sendResponse(res, 500, "Failed to update program");
   }
 };
@@ -185,7 +222,7 @@ exports.deleteProgram = async (req, res) => {
     // 1. Helper function to safely delete a file
     const deleteFile = (filename) => {
       if (!filename) return;
-      const filePath = path.join(__dirname, "../uploads/", filename);
+      const filePath = path.join(__dirname, "../../uploads/", filename);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
