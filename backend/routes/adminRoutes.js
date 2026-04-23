@@ -9,6 +9,8 @@ const Program = require("../models/Program");
 const authController = require("../controllers/authController");
 const Course = require("../models/Course");
 const Plan = require("../models/Plan");
+const Purchase = require("../models/Purchase");
+const UserAccess = require("../models/UserAccess");
 
 // Login Page
 router.get("/login", (req, res) => {
@@ -389,6 +391,56 @@ router.get("/admin-plans", isAuthenticated, async (req, res) => {
       limit: 10,
       error: "Failed to load plans",
     });
+  }
+});
+
+router.get("/admin-purchases", async (req, res) => {
+  try {
+    const purchases = await Purchase.find({ status: "completed" })
+      .populate("user", "name email")
+      .populate("course")
+      .populate({
+        path: "plan",
+        populate: { path: "courses" }
+      })
+      .sort({ createdAt: -1 });
+
+    const accesses = await UserAccess.find({})
+      .populate("course")
+      .populate("plan");
+
+    // ===== MERGE ACCESS INTO PURCHASE =====
+    const enrichedPurchases = purchases.map((p) => {
+
+      let relatedAccess = null;
+
+      if (p.type === "course") {
+        relatedAccess = accesses.find(a =>
+          a.user.toString() === p.user._id.toString() &&
+          a.course?._id.toString() === p.course?._id.toString()
+        );
+      }
+
+      if (p.type === "plan") {
+        relatedAccess = accesses.filter(a =>
+          a.user.toString() === p.user._id.toString() &&
+          a.plan?._id.toString() === p.plan?._id.toString()
+        );
+      }
+
+      return {
+        ...p.toObject(),
+        access: relatedAccess
+      };
+    });
+
+    res.render("admin-purchases", {
+      purchases: enrichedPurchases
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading purchases");
   }
 });
 

@@ -12,10 +12,20 @@ const UserAccess = require("../models/UserAccess");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const { default: mongoose } = require("mongoose");
+const nodemailer = require("nodemailer");
+const User = require("../models/User");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY,
   key_secret: process.env.RAZORPAY_SECRET,
+});
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
 // home page
@@ -313,7 +323,7 @@ router.get("/account", isAuthenticated, async (req, res) => {
 
         // ✅ ADD SOURCE (avoid duplicates)
         const alreadyExists = existing.sources.some(
-          (s) => s.name === sourceName
+          (s) => s.name === sourceName,
         );
 
         if (!alreadyExists) {
@@ -350,9 +360,7 @@ router.get("/account", isAuthenticated, async (req, res) => {
 
       const coursesWithAccess = plan.courses.map((course) => {
         const access = accesses.find(
-          (a) =>
-            a.course &&
-            a.course._id.toString() === course._id.toString()
+          (a) => a.course && a.course._id.toString() === course._id.toString(),
         );
 
         return {
@@ -395,7 +403,6 @@ router.get("/account", isAuthenticated, async (req, res) => {
       purchasedPlans,
       allPlans,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).send("Error loading account page");
@@ -478,7 +485,7 @@ router.get("/checkout/:type/:id", async (req, res) => {
     if (type === "course") {
       item = await Course.findById(id);
     } else if (type === "plan") {
-      item = await Plan.findById(id);
+      item = await Plan.findById(id).populate("courses");
     }
 
     if (!item) {
@@ -560,9 +567,10 @@ router.post("/create-order", isAuthenticated, async (req, res) => {
 // ================= VERIFY PAYMENT =================
 router.post("/verify-payment", isAuthenticated, async (req, res) => {
   const session = await mongoose.startSession();
-  session.startTransaction();
 
   try {
+    session.startTransaction();
+
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
 
@@ -575,53 +583,51 @@ router.post("/verify-payment", isAuthenticated, async (req, res) => {
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
+      await session.abortTransaction();
       return res.status(400).json({ message: "Invalid payment signature" });
     }
 
-    // ===== FETCH ORDER FROM RAZORPAY =====
     const order = await razorpay.orders.fetch(razorpay_order_id);
 
     if (!order) {
+      await session.abortTransaction();
       return res.status(400).json({ message: "Invalid order" });
     }
 
-    // ===== VALIDATE USER =====
     if (order.notes.userId !== req.user._id.toString()) {
+      await session.abortTransaction();
       return res.status(403).json({ message: "Unauthorized order" });
     }
 
     const type = order.notes.type;
     const id = order.notes.itemId;
 
-    let item;
-
-    if (type === "course") {
-      item = await Course.findById(id);
-    } else {
-      item = await Plan.findById(id).populate("courses");
-    }
+    let item =
+      type === "course"
+        ? await Course.findById(id)
+        : await Plan.findById(id).populate("courses");
 
     if (!item) {
+      await session.abortTransaction();
       return res.status(404).json({ message: "Item not found" });
     }
 
     const amount = item.offerPrice || item.price;
 
-    // ===== AMOUNT CHECK =====
     if (order.amount !== amount * 100) {
+      await session.abortTransaction();
       return res.status(400).json({ message: "Amount mismatch" });
     }
 
-    // ===== PREVENT DUPLICATE PAYMENT =====
     const existingPayment = await Purchase.findOne({
       paymentId: razorpay_payment_id,
     });
 
     if (existingPayment) {
+      await session.abortTransaction();
       return res.json({ message: "Already processed" });
     }
 
-    // ===== PREVENT DUPLICATE PURCHASE =====
     const alreadyPurchased = await Purchase.findOne({
       user: req.user._id,
       ...(type === "course" ? { course: id } : { plan: id }),
@@ -629,6 +635,7 @@ router.post("/verify-payment", isAuthenticated, async (req, res) => {
     });
 
     if (alreadyPurchased) {
+      await session.abortTransaction();
       return res.json({ message: "Already purchased" });
     }
 
@@ -655,19 +662,111 @@ router.post("/verify-payment", isAuthenticated, async (req, res) => {
       await grantPlanAccess(req.user._id, item, session);
     }
 
+    // ✅ COMMIT ONLY ONCE
     await session.commitTransaction();
-    session.endSession();
+
+    // ===== NON-TRANSACTION WORK (SAFE AFTER COMMIT) =====
+    const user = await User.findById(req.user._id);
+
+    let accessText = "Lifetime Access";
+
+    if (type === "course") {
+      const access = await UserAccess.findOne({
+        user: req.user._id,
+        course: item._id,
+      });
+
+      if (access?.expiresAt) {
+        accessText = `Valid till ${new Date(access.expiresAt).toDateString()}`;
+      }
+    } else {
+      const accesses = await UserAccess.find({
+        user: req.user._id,
+        plan: item._id,
+      });
+
+      const expiryDates = accesses.map((a) => a.expiresAt).filter(Boolean);
+
+      if (expiryDates.length) {
+        const maxDate = new Date(
+          Math.max(...expiryDates.map((d) => new Date(d))),
+        );
+        accessText = `Valid till ${maxDate.toDateString()}`;
+      }
+    }
+
+const html = `
+<div style="font-family: Arial, sans-serif; background:#f6f7fb; padding:30px;">
+  <div style="max-width:600px;margin:auto;background:#fff;padding:28px;border-radius:12px;border:1px solid #eee;">
+
+    <h2 style="margin:0;font-size:22px;">
+      🎉 You’re All Set, ${user.name}!
+    </h2>
+
+    <p style="font-size:15px;color:#444;line-height:1.7;margin-top:16px;">
+      Your purchase has been successfully completed, and your access is now active.
+      Welcome to <b>Shony Talks</b> — where learning turns into real growth 🚀
+    </p>
+
+    <div style="background:#f3f6ff;padding:16px;border-radius:10px;margin:22px 0;">
+      <p style="margin:0;font-size:16px;color:#222;">
+        ${type === "course" ? "🎓 Course" : "📦 Plan"}: 
+        <b>${item.title}</b>
+      </p>
+      <p style="margin:6px 0 0;font-size:14px;color:#555;">
+        ${accessText}
+      </p>
+    </div>
+
+    <p style="font-size:15px;color:#444;line-height:1.7;">
+      Everything is now ready for you — just head into your account whenever you’re ready and continue your journey at your own pace.
+    </p>
+
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${process.env.BASE_URL}/account"
+        style="background:#111;color:#fff;padding:12px 22px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block;">
+        🚀 Go to Your Learning Space
+      </a>
+    </div>
+
+    <p style="font-size:14px;color:#555;line-height:1.7;">
+      We’re excited to see what you’ll achieve next. Keep learning, keep growing — we’ve got your back.
+    </p>
+
+    <hr style="border:none;border-top:1px solid #eee;margin:22px 0;">
+
+    <p style="font-size:12px;color:#999;text-align:center;">
+      © ${new Date().getFullYear()} Shony Talks. Built for learners who want more.
+    </p>
+
+  </div>
+</div>
+`;
+
+    transporter
+      .sendMail({
+        from: `"Shony Talks" <${process.env.EMAIL_USER}>`,
+        to: user.email,
+        subject: "🎉 Purchase Successful",
+        html,
+      })
+      .catch((err) => console.error("EMAIL ERROR:", err));
 
     return res.json({
       success: true,
       purchase: purchase[0],
     });
   } catch (err) {
-    await session.abortTransaction();
-    session.endSession();
+    // ✅ ONLY abort if still active
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
 
     console.error("VERIFY PAYMENT ERROR:", err);
-    res.status(500).json({ message: "Verification failed" });
+    return res.status(500).json({ message: "Verification failed" });
+  } finally {
+    // ✅ ALWAYS end session
+    session.endSession();
   }
 });
 
