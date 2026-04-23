@@ -88,10 +88,10 @@
           <div class="col-lg-3">
             <div class="profile-sidebar wow fadeInUp shadow">
               <ul>
-                <li class="active" onclick="showTab(event, 'videos')">
+                <li class="active" onclick="showTab(event, 'courses')">My Courses</li>
+                <li  onclick="showTab(event, 'videos')">
                   Videos
                 </li>
-                <li onclick="showTab(event, 'courses')">My Courses</li>
                 <li onclick="showTab(event, 'plans')">My Plans</li>
                 <li onclick="showTab(event, 'profile')">Edit Profile</li>
                 <li><a href="/auth/logout" class="text-danger">Logout</a></li>
@@ -167,61 +167,163 @@
             <!-- PLANS -->
             <div id="plans" class="profile-tab d-none">
               <div class="profile-card">
-                <h3>Available Plans</h3>
+<h3>My Plans</h3>
 
-                <div class="row mt-3">
-                  <% if (plans && plans.length > 0) { %>
-                    <% plans.forEach(plan => { %>
-                      <div class="col-md-6 mb-4">
-                        <div class="plan-card <%= plan.isPopular ? 'highlight' : '' %>">
-                          <div class="plan-header">
-                            <h4><%= plan.title %></h4>
-                            <span class="plan-badge">
-                              <% if (plan.price === 0) { %>
-                                Free
-                              <% } else if (plan.offerPrice) { %>
-                                <small class="text-decoration-line-through text-muted">₹<%= plan.price %></small> 
-                                ₹<%= plan.offerPrice %>/<%= plan.duration.unit.replace(/s$/, '') %>
-                              <% } else { %>
-                                ₹<%= plan.price %>/<%= plan.duration.unit.replace(/s$/, '') %>
-                              <% } %>
-                            </span>
-                          </div>
+<div class="row mt-3">
+  <% if (purchasedPlans && purchasedPlans.length > 0) { %>
 
-                          <ul class="plan-features">
-                            <% if (plan.features && plan.features.length > 0) { %>
-                              <% plan.features.forEach(feature => { %>
-                                <li>✔ <%= feature %></li>
-                              <% }) %>
-                            <% } %>
-                            
-                            <% if (plan.sessions) { %>
-                              <li>✔ <%= plan.sessions %> Live Sessions</li>
-                            <% } %>
-                          </ul>
+    <% purchasedPlans.forEach(plan => { %>
+      <div class="col-md-6 mb-4">
+        <div class="plan-card highlight">
 
-                          <div class="plan-footer">
-                            <% if (plan.isPopular) { %>
-                              <span class="status upcoming">Best Value</span>
-                            <% } else { %>
-                              <span class="status active">Available</span>
-                            <% } %>
-                            <a href="/checkout/<%= plan._id %>" class="btn-link ms-auto">Select Plan</a>
-                          </div>
-                        </div>
-                      </div>
-                    <% }) %>
-                  <% } else { %>
-                    <div class="col-12">
-                      <p class="text-muted">No subscription plans are available at this time.</p>
-                    </div>
-                  <% } %>
-                </div>
+          <!-- HEADER -->
+          <div class="plan-header">
+            <h4><%= plan.title %></h4>
+
+            <% if (plan.isExpired) { %>
+              <span class="status text-danger">Expired</span>
+            <% } else { %>
+              <span class="status active">Active</span>
+            <% } %>
+          </div>
+
+          <!-- PLAN EXPIRY -->
+          <p class="small mb-2">
+            <% if (plan.expiresAt) { %>
+              Valid till <%= new Date(plan.expiresAt).toDateString() %>
+            <% } else { %>
+              Lifetime Plan
+            <% } %>
+          </p>
+
+          <!-- FEATURES -->
+          <ul class="plan-features">
+            <% if (plan.features && plan.features.length > 0) { %>
+              <% plan.features.forEach(f => { %>
+                <li>✔ <%= f %></li>
+              <% }) %>
+            <% } %>
+          </ul>
+
+          <!-- COURSES INSIDE PLAN -->
+          <div class="mt-3">
+            <h6>Included Courses</h6>
+
+            <% if (plan.courses && plan.courses.length > 0) { %>
+              <ul class="list-unstyled">
+
+                <% plan.courses.forEach(course => { %>
+                  <li class="d-flex justify-content-between align-items-center mb-2">
+
+                    <span><%= course.title %></span>
+
+                    <% if (course.isExpired) { %>
+                      <span class="text-danger small">Expired</span>
+                    <% } else if (course.expiresAt) { %>
+                      <span class="text-muted small">
+                        till <%= new Date(course.expiresAt).toDateString() %>
+                      </span>
+                    <% } else { %>
+                      <span class="text-success small">Lifetime</span>
+                    <% } %>
+
+                  </li>
+                <% }) %>
+
+              </ul>
+            <% } else { %>
+              <p class="text-muted small">No courses in this plan</p>
+            <% } %>
+          </div>
+
+        </div>
+      </div>
+    <% }) %>
+
+  <% } else { %>
+    <p class="text-muted">No plans purchased yet.</p>
+  <% } %>
+</div>
+
+<h3 class="mt-5">Available Plans</h3>
+
+<div class="row mt-3">
+  <% allPlans.forEach(plan => { %>
+
+    <% 
+      const isPurchased = purchasedPlans.some(
+        p => p._id.toString() === plan._id.toString()
+      );
+    %>
+
+    <div class="col-md-6 mb-4">
+  <div class="plan-card-modern <%= plan.isPopular ? 'popular' : '' %>">
+
+    <% if (plan.isPopular) { %>
+      <div class="popular-badge">Most Popular</div>
+    <% } %>
+
+    <!-- TITLE -->
+    <h4 class="plan-title"><%= plan.title %></h4>
+
+    <!-- PRICE -->
+    <div class="plan-price">
+      <% if (plan.offerPrice) { %>
+        <span class="old-price">₹<%= plan.price %></span>
+        <span class="new-price">₹<%= plan.offerPrice %></span>
+      <% } else { %>
+        <span class="new-price">₹<%= plan.price %></span>
+      <% } %>
+    </div>
+
+    <!-- DURATION -->
+    <p class="plan-duration">
+      Valid for <strong><%= plan.duration.value %> <%= plan.duration.unit %></strong>
+    </p>
+
+    <!-- FEATURES -->
+    <ul class="plan-features-modern">
+      <% plan.features?.slice(0, 4).forEach(f => { %>
+        <li>✔ <%= f %></li>
+      <% }) %>
+
+      <li>✔ <%= plan.courses.length %> Courses Included</li>
+    </ul>
+
+    <!-- COURSES PREVIEW -->
+    <div class="course-preview">
+      <% plan.courses.slice(0, 3).forEach(course => { %>
+        <span class="course-pill"><%= course.title %></span>
+      <% }) %>
+
+      <% if (plan.courses.length > 3) { %>
+        <span class="course-pill more">+<%= plan.courses.length - 3 %> more</span>
+      <% } %>
+    </div>
+
+    <!-- CTA -->
+    <div class="plan-footer mt-3">
+      <% if (isPurchased) { %>
+        <button class="btn btn-success w-100" disabled>
+          ✔ Already Purchased
+        </button>
+      <% } else { %>
+        <a href="/checkout/plan/<%= plan._id %>" class="btn btn-default w-100">
+          Buy Now
+        </a>
+      <% } %>
+    </div>
+
+  </div>
+</div>
+
+  <% }) %>
+</div>
               </div>
             </div>
 
             <!-- COURSES -->
-            <div id="courses" class="profile-tab d-none">
+            <div id="courses" class="profile-tab ">
               <div class="profile-card">
                 <div
                   class="d-flex justify-content-between align-items-center mb-4"
@@ -241,61 +343,58 @@
                   </button>
                 </div>
 
-                <div id="courseGridView">
-                  <div class="row">
-  <% courses.forEach(course => { %>
+<div id="courseGridView">
 
-    <div class="col-md-4 mb-4">
-      <div class="video-card h-100" onclick="viewCourse('<%= course._id %>')">
+  <% if (!courses || courses.length === 0) { %>
+    
+    <!-- EMPTY STATE -->
+    <div class="text-center py-5">
+      <h5 class="text-muted">No courses yet</h5>
+      <p class="text-muted small">Purchase a plan or course to get started</p>
+      <a href="/courses" class="btn-default btn-sm mt-2">
+        Browse Courses
+      </a>
+    </div>
 
-        <div class="video-thumb">
-          <img src="/uploads/<%= course.image %>" class="img-fluid rounded" />
-          <div class="video-overlay">
-            <i class="fa fa-play"></i>
+  <% } else { %>
+
+    <!-- COURSE GRID -->
+    <div class="row">
+      <% courses.forEach(course => { %>
+
+        <div class="col-md-4 mb-4">
+          <div class="video-card h-100" onclick="viewCourse('<%= course._id %>', '<%= course.title %>')">
+
+            <div class="video-thumb">
+              <img src="/uploads/<%= course.image %>" class="img-fluid rounded" />
+              <div class="video-overlay">
+                <i class="fa fa-play"></i>
+              </div>
+            </div>
+
+            <div class="video-info">
+              <h5><%= course.title %></h5>
+
+              <% if (course.isExpired) { %>
+                <p class="text-danger small">Access Expired</p>
+              <% } else if (course.expiresAt) { %>
+                <p class="text-muted small">
+                  Valid till <%= new Date(course.expiresAt).toDateString() %>
+                </p>
+              <% } else { %>
+                <p class="text-success small">Lifetime Access</p>
+              <% } %>
+
+            </div>
           </div>
         </div>
 
-        <div class="video-info">
-          <h5><%= course.title %></h5>
-
-          <% if (course.isExpired) { %>
-            <p class="text-danger small">Access Expired</p>
-          <% } else if (course.expiresAt) { %>
-            <p class="text-muted small">
-              Valid till <%= course.expiresAt.toDateString() %>
-            </p>
-          <% } else { %>
-            <p class="text-success small">Lifetime Access</p>
-          <% } %>
-
-        </div>
-      </div>
+      <% }) %>
     </div>
 
-  <% }) %>
-</div>
+  <% } %>
 
-                  <div class="pagination-wrapper mt-3">
-                    <ul class="pagination justify-content-center">
-                      <li class="page-item disabled">
-                        <a class="page-link" href="#"
-                          ><i class="fa fa-chevron-left"></i
-                        ></a>
-                      </li>
-                      <li class="page-item active">
-                        <a class="page-link" href="#">1</a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#"
-                          ><i class="fa fa-chevron-right"></i
-                        ></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+</div>
 
                 <div id="courseVideoView" class="d-none">
                   <div class="row" id="courseSpecificVideos">
@@ -322,22 +421,13 @@
                     </div>
                   </div>
 
-                  <div class="pagination-wrapper mt-4">
-                    <ul class="pagination justify-content-center">
-                      <li class="page-item active">
-                        <a class="page-link" href="#">1</a>
-                      </li>
-                      <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                      </li>
-                    </ul>
-                  </div>
+                  
                 </div>
               </div>
             </div>
 
             <!-- VIDEOS -->
-            <div id="videos" class="profile-tab">
+            <div id="videos" class="profile-tab d-none">
               <div class="profile-card">
                 <div
                   class="d-flex justify-content-between align-items-center mb-3"
@@ -594,15 +684,34 @@
             }
           });
       }
-      function viewCourse(courseName) {
-        // 1. Update Title and Hide/Show elements
-        document.getElementById("courseTabTitle").innerText = courseName;
-        document.getElementById("courseGridView").classList.add("d-none");
-        document.getElementById("courseActions").classList.add("d-none");
+     
 
-        document.getElementById("courseVideoView").classList.remove("d-none");
-        document.getElementById("backToCourses").classList.remove("d-none");
-      }
+      async function viewCourse(courseId, courseTitle) {
+  try {
+    // UI toggle
+    document.getElementById("courseTabTitle").innerText = courseTitle;
+    document.getElementById("courseGridView").classList.add("d-none");
+    document.getElementById("courseActions").classList.add("d-none");
+    document.getElementById("courseVideoView").classList.remove("d-none");
+    document.getElementById("backToCourses").classList.remove("d-none");
+
+    // 🔥 FETCH VIDEOS FROM BACKEND
+    const res = await fetch(`/course/${courseId}/videos`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Cannot load videos");
+      return;
+    }
+
+    renderVideos(data.videos);
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong");
+  }
+}
+
 
       function exitCourse() {
         // 1. Reset Title
@@ -615,7 +724,66 @@
         document.getElementById("courseVideoView").classList.add("d-none");
         document.getElementById("backToCourses").classList.add("d-none");
       }
+    function renderVideos(videos) {
+        console.log("VIDEOS:", videos);
+  const container = document.getElementById("courseSpecificVideos");
+  container.innerHTML = "";
+
+  videos.forEach(video => {
+
+    const isLocked = !video.isPreview && !video.isUnlocked;
+
+container.innerHTML += `
+  <div class="col-md-6 mb-3">
+    <div class="video-card ${isLocked ? "locked" : ""}">
+
+      ${
+        isLocked
+          ? `<div class="video-overlay">🔒 Locked</div>`
+          : `
+          <div class="video-wrapper">
+   <iframe 
+                src="${formatYoutube(video.url)}"
+                allowfullscreen>
+              </iframe>
+
+  <!-- TOP FULL BAR -->
+  <div class="yt-block-top-full"></div>
+
+  <!-- BOTTOM CENTER -->
+  <div class="yt-block-bottom-center"></div>
+
+  <!-- BOTTOM RIGHT -->
+  <div class="yt-block-bottom-right"></div>
+</div>
+          `
+      }
+
+      <div class="video-info">
+        <h5>${video.title}</h5>
+      </div>
+
+    </div>
+  </div>
+`;
+  
+  });
+}
+
+function formatYoutube(url) {
+  let videoId = "";
+
+  if (url.includes("youtu.be")) {
+    videoId = url.split("youtu.be/")[1]?.split("?")[0];
+  } else if (url.includes("v=")) {
+    videoId = url.split("v=")[1]?.split("&")[0];
+  }
+
+  return `https://www.youtube-nocookie.com/embed/${videoId}?modestbranding=1&rel=0&controls=1&disablekb=1&fs=0`;
+}
+    
     </script>
+
     <script src="js/jquery-3.7.1.min.js"></script>
     <!-- Circle Progress Js File -->
     <script src="js/circle-progress.min.js"></script>
