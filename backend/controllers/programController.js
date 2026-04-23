@@ -1,5 +1,7 @@
 const Program = require("../models/Program");
 const slugify = require("slugify");
+const fs = require("fs");
+const path = require("path");
 
 // ================== HELPERS ==================
 const sendResponse = (res, status, message, data = null) => {
@@ -38,60 +40,42 @@ const parseSchedules = (schedules) => {
     }));
 };
 
+// Helper to extract filenames from req.files
+const getGalleryFiles = (req) => {
+  if (req.files && req.files['gallery']) {
+    return req.files['gallery'].map(file => file.filename);
+  }
+  return [];
+};
+
 // ================== CREATE ==================
 exports.createProgram = async (req, res) => {
   try {
-    const {
-      title,
-      subtitle,
-      shortDescription,
-      description,
-      duration,
-      category,
-      status,
-      isFeatured,
-      features,
-      schedules,
-    } = req.body;
+    const { title, description, isFeatured, features, schedules } = req.body;
 
-    if (!title || !description) {
-      return sendResponse(res, 400, "Title and description are required");
-    }
+    if (!title || !description) return sendResponse(res, 400, "Title and description required");
 
-    if (!req.file) {
-      return sendResponse(res, 400, "Image is required");
-    }
+    // Check for main image in the new fields format
+    const mainImage = req.files && req.files['image'] ? req.files['image'][0].filename : null;
+    if (!mainImage) return sendResponse(res, 400, "Main image is required");
 
     const slug = slugify(title, { lower: true, strict: true });
-
     const existing = await Program.findOne({ slug });
-    if (existing) {
-      return sendResponse(res, 409, "Program with this title already exists");
-    }
+    if (existing) return sendResponse(res, 409, "Program already exists");
 
     const program = new Program({
-      title,
+      ...req.body,
       slug,
-      subtitle,
-      shortDescription,
-      description,
-      duration,
-      category,
-      status: status || "draft",
       isFeatured: isFeatured === "true",
-      features:
-        typeof features === "string"
-          ? JSON.parse(features).map((f) => f.trim())
-          : features || [],
+      features: typeof features === "string" ? JSON.parse(features) : features,
       schedules: parseSchedules(schedules),
-      image: req.file.filename,
+      image: mainImage,
+      gallery: getGalleryFiles(req) // NEW: Save the gallery array
     });
 
     await program.save();
-
     return sendResponse(res, 201, "Program created successfully", program);
   } catch (err) {
-    console.error("CREATE PROGRAM ERROR:", err);
     return sendResponse(res, 500, "Server error");
   }
 };
@@ -153,89 +137,109 @@ exports.getProgram = async (req, res) => {
 exports.updateProgram = async (req, res) => {
   try {
     const updates = { ...req.body };
+    const programId = req.params.id;
 
-    // SLUG UPDATE + DUPLICATE CHECK
-    if (updates.title) {
-      const newSlug = slugify(updates.title, {
-        lower: true,
-        strict: true,
-      });
+    // 1. Fetch the current program to see what's currently in the folder/DB
+    const oldProgram = await Program.findById(programId);
+    if (!oldProgram) return sendResponse(res, 404, "Program not found");
 
-      const existing = await Program.findOne({
-        slug: newSlug,
-        _id: { $ne: req.params.id },
-      });
+    // --- MAIN IMAGE CLEANUP ---
+    if (req.files && req.files["image"]) {
+      // Delete the old main image from disk if it's being replaced
+      const oldMainPath = path.join(__dirname, "../../uploads/", oldProgram.image);
+      if (fs.existsSync(oldMainPath)) fs.unlinkSync(oldMainPath);
 
-      if (existing) {
-        return sendResponse(res, 409, "Another program with this title exists");
-      }
-
-      updates.slug = newSlug;
+      updates.image = req.files["image"][0].filename;
     }
 
-    // FEATURES
-    if (updates.features) {
-      if (typeof updates.features === "string") {
-        try {
-          updates.features = JSON.parse(updates.features).map((f) => f.trim());
-        } catch {
-          updates.features = updates.features
-            .split(",")
-            .map((f) => f.trim())
-            .filter(Boolean);
+    // --- GALLERY CLEANUP (THE KEY FIX) ---
+    let finalGallery = [];
+    if (updates.existingGallery) {
+      const keepList = JSON.parse(updates.existingGallery);
+
+      // Identify images to delete: present in oldProgram.gallery but NOT in keepList
+      const imagesToDelete = oldProgram.gallery.filter(
+        (img) => !keepList.includes(img),
+      );
+
+      // Physically delete those removed images from the /uploads folder
+      imagesToDelete.forEach((filename) => {
+        const filePath = path.join(__dirname, "../../uploads/", filename);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
         }
-      }
+      });
+
+      finalGallery = keepList;
     }
 
-    // BOOLEAN FIX
-    if (updates.isFeatured !== undefined) {
-      updates.isFeatured = updates.isFeatured === "true";
+    // Add NEWLY uploaded gallery images to the final list
+    if (req.files && req.files["gallery"]) {
+      const newFiles = req.files["gallery"].map((file) => file.filename);
+      finalGallery = [...finalGallery, ...newFiles];
     }
 
-    // SCHEDULES
-    if (updates.schedules) {
+    updates.gallery = finalGallery;
+
+    // --- REST OF UPDATES ---
+    if (updates.title)
+      updates.slug = slugify(updates.title, { lower: true, strict: true });
+    if (updates.features)
+      updates.features =
+        typeof updates.features === "string"
+          ? JSON.parse(updates.features)
+          : updates.features;
+    if (updates.schedules)
       updates.schedules = parseSchedules(updates.schedules);
-    }
+    if (updates.isFeatured !== undefined)
+      updates.isFeatured = updates.isFeatured === "true";
 
-    // IMAGE UPDATE
-    if (req.file) {
-      updates.image = req.file.filename;
-    }
+    const updatedProgram = await Program.findByIdAndUpdate(programId, updates, {
+      new: true,
+    });
 
-    const program = await Program.findByIdAndUpdate(
-      req.params.id,
-      updates,
-      {
-        new: true,
-        runValidators: true,
-      }
+    return sendResponse(
+      res,
+      200,
+      "Program updated successfully",
+      updatedProgram,
     );
-
-    if (!program) {
-      return sendResponse(res, 404, "Program not found");
-    }
-
-    return sendResponse(res, 200, "Program updated successfully", program);
   } catch (err) {
-    console.error("UPDATE PROGRAM ERROR:", err);
+    console.error("UPDATE ERROR:", err);
     return sendResponse(res, 500, "Failed to update program");
   }
 };
 
-// ================== DELETE (SOFT) ==================
+// ================== DELETE (HARD) ==================
 exports.deleteProgram = async (req, res) => {
   try {
-    const program = await Program.findByIdAndUpdate(
-      req.params.id,
-      { isActive: false },
-      { new: true }
-    );
+    const program = await Program.findById(req.params.id);
 
     if (!program) {
       return sendResponse(res, 404, "Program not found");
     }
 
-    return sendResponse(res, 200, "Program deleted successfully");
+    // 1. Helper function to safely delete a file
+    const deleteFile = (filename) => {
+      if (!filename) return;
+      const filePath = path.join(__dirname, "../../uploads/", filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    };
+
+    // 2. Delete the main featured image
+    deleteFile(program.image);
+
+    // 3. Delete all gallery images
+    if (program.gallery && program.gallery.length > 0) {
+      program.gallery.forEach((img) => deleteFile(img));
+    }
+
+    // 4. Finally, remove from database
+    await Program.findByIdAndDelete(req.params.id);
+
+    return sendResponse(res, 200, "Program and associated images deleted successfully");
   } catch (err) {
     console.error("DELETE PROGRAM ERROR:", err);
     return sendResponse(res, 500, "Failed to delete program");
