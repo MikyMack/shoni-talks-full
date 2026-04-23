@@ -119,48 +119,61 @@
                 <!-- Header -->
                 <div class="profile-header">
                   <div>
-                    <h4>John Doe</h4>
+                    <h4><%= user.name %></h4>
                     <p>Manage your personal information</p>
                   </div>
                 </div>
 
                 <!-- Form -->
-                <form class="mt-4">
-                  <div class="form-section">
-                    <h5>Personal Info</h5>
-                    <div class="row">
-                      <div class="col-md-6">
-                        <input
-                          type="text"
-                          placeholder="Full Name"
-                          class="custom-input"
-                        />
-                      </div>
-                      <div class="col-md-6">
-                        <input
-                          type="email"
-                          placeholder="Email Address"
-                          class="custom-input"
-                        />
-                      </div>
-                    </div>
-                  </div>
+<form class="mt-4" id="profileForm">
+  <div class="form-section">
+    <h5>Personal Info</h5>
 
-                  <div class="form-section">
-                    <h5>Contact</h5>
-                    <div class="row">
-                      <div class="col-md-6">
-                        <input
-                          type="text"
-                          placeholder="Phone Number"
-                          class="custom-input"
-                        />
-                      </div>
-                    </div>
-                  </div>
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          type="text"
+          name="name"
+          value="<%= user.name %>"
+          class="custom-input"
+          placeholder="Full Name"
+          required
+        />
+      </div>
 
-                  <button class="btn-default mt-4">Save Changes</button>
-                </form>
+      <div class="col-md-6">
+        <input
+          type="email"
+          value="<%= user.email %>"
+          class="custom-input"
+          disabled
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h5>Contact</h5>
+
+    <div class="row">
+      <div class="col-md-6">
+        <input
+          type="text"
+          name="mobile"
+          value="<%= user.mobile || '' %>"
+          class="custom-input"
+          placeholder="Phone Number"
+          pattern="[0-9]{10}"
+          title="Enter valid 10 digit mobile number"
+        />
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-default mt-4" type="submit">
+    Save Changes
+  </button>
+</form>
               </div>
             </div>
 
@@ -343,58 +356,58 @@
                   </button>
                 </div>
 
-<div id="courseGridView">
+                <div id="courseGridView">
 
-  <% if (!courses || courses.length === 0) { %>
-    
-    <!-- EMPTY STATE -->
-    <div class="text-center py-5">
-      <h5 class="text-muted">No courses yet</h5>
-      <p class="text-muted small">Purchase a plan or course to get started</p>
-      <a href="/courses" class="btn-default btn-sm mt-2">
-        Browse Courses
-      </a>
-    </div>
+                  <% if (!courses || courses.length === 0) { %>
+                    
+                    <!-- EMPTY STATE -->
+                    <div class="text-center py-5">
+                      <h5 class="text-muted">No courses yet</h5>
+                      <p class="text-muted small">Purchase a plan or course to get started</p>
+                      <a href="/courses" class="btn-default btn-sm mt-2">
+                        Browse Courses
+                      </a>
+                    </div>
 
-  <% } else { %>
+                  <% } else { %>
 
-    <!-- COURSE GRID -->
-    <div class="row">
-      <% courses.forEach(course => { %>
+                    <!-- COURSE GRID -->
+                    <div class="row">
+                      <% courses.forEach(course => { %>
 
-        <div class="col-md-4 mb-4">
-          <div class="video-card h-100" onclick="viewCourse('<%= course._id %>', '<%= course.title %>')">
+                        <div class="col-md-4 mb-4">
+                          <div class="video-card h-100" onclick="viewCourse('<%= course._id %>', '<%= course.title %>')">
 
-            <div class="video-thumb">
-              <img src="/uploads/<%= course.image %>" class="img-fluid rounded" />
-              <div class="video-overlay">
-                <i class="fa fa-play"></i>
-              </div>
-            </div>
+                            <div class="video-thumb">
+                              <img src="/uploads/<%= course.image %>" class="img-fluid rounded" />
+                              <div class="video-overlay">
+                                <i class="fa fa-play"></i>
+                              </div>
+                            </div>
 
-            <div class="video-info">
-              <h5><%= course.title %></h5>
+                            <div class="video-info">
+                              <h5><%= course.title %></h5>
 
-              <% if (course.isExpired) { %>
-                <p class="text-danger small">Access Expired</p>
-              <% } else if (course.expiresAt) { %>
-                <p class="text-muted small">
-                  Valid till <%= new Date(course.expiresAt).toDateString() %>
-                </p>
-              <% } else { %>
-                <p class="text-success small">Lifetime Access</p>
-              <% } %>
+                              <% if (course.isExpired) { %>
+                                <p class="text-danger small">Access Expired</p>
+                              <% } else if (course.expiresAt) { %>
+                                <p class="text-muted small">
+                                  Valid till <%= new Date(course.expiresAt).toDateString() %>
+                                </p>
+                              <% } else { %>
+                                <p class="text-success small">Lifetime Access</p>
+                              <% } %>
 
-            </div>
-          </div>
-        </div>
+                            </div>
+                          </div>
+                        </div>
 
-      <% }) %>
-    </div>
+                      <% }) %>
+                    </div>
 
-  <% } %>
+                  <% } %>
 
-</div>
+                </div>
 
                 <div id="courseVideoView" class="d-none">
                   <div class="row" id="courseSpecificVideos">
@@ -642,6 +655,36 @@
 
     <!-- Jquery Library File -->
 
+    <!-- edit profile -->
+<script>
+document.getElementById("profileForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+
+  const data = {
+    name: form.name.value,
+    mobile: form.mobile.value,
+  };
+
+  const res = await fetch("/account/update", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await res.json();
+
+  if (res.ok) {
+    showToast("Profile updated successfully",'success');
+    location.reload();
+  } else {
+    showToast(result.message || "Update failed",'error');
+  }
+});
+</script>
     <script>
       function handleTabClick(e, id) {
         showTab(e, id);

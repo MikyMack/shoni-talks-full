@@ -680,13 +680,15 @@
                   <div class="row">
                     <div class="form-group col-md-6 mb-4">
                       <input
-                        type="text"
-                        name="fname"
-                        class="form-control"
-                        id="fname"
-                        placeholder="First Name"
-                        required
-                      />
+                          type="text"
+                          name="fname"
+                          class="form-control"
+                          placeholder="First Name"
+                          required
+                          minlength="2"
+                          pattern="[A-Za-z\s]+"
+                          title="Only letters allowed"
+                        />
                       <div class="help-block with-errors"></div>
                     </div>
 
@@ -716,12 +718,14 @@
 
                     <div class="form-group col-md-12 mb-4">
                       <input
-                        type="text"
+                        type="tel"
                         name="phone"
                         class="form-control"
-                        id="phone"
                         placeholder="Phone Number"
                         required
+                        pattern="[0-9]{10}"
+                        maxlength="10"
+                        title="Enter valid 10-digit phone number"
                       />
                       <div class="help-block with-errors"></div>
                     </div>
@@ -1162,6 +1166,43 @@
       </div>
     </div>
     <!-- Login modal end -->
+
+    <script>
+document.getElementById("appointmentForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  const fname = form.fname.value.trim();
+  const lname = form.lname.value.trim();
+  const phone = form.phone.value.trim();
+
+  const text =
+`📅 Appointment Request
+
+Hello 👋
+
+I would like to book an appointment.
+
+👤 Name: ${fname} ${lname}
+📞 Phone: ${phone}
+
+Please let me know the available slots.`;
+
+  const encodedText = encodeURIComponent(text);
+
+  const whatsappNumber = "919744975574";
+
+  const url = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
+
+  window.open(url, "_blank");
+});
+</script>
 
     <!-- Jquery Library File -->
     <script src="js/jquery-3.7.1.min.js"></script>

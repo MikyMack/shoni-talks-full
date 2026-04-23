@@ -393,12 +393,14 @@ router.get("/account", isAuthenticated, async (req, res) => {
     // =========================
     const allPlans = await Plan.find({ isActive: true }).populate("courses");
 
+    const user = await User.findById(req.user._id);
+
     // =========================
     // 5. RENDER
     // =========================
     res.render("user/account", {
       title: "Account",
-      user: req.user,
+      user,
       courses,
       purchasedPlans,
       allPlans,
@@ -875,6 +877,55 @@ router.get("/course/:id/videos", isAuthenticated, async (req, res) => {
     res.json({ videos });
   } catch (err) {
     res.status(500).json({ message: "Error loading videos" });
+  }
+});
+
+// edit profile
+router.post("/account/update", isAuthenticated, async (req, res) => {
+  try {
+    let { name, mobile } = req.body;
+
+    // ===== NAME VALIDATION =====
+    name = name?.trim();
+
+    if (!name || name.length < 2) {
+      return res.status(400).json({
+        message: "Name must be at least 2 characters",
+      });
+    }
+
+    if (!/^[A-Za-z\s]+$/.test(name)) {
+      return res.status(400).json({
+        message: "Name can only contain letters and spaces",
+      });
+    }
+
+    // ===== MOBILE VALIDATION (OPTIONAL) =====
+    if (mobile) {
+      mobile = mobile.trim();
+
+      if (!/^[0-9]{10}$/.test(mobile)) {
+        return res.status(400).json({
+          message: "Mobile must be a valid 10-digit number",
+        });
+      }
+    } else {
+      mobile = undefined; // keep it optional cleanly
+    }
+
+    await User.findByIdAndUpdate(req.user._id, {
+      name,
+      ...(mobile && { mobile }),
+    });
+
+    return res.json({
+      success: true,
+      message: "Profile updated successfully",
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Update failed" });
   }
 });
 
