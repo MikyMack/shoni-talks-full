@@ -1,5 +1,7 @@
 const Program = require("../models/Program");
 const slugify = require("slugify");
+const fs = require("fs");
+const path = require("path");
 
 // ================== HELPERS ==================
 const sendResponse = (res, status, message, data = null) => {
@@ -171,20 +173,36 @@ exports.updateProgram = async (req, res) => {
   }
 };
 
-// ================== DELETE (SOFT) ==================
+// ================== DELETE (HARD) ==================
 exports.deleteProgram = async (req, res) => {
   try {
-    const program = await Program.findByIdAndUpdate(
-      req.params.id,
-      { isActive: false },
-      { new: true }
-    );
+    const program = await Program.findById(req.params.id);
 
     if (!program) {
       return sendResponse(res, 404, "Program not found");
     }
 
-    return sendResponse(res, 200, "Program deleted successfully");
+    // 1. Helper function to safely delete a file
+    const deleteFile = (filename) => {
+      if (!filename) return;
+      const filePath = path.join(__dirname, "../uploads/", filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    };
+
+    // 2. Delete the main featured image
+    deleteFile(program.image);
+
+    // 3. Delete all gallery images
+    if (program.gallery && program.gallery.length > 0) {
+      program.gallery.forEach((img) => deleteFile(img));
+    }
+
+    // 4. Finally, remove from database
+    await Program.findByIdAndDelete(req.params.id);
+
+    return sendResponse(res, 200, "Program and associated images deleted successfully");
   } catch (err) {
     console.error("DELETE PROGRAM ERROR:", err);
     return sendResponse(res, 500, "Failed to delete program");
