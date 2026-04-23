@@ -372,7 +372,7 @@ body{
 
 .bg-section.dark-section{
 	position: relative;
-	background: linear-gradient(90deg, #2c2116 0%, #5d4715 100%);
+	background: linear-gradient(90deg, #1f1710 0%, #5d4715 100%);
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: cover;
@@ -385,7 +385,7 @@ body{
 	left: 0;
 	bottom: 0;
 	right: 0;
-	background: linear-gradient(90deg, #2c2116 0%, #5d4715 100%);
+	background: linear-gradient(90deg, #1f1710 0%, #5d4715 100%);
 	border-radius: 50px;
 	height: 100%;
 	width: 100%;
