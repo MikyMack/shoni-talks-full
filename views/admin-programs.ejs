@@ -560,108 +560,116 @@
                 
                     <!-- Add/Edit Program Modal -->
                     <div id="programModal" class="modal">
-  <div class="modal-content">
+                        <div class="modal-content">
 
-    <span class="close" onclick="closeProgramModal()">&times;</span>
+                            <span class="close" onclick="closeProgramModal()">&times;</span>
 
-    <h4 id="modalTitle">Add Program</h4>
+                            <h4 id="modalTitle">Add Program</h4>
 
-    <form id="programForm" class="form-grid">
+                            <form id="programForm" class="form-grid">
 
-  <input type="hidden" id="programId">
+                        <input type="hidden" id="programId">
 
-  <!-- TITLE -->
-  <div class="form-group">
-    <label>Program Title</label>
-    <input type="text" id="title" required>
-  </div>
+                        <!-- TITLE -->
+                        <div class="form-group">
+                            <label>Program Title</label>
+                            <input type="text" id="title" required>
+                        </div>
 
-  <!-- SUBTITLE -->
-  <div class="form-group">
-    <label>Subtitle</label>
-    <input type="text" id="subtitle">
-  </div>
+                        <!-- SUBTITLE -->
+                        <div class="form-group">
+                            <label>Subtitle</label>
+                            <input type="text" id="subtitle">
+                        </div>
 
-  <!-- SHORT DESCRIPTION -->
-  <div class="form-group">
-    <label>Short Description</label>
-    <textarea id="shortDescription"></textarea>
-  </div>
+                        <!-- SHORT DESCRIPTION -->
+                        <div class="form-group">
+                            <label>Short Description</label>
+                            <textarea id="shortDescription"></textarea>
+                        </div>
 
-  <!-- DESCRIPTION -->
-  <div class="form-group full-width">
-    <label>Description</label>
-    <textarea id="description"></textarea>
-  </div>
+                        <!-- DESCRIPTION -->
+                        <div class="form-group full-width">
+                            <label>Description</label>
+                            <textarea id="description"></textarea>
+                        </div>
 
-  <!-- DURATION -->
-  <div class="form-group">
-    <label>Duration</label>
-    <input type="text" id="duration">
-  </div>
+                        <!-- DURATION -->
+                        <div class="form-group">
+                            <label>Duration</label>
+                            <input type="text" id="duration">
+                        </div>
 
-  <!-- CATEGORY -->
-  <div class="form-group">
-    <label>Category</label>
-    <select id="category">
-      <option value="">Select</option>
-      <option value="student">Student</option>
-      <option value="family">Family</option>
-      <option value="mentoring">Mentoring</option>
-      <option value="workshop">Workshop</option>
-    </select>
-  </div>
+                        <!-- CATEGORY -->
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="category">
+                            <option value="">Select</option>
+                            <option value="student">Student</option>
+                            <option value="family">Family</option>
+                            <option value="mentoring">Mentoring</option>
+                            <option value="workshop">Workshop</option>
+                            </select>
+                        </div>
 
-  <!-- STATUS -->
-  <div class="form-group">
-    <label>Status</label>
-    <select id="status">
-      <option value="draft">Draft</option>
-      <option value="published">Published</option>
-    </select>
-  </div>
+                        <!-- STATUS -->
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="status">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                            </select>
+                        </div>
 
-  <!-- FEATURED -->
-  <div class="form-group">
-    <label>
-      <input type="checkbox" id="isFeatured"> Featured Program
-    </label>
-  </div>
+                        <!-- FEATURED -->
+                        <div class="form-group">
+                            <label>
+                            <input type="checkbox" id="isFeatured"> Featured Program
+                            </label>
+                        </div>
 
-  <!-- IMAGE -->
-  <div class="form-group full-width">
-    <label>Program Image</label>
-    <input type="file" id="image" accept="image/*">
-    <img id="imagePreview" style="width:100%; max-height:200px; object-fit:cover; margin-top:10px; display:none;">
-  </div>
+                        <!-- IMAGE -->
+                        <div class="form-group full-width">
+                            <label>Program Image</label>
+                            <input type="file" id="image" accept="image/*">
+                            <img id="imagePreview" style="width:100%; max-height:200px; object-fit:cover; margin-top:10px; display:none;">
+                        </div>
 
-  <!-- FEATURES -->
-  <div class="form-group full-width">
-    <label>Features (comma separated)</label>
-    <textarea id="features"></textarea>
-  </div>
+                        <!-- FEATURES -->
+                        <div class="form-group full-width">
+                            <label>Features (comma separated)</label>
+                            <textarea id="features"></textarea>
+                        </div>
 
-  <!-- SCHEDULES -->
-  <div class="form-group full-width">
-    <label>Schedules</label>
+                        <!-- SCHEDULES -->
+                        <div class="form-group full-width">
+                            <label>Schedules</label>
 
-    <div id="scheduleContainer"></div>
+                            <div id="scheduleContainer"></div>
 
-    <button type="button" onclick="addSchedule()" class="secondary-btn">
-      + Add Schedule
-    </button>
-  </div>
+                            <button type="button" onclick="addSchedule()" class="secondary-btn">
+                            + Add Schedule
+                            </button>
+                        </div>
 
-  <!-- SUBMIT -->
-  <div class="form-group full-width">
-    <button type="button" onclick="saveProgram()" class="primary-btn btn-primary">
-      Save Program
-    </button>
-  </div>
+                        <!-- GALLERY -->
+                        <div class="form-group full-width">
+                            <label>Program Gallery (Multiple Images)</label>
+                            <input type="file" id="galleryInput" accept="image/*" multiple>
+                            
+                            <div id="galleryPreviewContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px;"></div>
+                        </div>
 
-</form>
-  </div>
-</div>
+                        <!-- SUBMIT -->
+                        <div class="form-group full-width">
+                            <button type="button" onclick="saveProgram()" class="primary-btn btn-primary">
+                            Save Program
+                            </button>
+                        </div>
+
+                        </form>
+                        </div>
+                    </div>
                     <!-- Confirmation Modal -->
                     <div id="confirmModal" class="modal">
                         <div class="modal-content" style="max-width: 400px;">
@@ -679,6 +687,49 @@
                     </div>
                 
 <script>
+
+let galleryFiles = []; // To store new File objects
+let existingGallery = []; // To store strings of existing filenames
+
+const galleryInput = document.getElementById("galleryInput");
+const galleryContainer = document.getElementById("galleryPreviewContainer");
+
+if (galleryInput) {
+    galleryInput.addEventListener("change", function() {
+        const files = Array.from(this.files);
+        files.forEach(file => {
+            galleryFiles.push(file);
+            renderGalleryItem(URL.createObjectURL(file), true, galleryFiles.length - 1);
+        });
+        this.value = ""; // Reset input so same file can be picked again
+    });
+}
+
+function renderGalleryItem(src, isNew, index) {
+    const div = document.createElement("div");
+    div.style.cssText = "position: relative; border: 1px solid #ddd; padding: 5px; border-radius: 4px;";
+    
+    div.innerHTML = `
+        <img src="${src}" style="width: 100%; height: 100px; object-fit: cover;">
+        <button type="button" class="remove-img" 
+            style="position: absolute; top: 0; right: 0; background: red; color: white; border: none; cursor: pointer; padding: 2px 5px; font-size: 12px;">
+            &times;
+        </button>
+    `;
+
+    div.querySelector(".remove-img").onclick = () => {
+        if (isNew) {
+            galleryFiles.splice(index, 1);
+        } else {
+            existingGallery = existingGallery.filter(img => img !== src.split('/').pop());
+        }
+        div.remove();
+    };
+
+    galleryContainer.appendChild(div);
+}
+
+
     let currentPreview = null;
 
 const imageInput = document.getElementById("image");
@@ -701,13 +752,19 @@ if (imageInput) {
 
 // OPEN MODAL
 function openProgramModal(program = null) {
-
+    // 1. Show the modal
     document.getElementById("programModal").style.display = "flex";
 
     const preview = document.getElementById("imagePreview");
+    const galleryContainer = document.getElementById("galleryPreviewContainer");
+
+    // 2. RESET Gallery State (Crucial to prevent images leaking between different programs)
+    galleryContainer.innerHTML = "";
+    galleryFiles = [];      // Reset the new files array
+    existingGallery = [];   // Reset the existing images array
 
     if (program) {
-        // EDIT MODE
+        // --- EDIT MODE ---
         document.getElementById("modalTitle").innerText = "Edit Program";
 
         document.getElementById("programId").value = program._id;
@@ -722,7 +779,7 @@ function openProgramModal(program = null) {
         document.getElementById("features").value =
             program.features?.map(f => f.trim()).join(", ");
 
-        // ✅ SHOW EXISTING IMAGE
+        // ✅ SHOW MAIN FEATURED IMAGE
         if (program.image) {
             preview.src = `/uploads/${program.image}`;
             preview.style.display = "block";
@@ -731,15 +788,25 @@ function openProgramModal(program = null) {
             preview.style.display = "none";
         }
 
+        // ✅ LOAD EXISTING GALLERY IMAGES
+        if (program.gallery && Array.isArray(program.gallery)) {
+            existingGallery = [...program.gallery]; // Store the filenames to keep track
+            program.gallery.forEach(imgName => {
+                // Call the helper function to render each image in the preview grid
+                renderGalleryItem(`/uploads/${imgName}`, false);
+            });
+        }
+
         loadSchedules(program.schedules);
 
     } else {
-        // ADD MODE
+        // --- ADD MODE ---
+        document.getElementById("modalTitle").innerText = "Add Program";
         document.getElementById("programForm").reset();
         document.getElementById("programId").value = "";
         document.getElementById("scheduleContainer").innerHTML = "";
 
-        // ✅ RESET IMAGE PREVIEW
+        // RESET MAIN IMAGE PREVIEW
         preview.src = "";
         preview.style.display = "none";
     }
@@ -835,13 +902,10 @@ function loadSchedules(schedules) {
 
 // SAVE PROGRAM
 async function saveProgram() {
-
     const id = document.getElementById("programId").value;
-
     const schedules = [];
 
     document.querySelectorAll("#scheduleContainer .schedule-box").forEach(div => {
-
         const inputs = div.querySelectorAll("input");
         const status = div.querySelector("select").value;
 
@@ -856,11 +920,11 @@ async function saveProgram() {
             joinLink: inputs[7].value,
             status
         });
-
     });
 
     const formData = new FormData();
 
+    // Standard Fields
     formData.append("title", document.getElementById("title").value);
     formData.append("subtitle", document.getElementById("subtitle").value);
     formData.append("shortDescription", document.getElementById("shortDescription").value);
@@ -870,6 +934,7 @@ async function saveProgram() {
     formData.append("status", document.getElementById("status").value);
     formData.append("isFeatured", document.getElementById("isFeatured").checked);
 
+    // Arrays as JSON Strings
     const features = document.getElementById("features").value
         .split(",")
         .map(f => f.trim())
@@ -878,6 +943,21 @@ async function saveProgram() {
     formData.append("features", JSON.stringify(features));
     formData.append("schedules", JSON.stringify(schedules));
 
+    // --- GALLERY LOGIC START ---
+    
+    // 1. Send existing filenames so the backend knows what to keep
+    // This assumes existingGallery is the global array updated by renderGalleryItem
+    formData.append("existingGallery", JSON.stringify(existingGallery));
+
+    // 2. Send the new image files
+    // This assumes galleryFiles is the global array where we pushed new File objects
+    galleryFiles.forEach((file) => {
+        formData.append("gallery", file); 
+    });
+
+    // --- GALLERY LOGIC END ---
+
+    // Main Featured Image
     const image = document.getElementById("image").files[0];
     if (image) formData.append("image", image);
 
@@ -885,20 +965,27 @@ async function saveProgram() {
     const method = id ? "PUT" : "POST";
 
     const btn = document.querySelector(".primary-btn");
+    const originalBtnText = btn.innerText;
+    
     btn.innerText = "Saving...";
     btn.disabled = true;
 
-    const res = await fetch(url, { method, body: formData });
-    const data = await res.json();
+    try {
+        const res = await fetch(url, { method, body: formData });
+        const data = await res.json();
 
-    btn.innerText = "Save Program";
-    btn.disabled = false;
-
-    if (res.ok) {
-        alert("Saved successfully");
-        location.reload();
-    } else {
-        alert(data.message);
+        if (res.ok) {
+            alert("Saved successfully");
+            location.reload();
+        } else {
+            alert(data.message || "An error occurred");
+        }
+    } catch (error) {
+        console.error("Save Error:", error);
+        alert("Network error, please try again.");
+    } finally {
+        btn.innerText = originalBtnText;
+        btn.disabled = false;
     }
 }
 

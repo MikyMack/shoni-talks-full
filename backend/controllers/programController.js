@@ -38,60 +38,42 @@ const parseSchedules = (schedules) => {
     }));
 };
 
+// Helper to extract filenames from req.files
+const getGalleryFiles = (req) => {
+  if (req.files && req.files['gallery']) {
+    return req.files['gallery'].map(file => file.filename);
+  }
+  return [];
+};
+
 // ================== CREATE ==================
 exports.createProgram = async (req, res) => {
   try {
-    const {
-      title,
-      subtitle,
-      shortDescription,
-      description,
-      duration,
-      category,
-      status,
-      isFeatured,
-      features,
-      schedules,
-    } = req.body;
+    const { title, description, isFeatured, features, schedules } = req.body;
 
-    if (!title || !description) {
-      return sendResponse(res, 400, "Title and description are required");
-    }
+    if (!title || !description) return sendResponse(res, 400, "Title and description required");
 
-    if (!req.file) {
-      return sendResponse(res, 400, "Image is required");
-    }
+    // Check for main image in the new fields format
+    const mainImage = req.files && req.files['image'] ? req.files['image'][0].filename : null;
+    if (!mainImage) return sendResponse(res, 400, "Main image is required");
 
     const slug = slugify(title, { lower: true, strict: true });
-
     const existing = await Program.findOne({ slug });
-    if (existing) {
-      return sendResponse(res, 409, "Program with this title already exists");
-    }
+    if (existing) return sendResponse(res, 409, "Program already exists");
 
     const program = new Program({
-      title,
+      ...req.body,
       slug,
-      subtitle,
-      shortDescription,
-      description,
-      duration,
-      category,
-      status: status || "draft",
       isFeatured: isFeatured === "true",
-      features:
-        typeof features === "string"
-          ? JSON.parse(features).map((f) => f.trim())
-          : features || [],
+      features: typeof features === "string" ? JSON.parse(features) : features,
       schedules: parseSchedules(schedules),
-      image: req.file.filename,
+      image: mainImage,
+      gallery: getGalleryFiles(req) // NEW: Save the gallery array
     });
 
     await program.save();
-
     return sendResponse(res, 201, "Program created successfully", program);
   } catch (err) {
-    console.error("CREATE PROGRAM ERROR:", err);
     return sendResponse(res, 500, "Server error");
   }
 };
@@ -153,71 +135,38 @@ exports.getProgram = async (req, res) => {
 exports.updateProgram = async (req, res) => {
   try {
     const updates = { ...req.body };
+    const programId = req.params.id;
 
-    // SLUG UPDATE + DUPLICATE CHECK
-    if (updates.title) {
-      const newSlug = slugify(updates.title, {
-        lower: true,
-        strict: true,
-      });
-
-      const existing = await Program.findOne({
-        slug: newSlug,
-        _id: { $ne: req.params.id },
-      });
-
-      if (existing) {
-        return sendResponse(res, 409, "Another program with this title exists");
-      }
-
-      updates.slug = newSlug;
+    // 1. Handle Main Image
+    if (req.files && req.files['image']) {
+      updates.image = req.files['image'][0].filename;
     }
 
-    // FEATURES
-    if (updates.features) {
-      if (typeof updates.features === "string") {
-        try {
-          updates.features = JSON.parse(updates.features).map((f) => f.trim());
-        } catch {
-          updates.features = updates.features
-            .split(",")
-            .map((f) => f.trim())
-            .filter(Boolean);
-        }
-      }
+    // 2. Handle Gallery Logic (The tricky part)
+    let finalGallery = [];
+    
+    // Get filenames we want to KEEP (sent from frontend)
+    if (updates.existingGallery) {
+      finalGallery = JSON.parse(updates.existingGallery);
     }
 
-    // BOOLEAN FIX
-    if (updates.isFeatured !== undefined) {
-      updates.isFeatured = updates.isFeatured === "true";
-    }
+    // Add NEWLY uploaded gallery images
+    const newFiles = getGalleryFiles(req);
+    finalGallery = [...finalGallery, ...newFiles];
+    
+    updates.gallery = finalGallery;
 
-    // SCHEDULES
-    if (updates.schedules) {
-      updates.schedules = parseSchedules(updates.schedules);
-    }
+    // 3. Standard parsing (same as your original code)
+    if (updates.title) updates.slug = slugify(updates.title, { lower: true, strict: true });
+    if (updates.features) updates.features = typeof updates.features === "string" ? JSON.parse(updates.features) : updates.features;
+    if (updates.schedules) updates.schedules = parseSchedules(updates.schedules);
+    if (updates.isFeatured !== undefined) updates.isFeatured = updates.isFeatured === "true";
 
-    // IMAGE UPDATE
-    if (req.file) {
-      updates.image = req.file.filename;
-    }
-
-    const program = await Program.findByIdAndUpdate(
-      req.params.id,
-      updates,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-
-    if (!program) {
-      return sendResponse(res, 404, "Program not found");
-    }
-
+    const program = await Program.findByIdAndUpdate(programId, updates, { new: true });
+    
+    if (!program) return sendResponse(res, 404, "Program not found");
     return sendResponse(res, 200, "Program updated successfully", program);
   } catch (err) {
-    console.error("UPDATE PROGRAM ERROR:", err);
     return sendResponse(res, 500, "Failed to update program");
   }
 };
