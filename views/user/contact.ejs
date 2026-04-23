@@ -96,82 +96,51 @@
           <div class="col-lg-6">
             <!-- Contact Form Start -->
             <div class="contact-form wow fadeInUp" data-wow-delay="0.2s">
-              <form
-                id="contactForm"
-                action="#"
-                method="POST"
-                data-toggle="validator"
-              >
-                <div class="row">
-                  <div class="form-group col-md-6 mb-4">
-                    <input
-                      type="text"
-                      name="fname"
-                      class="form-control"
-                      id="fname"
-                      placeholder="First Name"
-                      required
-                    />
-                    <div class="help-block with-errors"></div>
-                  </div>
+            <form id="contactForm">
+              <div class="row">
 
-                  <div class="form-group col-md-6 mb-4">
-                    <input
-                      type="text"
-                      name="lname"
-                      class="form-control"
-                      id="lname"
-                      placeholder="Last Name"
-                      required
-                    />
-                    <div class="help-block with-errors"></div>
-                  </div>
-
-                  <div class="form-group col-md-6 mb-4">
-                    <input
-                      type="email"
-                      name="email"
-                      class="form-control"
-                      id="email"
-                      placeholder="Email Address"
-                      required
-                    />
-                    <div class="help-block with-errors"></div>
-                  </div>
-
-                  <div class="form-group col-md-6 mb-4">
-                    <input
-                      type="text"
-                      name="phone"
-                      class="form-control"
-                      id="phone"
-                      placeholder="Phone Number"
-                      required
-                    />
-                    <div class="help-block with-errors"></div>
-                  </div>
-
-                  <div class="form-group col-md-12 mb-5">
-                    <textarea
-                      name="message"
-                      class="form-control"
-                      id="message"
-                      rows="4"
-                      placeholder="Message"
-                    ></textarea>
-                    <div class="help-block with-errors"></div>
-                  </div>
-
-                  <div class="col-lg-12">
-                    <div class="contact-form-btn">
-                      <button type="submit" class="btn-default">
-                        send message
-                      </button>
-                      <div id="msgSubmit" class="h3 hidden"></div>
-                    </div>
-                  </div>
+                <div class="form-group col-md-6 mb-4">
+                  <input type="text" name="fname" class="form-control"
+                    placeholder="First Name"
+                    required minlength="2"
+                    pattern="[A-Za-z ]+">
                 </div>
-              </form>
+
+                <div class="form-group col-md-6 mb-4">
+                  <input type="text" name="lname" class="form-control"
+                    placeholder="Last Name"
+                    >
+                </div>
+
+                <div class="form-group col-md-6 mb-4">
+                  <input type="email" name="email" class="form-control"
+                    placeholder="Email Address"
+                    >
+                </div>
+
+                <div class="form-group col-md-6 mb-4">
+                  <input type="tel" name="phone" class="form-control"
+                    placeholder="Phone Number"
+                    required
+                    pattern="[0-9]{10}"
+                    maxlength="10">
+                </div>
+
+                <div class="form-group col-md-12 mb-5">
+                  <textarea name="message" class="form-control"
+                    rows="4"
+                    placeholder="Message"
+                    required minlength="5"></textarea>
+                </div>
+
+                <div class="col-lg-12">
+                  <button type="submit" class="btn-default">
+                    Send Message
+                  </button>
+                </div>
+
+              </div>
+            </form>
             </div>
             <!-- Contact Form End -->
           </div>
@@ -274,24 +243,7 @@
     <!-- Page Contct Us End -->
 
     <!-- Google Map Section Start -->
-    <div class="google-map">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <!-- Google Map IFrame Start -->
-            <div class="google-map-iframe">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d96737.10562045308!2d-74.08535042841811!3d40.739265258395164!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sin!4v1703158537552!5m2!1sen!2sin"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-              ></iframe>
-            </div>
-            <!-- Google Map IFrame End -->
-          </div>
-        </div>
-      </div>
-    </div>
+  
     <!-- Google Map Section End -->
 
     <!-- Main Footer Section Start -->
@@ -385,6 +337,45 @@
     <!-- Mobile Bottom Navbar Start -->
     <%- include('../partials/mobileNav.ejs') %>
     <!-- Mobile Bottom Navbar End -->
+
+    <!-- contact form script -->
+     <script>
+document.getElementById("contactForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+
+  // Basic validation check (extra safety)
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  const fname = form.fname.value.trim();
+  const lname = form.lname.value.trim();
+  const email = form.email.value.trim();
+  const phone = form.phone.value.trim();
+  const message = form.message.value.trim();
+
+  const text =
+`Hi, I would like to inquire about your services.
+
+👤 Name: ${fname} ${lname}
+📧 Email: ${email}
+📞 Phone: ${phone}
+
+💬 Message:
+${message}`;
+
+  const encodedText = encodeURIComponent(text);
+
+  const whatsappNumber = "919744975574"; // no + sign
+
+  const url = `https://wa.me/${whatsappNumber}?text=${encodedText}`;
+
+  window.open(url, "_blank");
+});
+</script>
 
     <!-- Jquery Library File -->
     <script src="js/jquery-3.7.1.min.js"></script>
