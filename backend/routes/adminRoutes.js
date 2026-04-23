@@ -228,10 +228,10 @@ router.get("/admin-programs", isAuthenticated, async (req, res) => {
     }
 
     // 🔥 Count
-    const totalPrograms = await Program.countDocuments(query);
+    const totalPrograms = await Program.countDocuments();
 
     // 🔥 Fetch programs
-    const programs = await Program.find(query)
+    const programs = await Program.find()
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
