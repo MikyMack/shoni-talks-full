@@ -130,16 +130,17 @@
               <!-- TAGS -->
               <div class="col-lg-8">
                 <div class="post-tags">
-                  <span class="tag-links">
-                    Tags:
-                    <% if (blog.metaKeywords && blog.metaKeywords.length) { %>
-                      <% blog.metaKeywords.forEach(tag => { %>
-                        <a href="/blogs?tag=<%= tag %>"><%= tag %></a>
-                      <% }) %>
-                    <% } else { %>
-                      <span>No tags</span>
-                    <% } %>
-                  </span>
+
+<span class="tag-links">
+  Tags:
+  <% if (blog.tags && blog.tags.length) { %>
+    <% blog.tags.forEach(tag => { %>
+      <a href="/blogs?tag=<%= tag %>"><%= tag %></a>
+    <% }) %>
+  <% } else { %>
+    <span>No tags</span>
+  <% } %>
+</span>
                 </div>
               </div>
 
