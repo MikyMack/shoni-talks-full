@@ -113,67 +113,96 @@
           </div>
         </div>
         <div class="row">
-          <% courses.forEach(course => { %>
 
-            <div class="col-lg-4 col-md-6 mb-4">
-              <div class="course-card">
-  
-  <div class="course-image">
-    <img src="/uploads/<%= course.image || 'default.jpg' %>" alt="Course" />
+  <% if (courses.length > 0) { %>
 
-    <% if (course.isFeatured) { %>
-      <span class="badge-featured">Featured</span>
-    <% } %>
+    <% courses.forEach(course => { %>
 
-    <div class="course-overlay">
-      <a href="/course/<%= course.slug %>" class="preview-btn">
-        View Course
-      </a>
-    </div>
-  </div>
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="course-card">
 
-  <div class="course-body">
+          <div class="course-image">
+            <img src="/uploads/<%= course.image || 'default.jpg' %>" alt="Course" />
 
-    <div class="course-category">
-      <%= course.category %>
-    </div>
+            <% if (course.isFeatured) { %>
+              <span class="badge-featured">Featured</span>
+            <% } %>
 
-    <h3 class="course-title">
-      <%= course.title %>
-    </h3>
+            <div class="course-overlay">
+              <a href="/course/<%= course.slug %>" class="preview-btn">
+                View Course
+              </a>
+            </div>
+          </div>
 
-    <p class="course-desc">
-      <%= course.shortDescription.substring(0, 90) || course.description.substring(0, 90) %>...
-    </p>
+          <div class="course-body">
 
-    <div class="course-meta">
-      <div>⏱ <%= course.duration || "N/A" %></div>
-      <div>📦 <%= course.resourcesCount || 0 %> resources</div>
-    </div>
-
-    <div class="course-footer">
-
-      <div class="price">
-        <span class="current">₹<%= course.offerPrice || course.price %></span>
-
-        <% if (course.offerPrice && course.offerPrice < course.price) { %>
-          <span class="old">₹<%= course.price %></span>
-        <% } %>
-      </div>
-
-      <a href="/course/<%= course.slug %>" class="btn-view">
-        Explore
-      </a>
-
-    </div>
-
-  </div>
-
-</div>
+            <div class="course-category">
+              <%= course.category %>
             </div>
 
-          <% }) %>
+            <h3 class="course-title">
+              <%= course.title %>
+            </h3>
+
+            <p class="course-desc">
+              <%= (course.shortDescription || course.description).substring(0, 90) %>...
+            </p>
+
+            <div class="course-meta">
+              <div>⏱ <%= course.duration || "N/A" %></div>
+              <div>📦 <%= course.resourcesCount || 0 %> resources</div>
+            </div>
+
+            <div class="course-footer">
+              <div class="price">
+                <span class="current">₹<%= course.offerPrice || course.price %></span>
+
+                <% if (course.offerPrice && course.offerPrice < course.price) { %>
+                  <span class="old">₹<%= course.price %></span>
+                <% } %>
+              </div>
+
+              <a href="/course/<%= course.slug %>" class="btn-view">
+                Explore
+              </a>
+            </div>
+
+          </div>
+
         </div>
+      </div>
+
+    <% }) %>
+
+  <% } else { %>
+
+    <!-- 🔴 NO RESULTS UI -->
+    <div class="col-12 text-center py-5">
+      <div class="no-results-box">
+
+        <h4 class="fw-bold mb-2">No courses found</h4>
+
+        <% if (search) { %>
+          <p class="text-muted">
+            No results for "<strong><%= search %></strong>"
+          </p>
+
+          <a href="/courses" class="btn-default btn-highlighted mt-3">
+            Clear Search
+          </a>
+        <% } else { %>
+          <p class="text-muted">
+            No courses available at the moment.
+          </p>
+        <% } %>
+
+      </div>
+    </div>
+
+  <% } %>
+
+</div>
         <div class="row mt-5">
           <% if (totalPages > 1) { %>
           <div class="col-lg-12">

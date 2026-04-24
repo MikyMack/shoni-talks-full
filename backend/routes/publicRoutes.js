@@ -151,20 +151,36 @@ router.get("/courses", async (req, res) => {
       ];
     }
 
-    // 🔽 SORTING
-    let sortOption = { createdAt: -1 }; // newest default
-
-    if (sort === "priceLow") sortOption = { price: 1 };
-    if (sort === "priceHigh") sortOption = { price: -1 };
-
-    // 📊 PAGINATION
+    // 📊 TOTAL COUNT
     const total = await Course.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
 
-    const courses = await Course.find(query)
-      .sort(sortOption)
-      .skip((page - 1) * limit)
-      .limit(limit);
+    let courses;
+
+    // 🔥 FIXED SORTING
+    if (sort === "priceLow" || sort === "priceHigh") {
+      const sortOrder = sort === "priceLow" ? 1 : -1;
+
+      courses = await Course.aggregate([
+        { $match: query },
+        {
+          $addFields: {
+            finalPrice: {
+              $ifNull: ["$offerPrice", "$price"],
+            },
+          },
+        },
+        { $sort: { finalPrice: sortOrder } },
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+      ]);
+    } else {
+      // DEFAULT (newest)
+      courses = await Course.find(query)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
+    }
 
     res.render("user/courses", {
       title: "Courses",
@@ -202,19 +218,22 @@ router.get("/course/:slug", async (req, res) => {
       return res.status(404).send("Course not found");
     }
 
-    // find preview video
-    const preview = course.videos?.find((v) => v.isPreview);
+    // filter active videos (optional)
+    course.videos = course.videos?.filter(v => v.isActive);
+
+    // robust preview selection
+    const preview = course.videos?.find(
+      (v) => v.isPreview === true || v.isPreview === "true"
+    );
 
     course.previewVideo = preview ? getEmbedUrl(preview.url) : null;
-
-    if (!course) {
-      return res.status(404).send("Course not found");
-    }
 
     res.render("user/courseDetails", {
       title: course.title,
       course,
+      user: req.user || null,
     });
+
   } catch (error) {
     console.error(error);
     res.status(500).send("Error loading course details page data");

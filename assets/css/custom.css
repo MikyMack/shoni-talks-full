@@ -245,7 +245,7 @@ body{
 	bottom: 0;
     width: 0;
     height: 100%;    
-	background: var(--accent-secondary-color);
+	background: var(--primary-color);
 	transform: skew(15deg);
     transition: all 0.4s ease-in-out;
     z-index: -1;
