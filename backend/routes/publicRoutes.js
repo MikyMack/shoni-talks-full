@@ -892,6 +892,8 @@ async function grantPlanAccess(userId, plan, session) {
   }
 }
 
+
+
 // get course videos (with access check)
 router.get("/course/:id/videos", isAuthenticated, async (req, res) => {
   try {

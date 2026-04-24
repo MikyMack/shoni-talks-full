@@ -23,7 +23,8 @@ const enrollmentSchema = new mongoose.Schema({
     type: String,
     enum: ["active", "expired", "cancelled"],
     default: "active"
-  }
+  },
+  
 
 }, { _id: false });
 
