@@ -967,4 +967,12 @@ router.post("/account/update", isAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/terms", (req, res) => {
+  res.render("user/terms");
+});
+
+router.get("/privacy", (req, res) => {
+  res.render("user/privacy");
+});
+
 module.exports = router;
