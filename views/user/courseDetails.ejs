@@ -62,6 +62,10 @@
               <h1 class="text-anime-style-3" data-cursor="-opaque">
                 Courses
               </h1>
+
+        <p class="text-light opacity-75 mb-0">
+          Explore structured courses designed to improve your skills and knowledge.
+        </p>
               
             </div>
             <!-- Page Header Box End -->
@@ -72,126 +76,155 @@
     <!-- Page Header End -->
 
     
-<div class="course-single-section bg-section py-5" style="margin-bottom: 60px;">
+<div class="course-single-section bg-section py-5">
   <div class="container">
-    <div class="row">
+    <div class="row g-4">
 
-      <!-- LEFT -->
+      <!-- ================= LEFT CONTENT ================= -->
       <div class="col-lg-8">
+
         <div class="course-details-content">
 
-          <!-- HEADER -->
-          <div class="course-header mb-4">
-            <h1 class="display-5 fw-bold"><%= course.title %></h1>
+          <!-- TITLE -->
+          <div class="mb-4">
+            <h1 class="fw-bold display-6">
+              <%= course.title %>
+            </h1>
 
             <% if (course.shortDescription) { %>
-              <p class="lead"><%= course.shortDescription %></p>
+              <p class="text-muted fs-5 mt-2">
+                <%= course.shortDescription %>
+              </p>
             <% } %>
           </div>
 
           <!-- IMAGE -->
-          <div class="course-main-thumb mb-4">
-            <img 
-              src="/uploads/<%= course.image || 'default.jpg' %>" 
-              class="img-fluid rounded-4 shadow-sm"
-            >
-          </div>
+          <% if (course.image) { %>
+            <div class="mb-4">
+              <img
+                src="/uploads/<%= course.image %>"
+                class="img-fluid rounded-4 shadow-sm"
+                style="width: 100%; object-fit: cover;"
+              />
+            </div>
+          <% } %>
 
           <!-- DESCRIPTION -->
-          <div class="course-description mb-5">
-            <h3 class="mb-3">About This Course</h3>
-            <p><%= course.description %></p>
+          <div class="mb-5">
+            <h4 class="mb-3">About This Course</h4>
 
-            <% if (course.learnings && course.learnings.length > 0) { %>
-              <h4 class="mt-4 mb-3">What You Will Learn</h4>
+            <p class="text-muted">
+              <%= course.description %>
+            </p>
+          </div>
 
-              <ul class="list-check">
+          <!-- LEARNINGS -->
+          <% if (course.learnings && course.learnings.length) { %>
+            <div class="mb-5">
+              <h4 class="mb-3">What You’ll Learn</h4>
+
+              <ul class="list-unstyled">
                 <% course.learnings.forEach(item => { %>
-                  <li>
-                    <i class="fa-solid fa-check text-primary me-2"></i>
+                  <li class="mb-2">
+                    <i class="fa-solid fa-check text-success me-2"></i>
                     <%= item %>
                   </li>
                 <% }) %>
               </ul>
-            <% } %>
-          </div>
+            </div>
+          <% } %>
 
         </div>
       </div>
 
-      <!-- RIGHT -->
+      <!-- ================= RIGHT SIDEBAR ================= -->
       <div class="col-lg-4">
-        <div class="course-sidebar sticky-top" style="top: 100px; z-index: 10;">
-          <div class="course-preview-card bg-white p-3 rounded-4 shadow">
 
-            <!-- VIDEO -->
+        <div class="course-sidebar" style="position: sticky; top: 100px;">
+
+          <div class="course-preview-card bg-white rounded-4 shadow-sm p-3">
+
+            <!-- PREVIEW VIDEO -->
             <% if (course.previewVideo) { %>
-              <div class="video-preview-wrapper mb-3">
-                <div class="ratio ratio-16x9 rounded overflow-hidden">
-                  <iframe 
-                    src="<%= course.previewVideo %>" 
-                    allowfullscreen>
-                  </iframe>
-                </div>
+              <div class="ratio ratio-16x9 rounded-3 overflow-hidden mb-3">
+                <iframe
+                  src="<%= course.previewVideo %>"
+                  frameborder="0"
+                  allowfullscreen>
+                </iframe>
               </div>
             <% } %>
 
+            <!-- COURSE INFO BOX -->
+            <% if (
+              course.videoHours ||
+              course.resourcesCount ||
+              course.hasCertificate ||
+              course.directAccessType
+            ) { %>
+
+              <div class="border rounded-3 p-3 mb-3">
+
+                <h6 class="fw-semibold mb-3">Course Includes</h6>
+
+                <ul class="list-unstyled small mb-0">
+
+                  <% if (course.videoHours) { %>
+                    <li class="mb-2">
+                      🎥 <%= course.videoHours %> hours content
+                    </li>
+                  <% } %>
+
+                  <% if (course.resourcesCount) { %>
+                    <li class="mb-2">
+                      📄 <%= course.resourcesCount %> resources
+                    </li>
+                  <% } %>
+
+                  <% if (course.directAccessType) { %>
+                    <li class="mb-2">
+                      🔓 <%= course.directAccessType === "lifetime"
+                        ? "Lifetime access"
+                        : "Limited access" %>
+                    </li>
+                  <% } %>
+
+                  <% if (course.hasCertificate) { %>
+                    <li>
+                      🏆 Certificate included
+                    </li>
+                  <% } %>
+
+                </ul>
+
+              </div>
+
+            <% } %>
+
             <!-- PRICE -->
-            <div class="price-box mb-3">
+            <div class="mb-3">
               <h2 class="fw-bold mb-0">
                 ₹<%= course.offerPrice || course.price %>
 
                 <% if (course.offerPrice && course.offerPrice < course.price) { %>
-                  <span class="fs-6 text-muted text-decoration-line-through">
+                  <span class="text-muted text-decoration-line-through fs-6 ms-2">
                     ₹<%= course.price %>
                   </span>
                 <% } %>
               </h2>
             </div>
 
-            <!-- BUTTON -->
-            <a href="#" class="d-grid gap-2">
-              <button class="btn-default" onclick="window.location.href='/checkout/course/<%= course._id %>'">
+            <!-- BUY BUTTON -->
+            <a href="javascript:void(0)"
+              class="buy-btn d-grid"
+              data-type="course"
+              data-id="<%= course._id %>"
+              data-auth="<%= user ? 1 : 0 %>">
+
+              <button class="btn btn-default btn-lg rounded-3">
                 Buy Now
               </button>
             </a>
-
-            <!-- INCLUDES -->
-            <div class="course-includes mt-4">
-              <h6 class="fw-bold">This course includes:</h6>
-
-              <ul class="list-unstyled small mt-2">
-
-                <% if (course.videoHours) { %>
-                  <li class="mb-2">
-                    <i class="fa-regular fa-circle-play me-2"></i>
-                    <%= course.videoHours %> hours video
-                  </li>
-                <% } %>
-
-                <% if (course.resourcesCount) { %>
-                  <li class="mb-2">
-                    <i class="fa-regular fa-file me-2"></i>
-                    <%= course.resourcesCount %> resources
-                  </li>
-                <% } %>
-
-                <% if (course.lifetimeAccess) { %>
-                  <li class="mb-2">
-                    <i class="fa-solid fa-infinity me-2"></i>
-                    Lifetime access
-                  </li>
-                <% } %>
-
-                <% if (course.hasCertificate) { %>
-                  <li>
-                    <i class="fa-solid fa-trophy me-2"></i>
-                    Certificate included
-                  </li>
-                <% } %>
-
-              </ul>
-            </div>
 
           </div>
         </div>
@@ -200,7 +233,6 @@
     </div>
   </div>
 </div>
-    
 
     <!-- Main Footer Section Start -->
     <%- include('../partials/footer.ejs') %>
@@ -295,6 +327,35 @@
     <!-- Mobile Bottom Navbar End -->
 
     <!-- Jquery Library File -->
+     <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const buyButtons = document.querySelectorAll(".buy-btn");
+
+    buyButtons.forEach(btn => {
+      btn.addEventListener("click", function () {
+        const isAuth = this.dataset.auth === "1";
+
+        if (!isAuth) {
+          // show auth modal
+          const modal = new bootstrap.Modal(document.getElementById('authModal'));
+          modal.show();
+
+          // show toast message
+          showToast("Please login to continue",'error');
+
+          return;
+        }
+
+        // if logged in → proceed to checkout
+        const type = this.dataset.type;
+        const id = this.dataset.id;
+
+        window.location.href = `/checkout/${type}/${id}`;
+      });
+    });
+
+  });
+</script>
     <script>
       function showTab(e, id) {
         document.querySelectorAll(".profile-tab").forEach((tab) => {
@@ -340,7 +401,7 @@
     <script src="/js/wow.min.js"></script>
     <!-- Main Custom js file -->
     <script src="/js/function.js"></script>
-    <script src="js/auth.js"></script>
+    <script src="/js/auth.js"></script>
     <!-- toastify JS -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   </body>

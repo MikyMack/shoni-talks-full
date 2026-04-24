@@ -90,6 +90,56 @@
                             <div class="checkout-summary-box wow fadeInUp" data-wow-delay="0.2s">
                                 <h3 class="checkout-title">Your Order</h3>
                                 <div class="order-summary-table">
+                                  <!-- PROFESSIONAL CONTEXT BLOCK -->
+<div class="checkout-context mb-4 p-4 rounded-3 border bg-white">
+
+  <h5 class="fw-semibold mb-2">
+    Review & Confirm
+  </h5>
+
+  <p class="text-muted mb-3 small">
+    Please review your selection before proceeding to secure payment. Access will be granted immediately after successful transaction.
+  </p>
+
+  <div class="row g-2 small">
+
+    <div class="col-6">
+      <div class="d-flex align-items-center gap-2">
+        <i class="fa fa-check text-success"></i>
+        <span>Instant access after payment</span>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <div class="d-flex align-items-center gap-2">
+        <i class="fa fa-check text-success"></i>
+        <span>Secure payment processing</span>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <div class="d-flex align-items-center gap-2">
+        <i class="fa fa-check text-success"></i>
+        <span>No hidden charges</span>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <div class="d-flex align-items-center gap-2">
+        <i class="fa fa-check text-success"></i>
+        <span>Access linked to your account</span>
+      </div>
+    </div>
+
+  </div>
+
+  <% if (type === "plan") { %>
+    <div class="mt-3 small text-muted">
+      This plan provides bundled access to multiple courses under a single purchase.
+    </div>
+  <% } %>
+
+</div>
                                   <ul class="list-unstyled">
 
                                     <!-- TITLE -->

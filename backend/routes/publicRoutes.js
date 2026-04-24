@@ -151,20 +151,36 @@ router.get("/courses", async (req, res) => {
       ];
     }
 
-    // 🔽 SORTING
-    let sortOption = { createdAt: -1 }; // newest default
-
-    if (sort === "priceLow") sortOption = { price: 1 };
-    if (sort === "priceHigh") sortOption = { price: -1 };
-
-    // 📊 PAGINATION
+    // 📊 TOTAL COUNT
     const total = await Course.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
 
-    const courses = await Course.find(query)
-      .sort(sortOption)
-      .skip((page - 1) * limit)
-      .limit(limit);
+    let courses;
+
+    // 🔥 FIXED SORTING
+    if (sort === "priceLow" || sort === "priceHigh") {
+      const sortOrder = sort === "priceLow" ? 1 : -1;
+
+      courses = await Course.aggregate([
+        { $match: query },
+        {
+          $addFields: {
+            finalPrice: {
+              $ifNull: ["$offerPrice", "$price"],
+            },
+          },
+        },
+        { $sort: { finalPrice: sortOrder } },
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+      ]);
+    } else {
+      // DEFAULT (newest)
+      courses = await Course.find(query)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
+    }
 
     res.render("user/courses", {
       title: "Courses",
@@ -180,6 +196,14 @@ router.get("/courses", async (req, res) => {
   }
 });
 
+// function to convert youtube url to embed url
+function getEmbedUrl(url) {
+  if (!url) return null;
+
+  const match = url.match(/(?:v=|\.be\/)([\w-]+)/);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+}
+
 // course details page
 router.get("/course/:slug", async (req, res) => {
   try {
@@ -188,16 +212,28 @@ router.get("/course/:slug", async (req, res) => {
     const course = await Course.findOne({
       slug,
       isActive: true,
-    });
+    }).lean();
 
     if (!course) {
       return res.status(404).send("Course not found");
     }
 
+    // filter active videos (optional)
+    course.videos = course.videos?.filter(v => v.isActive);
+
+    // robust preview selection
+    const preview = course.videos?.find(
+      (v) => v.isPreview === true || v.isPreview === "true"
+    );
+
+    course.previewVideo = preview ? getEmbedUrl(preview.url) : null;
+
     res.render("user/courseDetails", {
       title: course.title,
       course,
+      user: req.user || null,
     });
+
   } catch (error) {
     console.error(error);
     res.status(500).send("Error loading course details page data");
@@ -274,7 +310,10 @@ router.get("/contact", async (req, res) => {
 });
 
 // account page
-router.get("/account", isAuthenticated, async (req, res) => {
+router.get("/account", async (req, res) => {
+  if (!req.user) {
+    return res.redirect("/");
+  }
   try {
     // =========================
     // 1. GET USER ACCESS
@@ -697,7 +736,7 @@ router.post("/verify-payment", isAuthenticated, async (req, res) => {
       }
     }
 
-const html = `
+    const html = `
 <div style="font-family: Arial, sans-serif; background:#f6f7fb; padding:30px;">
   <div style="max-width:600px;margin:auto;background:#fff;padding:28px;border-radius:12px;border:1px solid #eee;">
 
@@ -922,7 +961,6 @@ router.post("/account/update", isAuthenticated, async (req, res) => {
       success: true,
       message: "Profile updated successfully",
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Update failed" });

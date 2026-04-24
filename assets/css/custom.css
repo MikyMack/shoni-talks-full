@@ -245,7 +245,7 @@ body{
 	bottom: 0;
     width: 0;
     height: 100%;    
-	background: var(--accent-secondary-color);
+	background: var(--primary-color);
 	transform: skew(15deg);
     transition: all 0.4s ease-in-out;
     z-index: -1;
@@ -8663,3 +8663,144 @@ header.main-header .header-sticky.active{
 .badge.bg-primary {
   background: linear-gradient(45deg, #2979ff, #82b1ff);
 }
+
+.course-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* IMAGE */
+.course-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.course-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.course-card:hover .course-image img {
+  transform: scale(1.05);
+}
+
+.badge-featured {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #ff5a5f;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* overlay CTA */
+.course-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.course-card:hover .course-overlay {
+  opacity: 1;
+}
+
+.preview-btn {
+  background: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #000;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* BODY */
+.course-body {
+  padding: 16px;
+  flex: 1;
+}
+
+.course-category {
+  font-size: 12px;
+  color: #6c757d;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.course-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #111;
+}
+
+.course-desc {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+/* META */
+.course-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 14px;
+}
+
+/* FOOTER */
+.course-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price .current {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.price .old {
+  font-size: 13px;
+  text-decoration: line-through;
+  color: #999;
+  margin-left: 6px;
+}
+
+.btn-view {
+  background: #111;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+.btn-view:hover {
+  background: #333;
+}
+
