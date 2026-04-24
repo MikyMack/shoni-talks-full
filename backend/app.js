@@ -4,6 +4,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
 const programMiddleware = require('./middleware/programMiddleware');
+require("./utils/courseUnlockCron");
 
 const app = express();
 

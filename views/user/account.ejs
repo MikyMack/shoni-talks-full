@@ -770,7 +770,7 @@ document.getElementById("profileForm").addEventListener("submit", async (e) => {
 
   videos.forEach(video => {
 
-    const isLocked = !video.isPreview && !video.isUnlocked;
+    const isLocked = !video.isUnlocked;
 
 container.innerHTML += `
   <div class="col-md-6 mb-3">

@@ -201,7 +201,9 @@ function getEmbedUrl(url) {
   if (!url) return null;
 
   const match = url.match(/(?:v=|\.be\/)([\w-]+)/);
-  return match ? `https://www.youtube.com/embed/${match[1]}?controls=1&rel=0&modestbranding=1&fs=0` : url;
+  return match
+    ? `https://www.youtube.com/embed/${match[1]}?controls=1&rel=0&modestbranding=1&fs=0`
+    : url;
 }
 
 // course details page
@@ -220,22 +222,20 @@ router.get("/course/:slug", async (req, res) => {
 
     // filter active videos (optional)
     course.videos = course.videos || [];
-    
+
     // robust preview selection
     const preview = course.videos?.find(
-      (v) => v.isPreview === true || v.isPreview === "true"
+      (v) => v.isPreview === true || v.isPreview === "true",
     );
 
     course.previewVideo = preview ? getEmbedUrl(preview.url) : null;
     console.log(course);
-    
 
     res.render("user/courseDetails", {
       title: course.title,
       course,
       user: req.user || null,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).send("Error loading course details page data");
@@ -892,32 +892,28 @@ async function grantPlanAccess(userId, plan, session) {
   }
 }
 
-
-
 // get course videos (with access check)
 router.get("/course/:id/videos", isAuthenticated, async (req, res) => {
   try {
     const access = await UserAccess.findOne({
-      user: req.user._id,
-      course: req.params.id,
-    });
+  user: req.user._id,
+  course: req.params.id,
+});
 
-    if (!access) {
-      return res.status(403).json({ message: "No access" });
-    }
+const course = await Course.findById(req.params.id);
 
-    const isExpired = access.expiresAt && access.expiresAt < new Date();
+const videos = course.videos
+  .sort((a, b) => a.order - b.order)
+  .map((v, index) => ({
+    title: v.title,
+    url: v.url,
+    isPreview: v.isPreview,
 
-    const course = await Course.findById(req.params.id);
+    // 🔥 THIS is the real unlock logic
+    isUnlocked: index < (access?.currentVideoIndex || 0) || v.isPreview,
+  }));
 
-    const videos = course.videos.map((v) => ({
-      title: v.title,
-      url: v.url,
-      isPreview: v.isPreview,
-      isUnlocked: !isExpired,
-    }));
-
-    res.json({ videos });
+    return res.json({ videos });
   } catch (err) {
     res.status(500).json({ message: "Error loading videos" });
   }

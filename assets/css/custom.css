@@ -7332,6 +7332,7 @@ header.main-header .header-sticky.active{
   overflow: hidden;
   margin-bottom: 25px;
   background: #fff;
+  height: 100%;
 }
 
 .video-card iframe {
@@ -8839,6 +8840,32 @@ header.main-header .header-sticky.active{
   z-index: 5;
   background: transparent;
 }
+.video-card {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+}
 
+/* Always dim locked cards */
+.video-card.locked iframe,
+.video-card.locked img {
+  filter: blur(3px) grayscale(100%);
+  transform: scale(1.02);
+}
+
+/* ALWAYS visible overlay (no hover dependency) */
+.video-card.locked .video-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  opacity: 1;   /* important */
+  visibility: visible;
+}
 
 
