@@ -201,7 +201,7 @@ function getEmbedUrl(url) {
   if (!url) return null;
 
   const match = url.match(/(?:v=|\.be\/)([\w-]+)/);
-  return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+  return match ? `https://www.youtube.com/embed/${match[1]}?controls=1&rel=0&modestbranding=1&fs=0` : url;
 }
 
 // course details page
@@ -219,14 +219,16 @@ router.get("/course/:slug", async (req, res) => {
     }
 
     // filter active videos (optional)
-    course.videos = course.videos?.filter(v => v.isActive);
-
+    course.videos = course.videos || [];
+    
     // robust preview selection
     const preview = course.videos?.find(
       (v) => v.isPreview === true || v.isPreview === "true"
     );
 
     course.previewVideo = preview ? getEmbedUrl(preview.url) : null;
+    console.log(course);
+    
 
     res.render("user/courseDetails", {
       title: course.title,

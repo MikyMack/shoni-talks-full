@@ -145,15 +145,23 @@
           <div class="course-preview-card bg-white rounded-4 shadow-sm p-3">
 
             <!-- PREVIEW VIDEO -->
-            <% if (course.previewVideo) { %>
-              <div class="ratio ratio-16x9 rounded-3 overflow-hidden mb-3">
-                <iframe
-                  src="<%= course.previewVideo %>"
-                  frameborder="0"
-                  allowfullscreen>
-                </iframe>
-              </div>
-            <% } %>
+<% if (course.previewVideo) { %>
+  <div class="video-wrapper">
+
+    <iframe
+      src="<%= course.previewVideo %>"
+      allow="autoplay; encrypted-media"
+      >
+    </iframe>
+
+    <!-- TOP BLOCK (title + YouTube link area) -->
+    <div class="video-block-top"></div>
+
+    <!-- BOTTOM BLOCK (logo + share + watch on youtube) -->
+    <div class="video-block-bottom"></div>
+
+  </div>
+<% } %>
 
             <!-- COURSE INFO BOX -->
             <% if (
