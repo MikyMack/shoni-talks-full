@@ -15,18 +15,31 @@ app.set("view engine", "ejs");
 app.use(programMiddleware);
 
 // Sessions
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    ttl: 60 * 60 * 24 * 7 
   }),
-);
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7, 
+    httpOnly: true,
+    secure: false, 
+    sameSite: 'lax'
+  }
+}));
+
+
 app.use("/uploads", express.static("uploads"));
 
 app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
+  const user = req.session.user || null;
+
+  res.locals.user = user; // for EJS
+  req.user = user;        // for backend routes
+
   next();
 });
 

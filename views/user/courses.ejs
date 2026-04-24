@@ -116,46 +116,60 @@
           <% courses.forEach(course => { %>
 
             <div class="col-lg-4 col-md-6 mb-4">
-              <a href="/course/<%= course.slug %>" class="course-card-link">
-                <div class="course-item">
+              <div class="course-card">
+  
+  <div class="course-image">
+    <img src="/uploads/<%= course.image || 'default.jpg' %>" alt="Course" />
 
-                  <div class="course-thumb">
-                    <img src="/uploads/<%= course.image || 'default.jpg' %>" alt="Course" />
+    <% if (course.isFeatured) { %>
+      <span class="badge-featured">Featured</span>
+    <% } %>
 
-                    <% if (course.isFeatured) { %>
-                      <span class="badge-bestseller">Featured</span>
-                    <% } %>
-                  </div>
+    <div class="course-overlay">
+      <a href="/course/<%= course.slug %>" class="preview-btn">
+        View Course
+      </a>
+    </div>
+  </div>
 
-                  <div class="course-content text-dark">
-                    <h3><%= course.title %></h3>
+  <div class="course-body">
 
-                    <p>
-                      <%= course.shortDescription || course.description.substring(0, 80) %>...
-                    </p>
+    <div class="course-category">
+      <%= course.category %>
+    </div>
 
-                    <div class="course-info-list">
-                      <span><%= course.duration || "N/A" %></span>
-                      <span><%= course.videoHours || 0 %> hrs</span>
-                    </div>
+    <h3 class="course-title">
+      <%= course.title %>
+    </h3>
 
-                    <div class="course-footer">
-                      <div class="price">
-                        <span class="current">₹<%= course.offerPrice || course.price %></span>
+    <p class="course-desc">
+      <%= course.shortDescription.substring(0, 90) || course.description.substring(0, 90) %>...
+    </p>
 
-                        <% if (course.offerPrice && course.offerPrice < course.price) { %>
-                          <span class="old">₹<%= course.price %></span>
-                        <% } %>
-                      </div>
+    <div class="course-meta">
+      <div>⏱ <%= course.duration || "N/A" %></div>
+      <div>📦 <%= course.resourcesCount || 0 %> resources</div>
+    </div>
 
-                      <a href="/course/<%= course.slug %>" class="add-cart">
-                        View
-                      </a>
-                    </div>
-                  </div>
+    <div class="course-footer">
 
-                </div>
-              </a>
+      <div class="price">
+        <span class="current">₹<%= course.offerPrice || course.price %></span>
+
+        <% if (course.offerPrice && course.offerPrice < course.price) { %>
+          <span class="old">₹<%= course.price %></span>
+        <% } %>
+      </div>
+
+      <a href="/course/<%= course.slug %>" class="btn-view">
+        Explore
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
             </div>
 
           <% }) %>

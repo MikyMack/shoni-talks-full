@@ -180,6 +180,14 @@ router.get("/courses", async (req, res) => {
   }
 });
 
+// function to convert youtube url to embed url
+function getEmbedUrl(url) {
+  if (!url) return null;
+
+  const match = url.match(/(?:v=|\.be\/)([\w-]+)/);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+}
+
 // course details page
 router.get("/course/:slug", async (req, res) => {
   try {
@@ -188,7 +196,16 @@ router.get("/course/:slug", async (req, res) => {
     const course = await Course.findOne({
       slug,
       isActive: true,
-    });
+    }).lean();
+
+    if (!course) {
+      return res.status(404).send("Course not found");
+    }
+
+    // find preview video
+    const preview = course.videos?.find((v) => v.isPreview);
+
+    course.previewVideo = preview ? getEmbedUrl(preview.url) : null;
 
     if (!course) {
       return res.status(404).send("Course not found");
@@ -274,7 +291,10 @@ router.get("/contact", async (req, res) => {
 });
 
 // account page
-router.get("/account", isAuthenticated, async (req, res) => {
+router.get("/account", async (req, res) => {
+  if (!req.user) {
+    return res.redirect("/");
+  }
   try {
     // =========================
     // 1. GET USER ACCESS
@@ -697,7 +717,7 @@ router.post("/verify-payment", isAuthenticated, async (req, res) => {
       }
     }
 
-const html = `
+    const html = `
 <div style="font-family: Arial, sans-serif; background:#f6f7fb; padding:30px;">
   <div style="max-width:600px;margin:auto;background:#fff;padding:28px;border-radius:12px;border:1px solid #eee;">
 
@@ -922,7 +942,6 @@ router.post("/account/update", isAuthenticated, async (req, res) => {
       success: true,
       message: "Profile updated successfully",
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Update failed" });
