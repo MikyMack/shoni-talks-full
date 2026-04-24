@@ -140,7 +140,33 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       }
 
-      /* RESPONSIVE BREAKPOINTS */
+      /* Better Modal Close Button */
+      .custom-modal-close {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          z-index: 1060;
+          background-color: transparent;
+          opacity: 1;
+          border-radius: 50%;
+          padding: 10px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      }
+
+      #imagePreviewModal .modal-content {
+          background: none;
+      }
+
+      #modalPreviewImage {
+          max-height: 80vh;
+      }
+
+      .slider-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 1 / 1;
+      }
 
       /* Tablet: 2 cards */
       @media (max-width: 991px) {
@@ -439,12 +465,13 @@
     <!-- Main Footer Section Start -->
     <%- include('../partials/footer.ejs') %>
     <!-- Main Footer Section End -->
+
       <!-- Image Preview Modal End-->
       <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-          <div class="modal-content bg-transparent border-0">
+          <div class="modal-content border-0">
+            <button type="button" class="btn-close custom-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <div class="modal-body p-0 text-center">
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: -30px; top: -30px;"></button>
               <img src="" id="modalPreviewImage" class="img-fluid rounded" alt="Preview">
             </div>
           </div>
@@ -624,6 +651,25 @@
         // Trigger the Bootstrap Modal
         const imageModal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
         imageModal.show();
+      }
+
+      let touchstartX = 0;
+      let touchendX = 0;
+
+      const sliderZone = document.querySelector('.slider-viewport');
+
+      sliderZone.addEventListener('touchstart', e => {
+          touchstartX = e.changedTouches[0].screenX;
+      });
+
+      sliderZone.addEventListener('touchend', e => {
+          touchendX = e.changedTouches[0].screenX;
+          handleGesture();
+      });
+
+      function handleGesture() {
+          if (touchendX < touchstartX - 50) moveSlider(1); // Swipe Left
+          if (touchendX > touchstartX + 50) moveSlider(-1); // Swipe Right
       }
     </script>
   </body>
