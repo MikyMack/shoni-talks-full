@@ -3,6 +3,8 @@ const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
+const passport = require('passport');
+// require('./config/passport'); 
 const programMiddleware = require('./middleware/programMiddleware');
 require("./utils/courseUnlockCron");
 
@@ -31,6 +33,9 @@ app.use(session({
     sameSite: 'lax'
   }
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.use("/uploads", express.static("uploads"));
