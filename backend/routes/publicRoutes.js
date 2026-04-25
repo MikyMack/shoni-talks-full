@@ -151,20 +151,36 @@ router.get("/courses", async (req, res) => {
       ];
     }
 
-    // 🔽 SORTING
-    let sortOption = { createdAt: -1 }; // newest default
-
-    if (sort === "priceLow") sortOption = { price: 1 };
-    if (sort === "priceHigh") sortOption = { price: -1 };
-
-    // 📊 PAGINATION
+    // 📊 TOTAL COUNT
     const total = await Course.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
 
-    const courses = await Course.find(query)
-      .sort(sortOption)
-      .skip((page - 1) * limit)
-      .limit(limit);
+    let courses;
+
+    // 🔥 FIXED SORTING
+    if (sort === "priceLow" || sort === "priceHigh") {
+      const sortOrder = sort === "priceLow" ? 1 : -1;
+
+      courses = await Course.aggregate([
+        { $match: query },
+        {
+          $addFields: {
+            finalPrice: {
+              $ifNull: ["$offerPrice", "$price"],
+            },
+          },
+        },
+        { $sort: { finalPrice: sortOrder } },
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+      ]);
+    } else {
+      // DEFAULT (newest)
+      courses = await Course.find(query)
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
+    }
 
     res.render("user/courses", {
       title: "Courses",
@@ -180,6 +196,16 @@ router.get("/courses", async (req, res) => {
   }
 });
 
+// function to convert youtube url to embed url
+function getEmbedUrl(url) {
+  if (!url) return null;
+
+  const match = url.match(/(?:v=|\.be\/)([\w-]+)/);
+  return match
+    ? `https://www.youtube.com/embed/${match[1]}?controls=1&rel=0&modestbranding=1&fs=0`
+    : url;
+}
+
 // course details page
 router.get("/course/:slug", async (req, res) => {
   try {
@@ -188,15 +214,27 @@ router.get("/course/:slug", async (req, res) => {
     const course = await Course.findOne({
       slug,
       isActive: true,
-    });
+    }).lean();
 
     if (!course) {
       return res.status(404).send("Course not found");
     }
 
+    // filter active videos (optional)
+    course.videos = course.videos || [];
+
+    // robust preview selection
+    const preview = course.videos?.find(
+      (v) => v.isPreview === true || v.isPreview === "true",
+    );
+
+    course.previewVideo = preview ? getEmbedUrl(preview.url) : null;
+    console.log(course);
+
     res.render("user/courseDetails", {
       title: course.title,
       course,
+      user: req.user || null,
     });
   } catch (error) {
     console.error(error);
@@ -274,7 +312,10 @@ router.get("/contact", async (req, res) => {
 });
 
 // account page
-router.get("/account", isAuthenticated, async (req, res) => {
+router.get("/account", async (req, res) => {
+  if (!req.user) {
+    return res.redirect("/");
+  }
   try {
     // =========================
     // 1. GET USER ACCESS
@@ -697,7 +738,7 @@ router.post("/verify-payment", isAuthenticated, async (req, res) => {
       }
     }
 
-const html = `
+    const html = `
 <div style="font-family: Arial, sans-serif; background:#f6f7fb; padding:30px;">
   <div style="max-width:600px;margin:auto;background:#fff;padding:28px;border-radius:12px;border:1px solid #eee;">
 
@@ -855,26 +896,24 @@ async function grantPlanAccess(userId, plan, session) {
 router.get("/course/:id/videos", isAuthenticated, async (req, res) => {
   try {
     const access = await UserAccess.findOne({
-      user: req.user._id,
-      course: req.params.id,
-    });
+  user: req.user._id,
+  course: req.params.id,
+});
 
-    if (!access) {
-      return res.status(403).json({ message: "No access" });
-    }
+const course = await Course.findById(req.params.id);
 
-    const isExpired = access.expiresAt && access.expiresAt < new Date();
+const videos = course.videos
+  .sort((a, b) => a.order - b.order)
+  .map((v, index) => ({
+    title: v.title,
+    url: v.url,
+    isPreview: v.isPreview,
 
-    const course = await Course.findById(req.params.id);
+    // 🔥 THIS is the real unlock logic
+    isUnlocked: index < (access?.currentVideoIndex || 0) || v.isPreview,
+  }));
 
-    const videos = course.videos.map((v) => ({
-      title: v.title,
-      url: v.url,
-      isPreview: v.isPreview,
-      isUnlocked: !isExpired,
-    }));
-
-    res.json({ videos });
+    return res.json({ videos });
   } catch (err) {
     res.status(500).json({ message: "Error loading videos" });
   }
@@ -922,11 +961,18 @@ router.post("/account/update", isAuthenticated, async (req, res) => {
       success: true,
       message: "Profile updated successfully",
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Update failed" });
   }
+});
+
+router.get("/terms", (req, res) => {
+  res.render("user/terms");
+});
+
+router.get("/privacy", (req, res) => {
+  res.render("user/privacy");
 });
 
 module.exports = router;

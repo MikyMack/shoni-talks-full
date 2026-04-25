@@ -1,7 +1,8 @@
+
 <!DOCTYPE html>
 <html lang="zxx">
 
-<!-- Mirrored from html.awaikenthemes.com/healix/programs.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:01 GMT -->
+<!-- Mirrored from html.awaikenthemes.com/healix/service-single.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:00 GMT -->
 <head>
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -11,7 +12,7 @@
 	<meta name="keywords" content="">
 	<meta name="author" content="Awaiken">
 	<!-- Page Title -->
-    <title>Shony Talks - Programs</title>
+    <title>Shony Talks - Privacy Policy</title>
 	<!-- Favicon Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.png">
 	<!-- Google Fonts Css-->
@@ -34,31 +35,57 @@
 	<link rel="stylesheet" href="css/mousecursor.css">
 	<!-- Main Custom Css -->
 	<link href="css/custom.css" rel="stylesheet" media="screen">
+
     <!-- toastify CSS -->
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+   <style>
+    .policy-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.policy-box h4 {
+  margin-top: 25px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111;
+}
+
+.policy-box p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #555;
+}
+
+
+
+.privacy-policy {
+  padding: 40px 0 80px;
+}
+   </style>
 </head>
 <body>
 
     <!-- Floating Icon Start-->
     <%- include('../partials/floatingIcons.ejs') %>
-    <!-- Floating Icon End -->  
+    <!-- Floating Icon End -->
 
     <!-- Header Start -->
 	  <%- include('../partials/header.ejs') %>
 	<!-- Header End -->
-
-    <!-- Page Header Start -->
-    <div class="page-header bg-section dark-section">
+<div class="page-header bg-section dark-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <!-- Page Header Box Start -->
                     <div class="page-header-box">
-                        <h1 class="text-anime-style-3" data-cursor="-opaque">Our Programs</h1>
+                        <h1 class="text-anime-style-3" data-cursor="-opaque">Privacy Policy</h1>
                         <nav class="wow fadeInUp">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="/">home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Programs</li>
+                                <li class="breadcrumb-item"><a href="/services">privacy policy</a></li>
                             </ol>
                         </nav>
                     </div>
@@ -67,97 +94,74 @@
             </div>
         </div>
     </div>
-    <!-- Page Header End -->
 
-    <!-- Programs Section Start -->
-    <div class="page-programs">
-        <div class="container">
-            <div class="row">
-                <% if (programs.length > 0) { %>
-                  <% programs.forEach(program => { %>
+<div class="privacy-policy bg-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
 
-                    <div class="col-lg-4 col-md-6">
-                      <div class="program-item wow fadeInUp">
+       <div class="policy-box">
 
-                        <div class="program-image">
-                          <a href="/program/<%= program.slug %>" data-cursor-text="View">
-                            <figure class="image-anime">
-                              <img src="/uploads/<%= program.image %>" alt="<%= program.title %>">
-                            </figure>
-                          </a>
-                        </div>
+  <p class="mb-4 text-muted">
+    Last updated: <%= new Date().toDateString() %>
+  </p>
 
-                        <div class="program-body">
-                          <div class="program-content">
-                            <h3>
-                              <a href="/program/<%= program.slug %>">
-                                <%= program.title %>
-                              </a>
-                            </h3>
+  <h4>1. Information We Collect</h4>
+  <p>
+    We collect essential information such as your name, email address, and optionally your phone number when you register or interact with our platform. In addition, we may collect basic device and usage data (such as browser type and activity on the site) to help us understand user behavior and improve our services.
+  </p>
 
-                            <% if (program.shortDescription) { %>
-                              <p class="text-light"><%= program.shortDescription %></p>
-                            <% } %>
+  <h4>2. How We Use Your Information</h4>
+  <p>
+    Your information is used to create and manage your account, provide access to purchased courses or plans, process transactions, and communicate important updates. We may also use this data to enhance platform performance and personalize your experience.
+  </p>
 
-                          </div>
+  <h4>3. Authentication & Security</h4>
+  <p>
+    We use OTP-based authentication to provide a secure login experience. Your data is handled with appropriate security measures to prevent unauthorized access, loss, or misuse. However, while we strive to protect your data, no system can be completely secure.
+  </p>
 
-                          <div class="program-readmore-btn">
-                            <a href="/program/<%= program.slug %>" class="btn-default btn-highlighted">
-                              Read More
-                            </a>
-                          </div>
-                        </div>
+  <h4>4. Payments</h4>
+  <p>
+    All payments are processed through secure and trusted third-party payment providers. We do not store your card details, banking information, or sensitive payment data on our servers.
+  </p>
 
-                      </div>
-                    </div>
+  <h4>5. Data Sharing</h4>
+  <p>
+    We do not sell, trade, or rent your personal information. Data may be shared only with trusted third-party services such as payment gateways or when required by law or legal processes.
+  </p>
 
-                  <% }) %>
-                <% } else { %>
-                  <p>No programs available</p>
-                <% } %>
+  <h4>6. Cookies</h4>
+  <p>
+    Our platform may use cookies to improve functionality, remember user preferences, and maintain active sessions. These cookies help deliver a smoother and more personalized browsing experience.
+  </p>
 
-                </div>
+  <h4>7. Your Rights</h4>
+  <p>
+    You have the right to access and update your personal information at any time through your account. You may also request deletion of your data by contacting us, subject to any legal or operational requirements.
+  </p>
 
-              <% if (totalPages > 1) { %>
-              <div class="col-lg-12">
-                <div class="page-pagination">
-                  <ul class="pagination">
+  <h4>8. Updates to Policy</h4>
+  <p>
+    This Privacy Policy may be updated periodically to reflect changes in our practices or legal requirements. Continued use of the platform after updates indicates your acceptance of the revised policy.
+  </p>
 
-                    <!-- Prev -->
-                    <% if (currentPage > 1) { %>
-                      <li>
-                        <a href="?page=<%= currentPage - 1 %>">
-                          <i class="fa-solid fa-arrow-left-long"></i>
-                        </a>
-                      </li>
-                    <% } %>
+  <h4>9. Contact Us</h4>
+  <p>
+    If you have any questions, concerns, or requests regarding your privacy, you can contact us at:
+    <br />
+    <strong>shonytalks@gmail.com</strong>
+  </p>
 
-                    <!-- Numbers -->
-                    <% for (let i = 1; i <= totalPages; i++) { %>
-                      <li class="<%= currentPage === i ? 'active' : '' %>">
-                        <a href="?page=<%= i %>"><%= i %></a>
-                      </li>
-                    <% } %>
+</div>
 
-                    <!-- Next -->
-                    <% if (currentPage < totalPages) { %>
-                      <li>
-                        <a href="?page=<%= currentPage + 1 %>">
-                          <i class="fa-solid fa-arrow-right-long"></i>
-                        </a>
-                      </li>
-                    <% } %>
-
-                  </ul>
-                </div>
-              </div>
-              <% } %> 
-            </div>
-        </div>
+      </div>
     </div>
-    <!-- Program Section End -->
+  </div>
+</div>
+    
 
-    <!-- Main Footer Section Start -->
+     <!-- Main Footer Section Start -->
     <%- include('../partials/footer.ejs') %>
     <!-- Main Footer Section End -->
 
@@ -285,5 +289,8 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 
-<!-- Mirrored from html.awaikenthemes.com/healix/programs.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:02 GMT -->
+<!-- Mirrored from html.awaikenthemes.com/healix/service-single.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:01 GMT -->
 </html>
+
+
+

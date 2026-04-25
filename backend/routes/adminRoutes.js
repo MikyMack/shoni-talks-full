@@ -11,6 +11,8 @@ const Course = require("../models/Course");
 const Plan = require("../models/Plan");
 const Purchase = require("../models/Purchase");
 const UserAccess = require("../models/UserAccess");
+const User = require("../models/User");
+
 
 // Login Page
 router.get("/login", (req, res) => {
@@ -26,23 +28,40 @@ router.get("/logout", (req, res) => {
   res.redirect("/admin/login");
 });
 
+
 router.get("/admin-dashboard", isAuthenticated, async (req, res) => {
   try {
-    const [banner, blog, testimonials, enquiries] =
-      await Promise.all([
-        Banner.find().sort({ createdAt: -1 }),
-        Blog.find().sort({ createdAt: -1 }),    
-        Testimonial.find().sort({ createdAt: -1 }),
-        AdmissionEnquiry.find().sort({ createdAt: -1 }),
-      ]);
+    const [
+      banner,
+      blog,
+      testimonials,
+      courses,
+      plans,
+      purchases,
+      users
+    ] = await Promise.all([
+      Banner.find(),
+      Blog.find(),
+      Testimonial.find(),
+      Course.find(),
+      Plan.find(),
+      Purchase.find(),
+      User.find() // optional
+    ]);
+    console.log(purchases);
+    
 
     res.render("admin-dashboard", {
       title: "Admin Dashboard",
       banner,
       blog,
       testimonials,
-      enquiries
+      courses,
+      plans,
+      purchases,
+      users
     });
+
   } catch (error) {
     console.error(error);
     res.status(500).render("admin-dashboard", {
@@ -50,7 +69,11 @@ router.get("/admin-dashboard", isAuthenticated, async (req, res) => {
       banner: [],
       blog: [],
       testimonials: [],
-      error: "Failed to load dashboard data",
+      enquiries: [],
+      courses: [],
+      plans: [],
+      purchases: [],
+      users: []
     });
   }
 });
@@ -325,6 +348,64 @@ router.get("/admin-courses", isAuthenticated, async (req, res) => {
   }
 });
 
+
+router.get("/admin-users", isAuthenticated, async (req, res) => {
+  try {
+    const searchTerm = req.query.search || "";
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    let query = { role: "user" };
+
+    // 🔍 SEARCH USERS
+    if (searchTerm) {
+      query.$or = [
+        { name: { $regex: searchTerm, $options: "i" } },
+        { email: { $regex: searchTerm, $options: "i" } },
+        { mobile: { $regex: searchTerm, $options: "i" } },
+      ];
+    }
+
+    const totalUsers = await User.countDocuments(query);
+
+    const users = await User.find(query)
+      .populate("enrollments.course", "title category")
+      .populate("enrollments.plan", "name price")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalPages = Math.ceil(totalUsers / limit);
+
+    res.render("admin-users", {
+      title: "User Management",
+      users,
+      searchTerm,
+      currentPage: page,
+      totalPages,
+      totalUsers,
+      limit,
+      error: null,
+    });
+
+  } catch (error) {
+    console.error("ADMIN USERS ERROR:", error);
+
+    res.status(500).render("admin-users", {
+      title: "User Management",
+      users: [],
+      searchTerm: "",
+      currentPage: 1,
+      totalPages: 1,
+      totalUsers: 0,
+      limit: 10,
+      error: "Failed to load users",
+    });
+  }
+});
+
 router.get("/admin-plans", isAuthenticated, async (req, res) => {
   try {
     const searchTerm = req.query.search || "";
@@ -443,5 +524,32 @@ router.get("/admin-purchases", async (req, res) => {
     res.status(500).send("Error loading purchases");
   }
 });
+
+
+// PATCH /admin/users/:id/toggle-block
+router.patch("/admin/users/:id/toggle-block", isAuthenticated, async (req, res) => {
+  try {
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.isBlocked = !user.isBlocked;
+
+    await user.save();
+
+    return res.json({
+      success: true,
+      isBlocked: user.isBlocked
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 module.exports = router;

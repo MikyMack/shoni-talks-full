@@ -3,7 +3,7 @@
 <head>
     <!-- Basic Page Needs -->
     <meta charset="utf-8">
-    <title>Shony Talks - Admin Course </title>
+    <title>Shony Talks - Admin Users </title>
 
     <meta name="author" content="themesflat.com">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -338,7 +338,7 @@
                                   
                                     </li>
                                        </li>
-                                         <li class="menu-item  active">
+                                         <li class="menu-item  ">
                                         <a href="/admin/admin-plans" class="menu-item-button">
                                             <div class="icon"><i class="fa fa-address-book"></i></div>
                                             <div class="text">Plan Management</div>
@@ -353,7 +353,7 @@
                                         </a>
                                   
                                     </li>
-                                     <li class="menu-item ">
+                                     <li class="menu-item active">
                                         <a href="/admin/admin-users" class="menu-item-button">
                                             <div class="icon"><i class="icon-users"></i></div>
                                             <div class="text">User Management</div>
@@ -446,96 +446,167 @@
                     <div class="main-content">
                         <div class="main-content-inner">
                             <div class="main-content-wrap">
-                                <div class="flex items-center flex-wrap justify-between gap20 mb-30">
-                                    <h3>All Courses</h3>
-                                    <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
-                                        <li>
-                                            <a href="/admin/admin-dashboard"><div class="text-tiny">Dashboard</div></a>
-                                        </li>
-                                        <li>
-                                            <i class="icon-chevron-right"></i>
-                                        </li>
-                                        <li>
-                                            <div class="text-tiny">Course Management</div>
-                                        </li>
-                                    </ul>
-                                </div>
+
+    <div class="flex items-center justify-between gap20 mb-30">
+        <h3>User Management</h3>
+
+        <ul class="breadcrumbs flex items-center gap10">
+            <li><a href="/admin/admin-dashboard">Dashboard</a></li>
+            <li><i class="icon-chevron-right"></i></li>
+            <li>User Management</li>
+        </ul>
+    </div>
+
+    <div class="wg-box">
+
+    <!-- SEARCH -->
+    <div class="flex items-center justify-between gap10 flex-wrap">
+
+        <div class="wg-filter flex-grow">
+            <form class="form-search">
+                <input type="text" placeholder="Search users..."
+                    name="search" value="<%= searchTerm %>">
+                <button type="submit"><i class="icon-search"></i></button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="wg-table table-all-category">
+
+        <!-- HEADER -->
+        <ul class="table-title flex gap20 mb-14">
+            <li style="flex: 2;">
+                <div class="body-title">User</div>
+            </li>
+
+            <li style="flex: 2;">
+                <div class="body-title">Email</div>
+            </li>
+
+            <li style="flex: 1;">
+                <div class="body-title">Role</div>
+            </li>
+
+            <li style="flex: 1;">
+                <div class="body-title">Status</div>
+            </li>
+
+           
+
+            <li style="flex: 1;">
+                <div class="body-title">Action</div>
+            </li>
+        </ul>
+
+        <!-- BODY -->
+        <ul class="flex flex-column">
+
+            <% if (users && users.length > 0) { %>
+                <% users.forEach(user => { %>
+
+                    <li class="wg-product item-row gap20" id="user-<%= user._id %>">
+
+                        <!-- USER -->
+                        <div class="name" style="flex: 2;">
+                            <div style="display:flex;align-items:center;gap:10px;">
                                 
-                                <h3>Plan Management</h3>
-
-                                <div class="wg-box">
-
-                                <div class="flex items-center justify-between gap10 flex-wrap">
-
-                                    <!-- ADD -->
-                                    <button class="tf-button style-1 w208" onclick="openPlanModal()">
-                                        <i class="icon-plus"></i>Add Plan
-                                    </button>
-
-                                </div>
-
-                                <div class="st-data-grid">
-
-                                <% if (plans.length > 0) { %>
-                                    <% plans.forEach(plan => { %>
-
-                                    <div class="st-program-card" id="plan-<%= plan._id %>">
-
-                                        <div class="st-program-content">
-
-                                            <div class="st-program-header">
-                                                <h3><%= plan.title %></h3>
-                                                <span class="st-category">
-                                                    <%= plan.courses?.map(c => c.title).join(", ") || "No Course" %>
-                                                </span>
-                                            </div>
-
-                                            <p>
-                                                💰 ₹<%= plan.offerPrice || plan.price %>
-                                            </p>
-
-                                            <p>
-                                                ⏳ <%= plan.duration.value %> <%= plan.duration.unit %>
-                                            </p>
-
-                                            <p>
-                                                🎯 Sessions: <%= plan.sessions || 0 %>
-                                            </p>
-
-                                            <% if(plan.isPopular){ %>
-                                                <span class="badge bg-success">Popular</span>
-                                            <% } %>
-
-                                        </div>
-
-                                        <div class="st-card-footer">
-
-                                            <button onclick="editPlan('<%= plan._id %>')">✏️</button>
-
-                                            <button onclick="deletePlan('<%= plan._id %>')">🗑️</button>
-
-                                            <!-- TOGGLE -->
-                                            <label class="switch">
-                                                <input 
-                                                    type="checkbox"
-                                                    <%= plan.isActive ? "checked" : "" %>
-                                                    onchange="togglePlan('<%= plan._id %>', this)"
-                                                >
-                                                <span class="slider round"></span>
-                                            </label>
-
-                                        </div>
-
-                                    </div>
-
-                                    <% }) %>
-                                <% } else { %>
-                                    <p>No plans found</p>
-                                <% } %>
-
-                                </div>
+                                <div class="body-text text-main-dark">
+                                    <%= user.name || "No Name" %>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="body-text" style="flex: 2;">
+                            <%= user.email || "-" %>
+                        </div>
+
+                        <!-- ROLE -->
+                        <div style="flex: 1;">
+                            <span class="badge bg-primary">
+                                <%= user.role %>
+                            </span>
+                        </div>
+
+                        <!-- STATUS -->
+                        <div style="flex: 1;">
+    <span class="status-text" style="font-weight:600;color:<%= user.isBlocked ? 'red' : 'green' %>">
+        <%= user.isBlocked ? 'Blocked' : 'Active' %>
+    </span>
+</div>
+
+                        
+
+                        <!-- ACTION -->
+                        <div class="list-icon-function" style="flex: 1;">
+
+                            <div class="item edit"
+                                onclick="viewUser('<%= user._id %>')">
+                                <i class="icon-eye"></i>
+                            </div>
+
+                            <div class="item trash"
+                                onclick="toggleUser('<%= user._id %>')">
+                                <% if (user.isBlocked) { %>
+                                    <i class="icon-check"></i>
+                                <% } else { %>
+                                    <i class="icon-slash"></i>
+                                <% } %>
+                            </div>
+
+                        </div>
+
+                    </li>
+
+                <% }) %>
+            <% } else { %>
+
+                <li style="text-align:center;padding:20px;">
+                    No users found
+                </li>
+
+            <% } %>
+
+        </ul>
+
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="divider"></div>
+
+    <div class="flex items-center justify-between flex-wrap gap10">
+
+        <ul class="wg-pagination">
+
+            <% if (currentPage > 1) { %>
+                <li>
+                    <a href="?page=<%= currentPage - 1 %>&search=<%= searchTerm %>">←</a>
+                </li>
+            <% } %>
+
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <li>
+                    <a href="?page=<%= i %>&search=<%= searchTerm %>"
+                       class="<%= currentPage === i ? 'active' : '' %>">
+                        <%= i %>
+                    </a>
+                </li>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <li>
+                    <a href="?page=<%= currentPage + 1 %>&search=<%= searchTerm %>">→</a>
+                </li>
+            <% } %>
+
+        </ul>
+
+    </div>
+
+</div>
+</div>
                         </div>
                         
                         <div class="bottom-page">
@@ -543,251 +614,9 @@
                         </div>
                     </div>
                 
-                    <!-- Add/Edit Program Modal -->
-                        <div id="planModal" class="modal">
-                        <div class="modal-content">
-
-                            <span class="close" onclick="closePlanModal()">&times;</span>
-
-                            <h4 id="planModalTitle">Add Plan</h4>
-
-                            <form id="planForm">
-
-                            <input type="hidden" id="planId">
-
-                            <div class="form-group">
-                                <label>Title</label>
-                                <input type="text" id="planTitle" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Course</label>
-                                <select id="planCourse" multiple size="5" required>
-                                <% courses.forEach(c => { %>
-                                    <option value="<%= c._id %>"><%= c.title %></option>
-                                <% }) %>
-                                </select>
-                                <small>Hold Ctrl (Windows) or Cmd (Mac) to select multiple</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Price</label>
-                                <input type="number" id="planPrice" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Offer Price</label>
-                                <input type="number" id="planOfferPrice">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Duration Value</label>
-                                <input type="number" id="planDurationValue" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Duration Unit</label>
-                                <select id="planDurationUnit">
-                                <option value="days">Days</option>
-                                <option value="weeks">Weeks</option>
-                                <option value="months">Months</option>
-                                <option value="minutes">Minutes</option>
-                                <option value="hours">Hours</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Sessions</label>
-                                <input type="number" id="planSessions">
-                            </div>
-
-                            <div class="form-group">
-                                <label>
-                                <input type="checkbox" id="planPopular"> Popular Plan
-                                </label>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Features (comma separated)</label>
-                                <textarea id="planFeatures"></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <button type="button" class="btn-primary" onclick="savePlan()">Save Plan</button>
-                            </div>
-
-                            </form>
-
-                        </div>
-                        </div>
-                    <!-- Confirmation Modal -->
-                    <div id="confirmModal" class="modal">
-                        <div class="modal-content" style="max-width: 400px;">
-                            <div class="modal-header">
-                                <h3>Confirm Action</h3>
-                            </div>
-                            <div class="modal-body">
-                                <p id="confirmMessage">Are you sure you want to delete this testimonial?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="tf-button style-3" onclick="closeConfirmModal()">Cancel</button>
-                                <button type="button" id="confirmActionButton" class="tf-button style-3">Confirm</button>
-                            </div>
-                        </div>
-                    </div>
+                 
                 
-<script>
 
-function openPlanModal(plan = null) {
-
-    
-    document.getElementById("planModal").style.display = "flex";
-
-    const form = document.getElementById("planForm");
-
-    if (plan) {
-        document.getElementById("planModalTitle").innerText = "Edit Plan";
-
-        document.getElementById("planId").value = plan._id;
-        document.getElementById("planTitle").value = plan.title;
-
-        document.getElementById("planPrice").value = plan.price;
-        document.getElementById("planOfferPrice").value = plan.offerPrice || "";
-
-        document.getElementById("planDurationValue").value = plan.duration.value;
-        document.getElementById("planDurationUnit").value = plan.duration.unit;
-
-        document.getElementById("planSessions").value = plan.sessions || "";
-        document.getElementById("planPopular").checked = plan.isPopular;
-
-        document.getElementById("planFeatures").value =
-            plan.features?.join(", ") || "";
-
-        // ✅ MULTI SELECT FIX
-        const select = document.getElementById("planCourse");
-
-        // First clear all selections
-        Array.from(select.options).forEach(option => {
-            option.selected = false;
-        });
-
-        // Then select matching ones
-        if (plan.courses && plan.courses.length > 0) {
-            const selectedIds = plan.courses.map(c => c._id.toString());
-
-            Array.from(select.options).forEach(option => {
-                if (selectedIds.includes(option.value)) {
-                    option.selected = true;                    
-                }
-            });
-        }
-        
-
-    } else {
-        form.reset();
-        document.getElementById("planId").value = "";
-
-        // clear multi-select
-        const select = document.getElementById("planCourse");
-        Array.from(select.options).forEach(option => {
-            option.selected = false;
-        });
-    }
-}
-
-
-function closePlanModal() {
-    document.getElementById("planModal").style.display = "none";
-}
-
-
-// SAVE
-async function savePlan() {
-
-    const id = document.getElementById("planId").value;
-
-    const selectedCourses = Array.from(
-    document.getElementById("planCourse").selectedOptions
-).map(option => option.value);
-
-    const body = {
-        title: document.getElementById("planTitle").value,
-        courses: selectedCourses,
-        price: document.getElementById("planPrice").value,
-        offerPrice: document.getElementById("planOfferPrice").value,
-        duration: {
-            value: document.getElementById("planDurationValue").value,
-            unit: document.getElementById("planDurationUnit").value,
-        },
-        sessions: document.getElementById("planSessions").value,
-        isPopular: document.getElementById("planPopular").checked,
-        features: document.getElementById("planFeatures").value
-            .split(",")
-            .map(f => f.trim())
-            .filter(Boolean),
-    };
-
-    const url = id ? `/admin/plans/${id}` : `/admin/plans`;
-    const method = id ? "PUT" : "POST";
-
-    const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-    });
-
-    if (res.ok) {
-        alert("Saved");
-        location.reload();
-    } else {
-        const err = await res.json();
-        alert(err.message || "Error");
-    }
-}
-
-
-// EDIT
-async function editPlan(id) {
-    const res = await fetch(`/admin/plans/${id}`);
-    const data = await res.json();
-
-    if (res.ok) openPlanModal(data.data);
-}
-
-
-// DELETE
-async function deletePlan(id) {
-    if (!confirm("Delete this plan?")) return;
-
-    const res = await fetch(`/admin/plans/${id}`, {
-        method: "DELETE",
-    });
-
-    if (res.ok) {
-        document.getElementById(`plan-${id}`).remove();
-    }
-}
-
-
-// TOGGLE
-async function togglePlan(id, el) {
-    try {
-        const res = await fetch(`/admin/plans/${id}/toggle`, {
-            method: "PATCH",
-        });
-
-        if (!res.ok) {
-            el.checked = !el.checked;
-            alert("Toggle failed");
-        }
-
-    } catch (err) {
-        el.checked = !el.checked;
-        alert("Error");
-    }
-}
-
-</script>
                     <!-- /main-content -->
                 </div>
                 <!-- /section-content-right -->
@@ -799,6 +628,41 @@ async function togglePlan(id, el) {
     <!-- /#wrapper -->
 
     <!-- Javascript -->
+     <script>
+        async function toggleUser(id) {
+    try {
+
+        const res = await fetch(`/admin/users/${id}/toggle-block`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Failed to update user");
+            return;
+        }
+
+        // 🔥 Update UI instantly
+        const row = document.getElementById(`user-${id}`);
+
+        if (data.isBlocked) {
+            row.querySelector(".status-text").innerHTML = "Blocked";
+            row.querySelector(".status-text").style.color = "red";
+        } else {
+            row.querySelector(".status-text").innerHTML = "Active";
+            row.querySelector(".status-text").style.color = "green";
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong");
+    }
+}
+     </script>
   
     <script src="/admin-js/jquery.min.js"></script>
     <script src="/admin-js/bootstrap.min.js"></script>

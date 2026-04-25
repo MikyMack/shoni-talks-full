@@ -42,6 +42,200 @@
 
       <!-- toastify CSS -->
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+   <style>
+      .program-slider-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 800px; /* Adjust based on your layout */
+        margin: auto;
+      }
+
+      .program-entry-image {
+        overflow: hidden; /* Hides the images that aren't active */
+        width: 100%;
+      }
+
+      .slider-item {
+        min-width: 100%; /* Shows one image at a time */
+        height: auto;
+        object-fit: cover;
+      }
+
+
+      .slider-btn:hover {
+        background: var(--accent-color);
+        color: white;
+      }
+
+
+      /* Hide scrollbar for a cleaner look */
+      .program-entry-image::-webkit-scrollbar {
+        display: none;
+      }
+
+
+
+      .slider-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* Button Styling */
+      .slider-btn {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        background-color: white;
+        color: var(--accent-color);
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+
+      .prev-btn { left: 0; }
+      .next-btn { right: 0; }
+
+
+
+      /* Optimized Slider Styles */
+      .slider-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 0 45px; /* Increased space for buttons */
+        box-sizing: border-box;
+      }
+
+      .slider-viewport {
+        overflow: hidden;
+        width: 100%;
+        /* This ensures a smooth "bounce" effect on mobile */
+        scroll-behavior: smooth; 
+      }
+
+      .slider-track {
+        display: flex;
+        /* Smoother transition timing */
+        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        gap: 15px; 
+      }
+
+      .slider-card {
+        /* Default: 4 cards on desktop */
+        flex: 0 0 calc(25% - 12px); 
+        aspect-ratio: 4/5;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      }
+
+      /* Better Modal Close Button */
+      .custom-modal-close {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          z-index: 1060;
+          background-color: transparent;
+          opacity: 1;
+          border-radius: 50%;
+          padding: 10px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      }
+
+      #imagePreviewModal .modal-content {
+          background: none;
+      }
+
+      #modalPreviewImage {
+          max-height: 80vh;
+      }
+
+      .slider-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        aspect-ratio: 1 / 1;
+      }
+
+      /* Tablet: 2 cards */
+      @media (max-width: 991px) {
+        .slider-card {
+          flex: 0 0 calc(50% - 8px);
+        }
+      }
+
+      /* Mobile: 1 card */
+      @media (max-width: 575px) {
+        .slider-card {
+          flex: 0 0 100%;
+        }
+        .slider-wrapper {
+          padding: 0 35px; /* Slightly tighter for mobile */
+        }
+      }
+
+      .slider-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .slider-card:hover img {
+        transform: scale(1.05); /* subtle hover effect */
+      }
+
+      .slider-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        background-color: white;
+        color: #333;
+        border: 1px solid #eee;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+      }
+
+      .slider-btn:hover {
+        background-color: var(--accent-color, #007bff);
+        color: white;
+      }
+
+
+      .slider-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .slider-card:hover {
+        transform: translateY(-5px); /* Lift effect */
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        z-index: 2;
+      }
+
+      #modalPreviewImage {
+        max-height: 85vh; /* Keep the image within the screen height */
+        width: auto;
+        margin: auto;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      }
+   </style>
+  
   </head>
   <body>
    
@@ -128,7 +322,7 @@
                   <p><%= program.duration || "N/A" %></p>
                 </div>
 
-                <a href="<%= schedule?.joinLink || '#' %>" class="btn-default btn-highlighted">JOIN NOW</a>
+                <a href="<%= schedule?.joinLink || 'https://wa.me/919744975574' %>" target="_blank" class="btn-default btn-highlighted">JOIN NOW</a>
 
                 <!-- Case Study Detail Item End -->
               </div>
@@ -189,17 +383,25 @@
 
                 <!-- Program Entry Image Video Start -->
                 <div class="program-entry-image-video">
-                  <div class="program-entry-image">
-                    <figure class="image-anime reveal">
-                      <% if (program.gallery && program.gallery.length > 0) { %>
-                        <img src="/uploads/<%= program.gallery[0] %>" alt="">
-                      <% } else { %>
-                        <img src="/uploads/<%= program.image %>" alt="">
-                      <% } %>
-                    </figure>
-                  </div>
+                  <div class="slider-wrapper">
+                    <button class="slider-btn prev-btn" onclick="moveSlider(-1)">&#10094;</button>
+                    
+                    <div class="slider-viewport">
+                      <div class="slider-track" id="sliderTrack">
+                        <% if (program.gallery && program.gallery.length > 0) { %>
+                          <% program.gallery.forEach(function(img) { %>
+                            <div class="slider-card" onclick="openImageModal('/uploads/<%= img %>')" style="cursor: pointer;">
+                              <img src="/uploads/<%= img %>" alt="Gallery Image">
+                            </div>
+                          <% }); %>
+                        <% } else { %>
+                          <div class="no-image">No images available</div>
+                        <% } %>
+                      </div>
+                    </div>
 
-                 
+                    <button class="slider-btn next-btn" onclick="moveSlider(1)">&#10095;</button>
+                  </div>
                 </div>
                 <!-- Program Entry Image Video End -->
 
@@ -263,6 +465,19 @@
     <!-- Main Footer Section Start -->
     <%- include('../partials/footer.ejs') %>
     <!-- Main Footer Section End -->
+
+      <!-- Image Preview Modal End-->
+      <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content border-0">
+            <button type="button" class="btn-close custom-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-body p-0 text-center">
+              <img src="" id="modalPreviewImage" class="img-fluid rounded" alt="Preview">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Image Preview Modal End -->
 
      <!-- Login modal start -->
     <div class="modal fade" id="authModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -333,13 +548,13 @@
                 </div>
 
                 <!-- GOOGLE LOGIN -->
-                <button class="google-btn w-100">
-                  <img
-                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
-                    alt=""
-                  />
-                  Continue with Google
-                </button>
+                <a href="/auth/google" class="google-btn w-100 d-flex justify-content-center align-items-center text-decoration-none">
+                <img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+                  alt=""
+                />
+                Continue with Google
+              </a>
               </div>
             </div>
           </div>
@@ -386,6 +601,77 @@
     <script src="js/auth.js"></script>
     <!-- toastify JS -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+      let currentStep = 0;
+
+      function moveSlider(direction) {
+        const track = document.getElementById('sliderTrack');
+        const cards = document.querySelectorAll('.slider-card');
+        if (!cards.length) return;
+
+        const totalCards = cards.length;
+        
+        // 1. Calculate how many cards are visible based on current screen width
+        const viewportWidth = document.querySelector('.slider-viewport').offsetWidth;
+        const cardWidthWithGap = cards[0].offsetWidth + 15; // 15 is the CSS gap
+        const visibleCards = Math.round(viewportWidth / cardWidthWithGap);
+        
+        // 2. Set max steps based on responsive visibility
+        const maxSteps = totalCards - visibleCards;
+
+        currentStep += direction;
+
+        // 3. Boundary Checks
+        if (currentStep < 0) {
+          currentStep = 0;
+        } else if (currentStep > maxSteps) {
+          currentStep = maxSteps;
+        }
+
+        // 4. Smooth Move
+        const moveAmount = currentStep * cardWidthWithGap;
+        track.style.transform = `translateX(-${moveAmount}px)`;
+        
+        // 5. Optional: Fade buttons when reaching start/end
+        document.querySelector('.prev-btn').style.opacity = currentStep === 0 ? "0.3" : "1";
+        document.querySelector('.next-btn').style.opacity = currentStep >= maxSteps ? "0.3" : "1";
+      }
+
+      // Reset position on window resize to prevent alignment bugs
+      window.addEventListener('resize', () => {
+        currentStep = 0;
+        document.getElementById('sliderTrack').style.transform = `translateX(0px)`;
+      });
+
+      function openImageModal(imgSrc) {
+        // Set the source of the image inside the modal
+        const modalImg = document.getElementById('modalPreviewImage');
+        modalImg.src = imgSrc;
+        
+        // Trigger the Bootstrap Modal
+        const imageModal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
+        imageModal.show();
+      }
+
+      let touchstartX = 0;
+      let touchendX = 0;
+
+      const sliderZone = document.querySelector('.slider-viewport');
+
+      sliderZone.addEventListener('touchstart', e => {
+          touchstartX = e.changedTouches[0].screenX;
+      });
+
+      sliderZone.addEventListener('touchend', e => {
+          touchendX = e.changedTouches[0].screenX;
+          handleGesture();
+      });
+
+      function handleGesture() {
+          if (touchendX < touchstartX - 50) moveSlider(1); // Swipe Left
+          if (touchendX > touchstartX + 50) moveSlider(-1); // Swipe Right
+      }
+    </script>
   </body>
 
   <!-- Mirrored from html.awaikenthemes.com/healix/program-single.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:03 GMT -->

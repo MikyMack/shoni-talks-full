@@ -7104,6 +7104,33 @@ select option {
         grid-template-columns: 1fr;
     }
 }
+.table-responsive {
+    overflow-x: auto;
+}
 
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.table th, .table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.table th {
+    text-align: left;
+    background: #f8f8f8;
+    font-weight: 600;
+}
+
+.badge {
+    padding: 4px 8px;
+    background: #eee;
+    border-radius: 6px;
+    font-size: 12px;
+}
 
 /*# sourceMappingURL=styles.css.map */
