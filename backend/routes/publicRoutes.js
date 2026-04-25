@@ -67,6 +67,17 @@ router.get("/about", async (req, res) => {
   }
 });
 
+// team page
+router.get("/team", async (req, res) => {
+  try {
+    
+    res.render("user/team", { title: "Our Experts" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error loading team page data");
+  }
+});
+
 // programs page
 router.get("/programs", async (req, res) => {
   try {
