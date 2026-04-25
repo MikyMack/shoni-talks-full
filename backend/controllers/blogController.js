@@ -12,7 +12,7 @@ const deleteLocalImage = async (imageUrl) => {
     let relativePath = imageUrl;
     const uploadsIndex = imageUrl.indexOf("/uploads/");
     if (uploadsIndex !== -1) {
-      relativePath = imageUrl.substring(uploadsIndex); 
+      relativePath = imageUrl.substring(uploadsIndex);
     }
     // Resolve absolute path from project root
     const filePath = path.join(process.cwd(), relativePath);
@@ -55,7 +55,7 @@ exports.createBlog = async (req, res) => {
     if (!title || !content) {
       return res.status(400).json({
         success: false,
-        message: "Title and content are required"
+        message: "Title and content are required",
       });
     }
 
@@ -66,7 +66,7 @@ exports.createBlog = async (req, res) => {
     if (existingBlog) {
       return res.status(400).json({
         success: false,
-        message: "A blog with this title already exists"
+        message: "A blog with this title already exists",
       });
     }
 
@@ -79,18 +79,22 @@ exports.createBlog = async (req, res) => {
     // Handle gallery images
     let galleryImages = [];
     if (req.files && req.files.gallery) {
-      galleryImages = req.files.gallery.map(file => getFileUrl(file));
+      galleryImages = req.files.gallery.map((file) => getFileUrl(file));
     }
 
     // Calculate reading time (approx 200 words per minute)
-    const wordCount = typeof content === 'string' ? content.split(/\s+/).length : 0;
+    const wordCount =
+      typeof content === "string" ? content.split(/\s+/).length : 0;
     const readingTime = Math.ceil(wordCount / 200);
 
     // Robustly parse tags and metaKeywords
     const parseStringArray = (input) => {
       if (Array.isArray(input)) return input;
       if (typeof input === "string") {
-        return input.split(",").map(i => i.trim()).filter(Boolean);
+        return input
+          .split(",")
+          .map((i) => i.trim())
+          .filter(Boolean);
       }
       return [];
     };
@@ -103,10 +107,14 @@ exports.createBlog = async (req, res) => {
       } catch (e) {
         return res.status(400).json({
           success: false,
-          message: "Invalid JSON format for customFields"
+          message: "Invalid JSON format for customFields",
         });
       }
-    } else if (customFields && typeof customFields === "object" && !Array.isArray(customFields)) {
+    } else if (
+      customFields &&
+      typeof customFields === "object" &&
+      !Array.isArray(customFields)
+    ) {
       parsedCustomFields = customFields;
     }
 
@@ -117,18 +125,19 @@ exports.createBlog = async (req, res) => {
       content,
       category,
       tags: parseStringArray(tags),
-      status: status || 'draft',
-      publishedAt: publishedAt || (status === 'published' ? new Date() : null),
+      status: status || "draft",
+      publishedAt: publishedAt || (status === "published" ? new Date() : null),
       metaTitle: metaTitle || title,
-      metaDescription: metaDescription || (excerpt ? excerpt.substring(0, 160) : ""),
+      metaDescription:
+        metaDescription || (excerpt ? excerpt.substring(0, 160) : ""),
       metaKeywords: parseStringArray(metaKeywords),
-      author: typeof author === 'string' ? { name: author } : (author || {}),
-      featured: featured === 'true' || featured === true,
+      author: typeof author === "string" ? { name: author } : author || {},
+      featured: featured === "true" || featured === true,
       featuredImage,
       galleryImages,
       readingTime,
       customFields: parsedCustomFields,
-      ...otherFields
+      ...otherFields,
     };
 
     const blog = new Blog(blogData);
@@ -154,13 +163,34 @@ exports.updateBlog = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(400).json({ success: false, message: "Invalid blog ID" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid blog ID" });
 
     const blog = await Blog.findById(id);
     if (!blog)
-      return res.status(404).json({ success: false, message: "Blog not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
 
     const updateData = { ...req.body };
+    const parseStringArray = (input) => {
+      if (Array.isArray(input)) return input;
+      if (typeof input === "string") {
+        return input
+          .split(",")
+          .map((i) => i.trim())
+          .filter(Boolean);
+      }
+      return [];
+    };
+    if (updateData.tags) {
+  updateData.tags = parseStringArray(updateData.tags);
+}
+
+if (updateData.metaKeywords) {
+  updateData.metaKeywords = parseStringArray(updateData.metaKeywords);
+}
 
     // Handle title/slug update
     if (updateData.title && updateData.title !== blog.title) {
@@ -169,12 +199,12 @@ exports.updateBlog = async (req, res) => {
       // Check if new slug exists for another blog
       const existingSlug = await Blog.findOne({
         slug: updateData.slug,
-        _id: { $ne: id }
+        _id: { $ne: id },
       });
       if (existingSlug) {
         return res.status(400).json({
           success: false,
-          message: "A blog with this title already exists"
+          message: "A blog with this title already exists",
         });
       }
     }
@@ -191,10 +221,12 @@ exports.updateBlog = async (req, res) => {
 
     // Handle gallery images
     if (req.files && req.files.gallery) {
-      const newGalleryImages = req.files.gallery.map(file => getFileUrl(file));
+      const newGalleryImages = req.files.gallery.map((file) =>
+        getFileUrl(file),
+      );
       updateData.galleryImages = [
         ...(blog.galleryImages || []),
-        ...newGalleryImages
+        ...newGalleryImages,
       ];
     }
 
@@ -217,7 +249,7 @@ exports.updateBlog = async (req, res) => {
     const updatedBlog = await Blog.findByIdAndUpdate(
       id,
       { $set: updateData },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     return res.status(200).json({
@@ -248,8 +280,8 @@ exports.getAllBlogs = async (req, res) => {
       tag,
       featured,
       search,
-      sortBy = 'createdAt',
-      sortOrder = 'desc'
+      sortBy = "createdAt",
+      sortOrder = "desc",
     } = req.query;
 
     const query = {};
@@ -264,26 +296,26 @@ exports.getAllBlogs = async (req, res) => {
     if (tag) query.tags = tag;
 
     // Featured filter
-    if (featured !== undefined) query.featured = featured === 'true';
+    if (featured !== undefined) query.featured = featured === "true";
 
     // Search filter
     if (search) {
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { excerpt: { $regex: search, $options: 'i' } },
-        { content: { $regex: search, $options: 'i' } }
+        { title: { $regex: search, $options: "i" } },
+        { excerpt: { $regex: search, $options: "i" } },
+        { content: { $regex: search, $options: "i" } },
       ];
     }
 
     // Sort
     const sort = {};
-    sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+    sort[sortBy] = sortOrder === "desc" ? -1 : 1;
 
     const blogs = await Blog.find(query)
       .sort(sort)
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
-      .select('-content'); // Don't send full content in list
+      .select("-content"); // Don't send full content in list
 
     const total = await Blog.countDocuments(query);
 
@@ -294,8 +326,8 @@ exports.getAllBlogs = async (req, res) => {
         page: parseInt(page),
         limit: parseInt(limit),
         total,
-        pages: Math.ceil(total / limit)
-      }
+        pages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     return res.status(500).json({
@@ -314,12 +346,16 @@ exports.getBlogById = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: "Invalid blog ID" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid blog ID" });
     }
 
     const blog = await Blog.findById(id);
     if (!blog)
-      return res.status(404).json({ success: false, message: "Blog not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
 
     // Increment views
     blog.views += 1;
@@ -343,11 +379,15 @@ exports.deleteBlog = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(400).json({ success: false, message: "Invalid blog ID" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid blog ID" });
 
     const blog = await Blog.findById(id);
     if (!blog)
-      return res.status(404).json({ success: false, message: "Blog not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
 
     // Delete featured image
     if (blog.featuredImage) {
@@ -355,9 +395,11 @@ exports.deleteBlog = async (req, res) => {
     }
     // Delete gallery images
     if (blog.galleryImages && Array.isArray(blog.galleryImages)) {
-      await Promise.all(blog.galleryImages.map(async (imgUrl) => {
-        await deleteLocalImage(imgUrl);
-      }));
+      await Promise.all(
+        blog.galleryImages.map(async (imgUrl) => {
+          await deleteLocalImage(imgUrl);
+        }),
+      );
     }
 
     await Blog.deleteOne({ _id: id });
@@ -381,11 +423,13 @@ exports.deleteGalleryImage = async (req, res) => {
 
     const blog = await Blog.findById(id);
     if (!blog) {
-      return res.status(404).json({ success: false, message: "Blog not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
     }
 
     // Remove image from gallery array
-    blog.galleryImages = blog.galleryImages.filter(img => img !== imageUrl);
+    blog.galleryImages = blog.galleryImages.filter((img) => img !== imageUrl);
     await blog.save();
 
     // Delete from uploads folder
@@ -393,7 +437,7 @@ exports.deleteGalleryImage = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Image deleted successfully"
+      message: "Image deleted successfully",
     });
   } catch (error) {
     return res.status(500).json({
@@ -414,11 +458,13 @@ exports.getBlogStats = async (req, res) => {
         $group: {
           _id: null,
           totalBlogs: { $sum: 1 },
-          publishedBlogs: { $sum: { $cond: [{ $eq: ["$status", "published"] }, 1, 0] } },
+          publishedBlogs: {
+            $sum: { $cond: [{ $eq: ["$status", "published"] }, 1, 0] },
+          },
           totalViews: { $sum: "$views" },
           totalLikes: { $sum: "$likes" },
-          avgReadingTime: { $avg: "$readingTime" }
-        }
+          avgReadingTime: { $avg: "$readingTime" },
+        },
       },
       {
         $project: {
@@ -428,14 +474,14 @@ exports.getBlogStats = async (req, res) => {
           draftBlogs: { $subtract: ["$totalBlogs", "$publishedBlogs"] },
           totalViews: 1,
           totalLikes: 1,
-          avgReadingTime: { $round: ["$avgReadingTime", 1] }
-        }
-      }
+          avgReadingTime: { $round: ["$avgReadingTime", 1] },
+        },
+      },
     ]);
 
     return res.status(200).json({
       success: true,
-      data: stats[0] || {}
+      data: stats[0] || {},
     });
   } catch (error) {
     return res.status(500).json({

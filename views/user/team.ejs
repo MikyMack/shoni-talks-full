@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zxx">
 
-<!-- Mirrored from html.awaikenthemes.com/healix/programs.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:01 GMT -->
+<!-- Mirrored from html.awaikenthemes.com/healix/team.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:03 GMT -->
 <head>
 	<!-- Meta -->
 	<meta charset="utf-8">
@@ -11,7 +11,7 @@
 	<meta name="keywords" content="">
 	<meta name="author" content="Awaiken">
 	<!-- Page Title -->
-    <title>Shony Talks - Programs</title>
+    <title>Shony Talks - Team</title>
 	<!-- Favicon Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.png">
 	<!-- Google Fonts Css-->
@@ -34,14 +34,12 @@
 	<link rel="stylesheet" href="css/mousecursor.css">
 	<!-- Main Custom Css -->
 	<link href="css/custom.css" rel="stylesheet" media="screen">
-    <!-- toastify CSS -->
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
 
     <!-- Floating Icon Start-->
     <%- include('../partials/floatingIcons.ejs') %>
-    <!-- Floating Icon End -->  
+    <!-- Floating Icon End -->
 
     <!-- Header Start -->
 	  <%- include('../partials/header.ejs') %>
@@ -54,13 +52,8 @@
                 <div class="col-lg-12">
                     <!-- Page Header Box Start -->
                     <div class="page-header-box">
-                        <h1 class="text-anime-style-3" data-cursor="-opaque">Our Programs</h1>
-                        <nav class="wow fadeInUp">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/">home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Programs</li>
-                            </ol>
-                        </nav>
+                        <h1 class="text-anime-style-3" data-cursor="-opaque">Our Experts</h1>
+                        
                     </div>
                     <!-- Page Header Box End -->
                 </div>
@@ -69,100 +62,74 @@
     </div>
     <!-- Page Header End -->
 
-    <!-- Programs Section Start -->
-    <div class="page-programs">
+    <!-- Page Team Start -->
+    <div class="page-team">
         <div class="container">
-            <div class="row">
-                <% if (programs.length > 0) { %>
-                  <% programs.forEach(program => { %>
-
-                    <div class="col-lg-4 col-md-6">
-                      <div class="program-item wow fadeInUp">
-
-                        <div class="program-image">
-                          <a href="/program/<%= program.slug %>" data-cursor-text="View">
-                            <figure class="image-anime">
-                              <img src="/uploads/<%= program.image %>" alt="<%= program.title %>">
-                            </figure>
-                          </a>
-                        </div>
-
-                        <div class="program-body">
-                          <div class="program-content">
-                            <h3>
-                              <a href="/program/<%= program.slug %>">
-                                <%= program.title %>
-                              </a>
-                            </h3>
-
-                            <% if (program.shortDescription) { %>
-                              <p class="text-light"><%= program.shortDescription %></p>
-                            <% } %>
-
+          <div class="row">
+              <div class="col-lg-4 col-md-6">
+                  <div class="team-item wow fadeInUp" data-wow-delay="0.2s">
+                      <div class="team-image">
+                          <img src="images/team-1.jpg" alt="NLP Trainer">
+                          <div class="team-social">
+                              <ul>
+                                  <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                                  <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+                              </ul>
                           </div>
-
-                          <div class="program-readmore-btn">
-                            <a href="/program/<%= program.slug %>" class="btn-default btn-highlighted">
-                              Read More
-                            </a>
-                          </div>
-                        </div>
-
                       </div>
-                    </div>
-
-                  <% }) %>
-                <% } else { %>
-                  <p>No programs available</p>
-                <% } %>
-
-                </div>
-
-              <% if (totalPages > 1) { %>
-              <div class="col-lg-12">
-                <div class="page-pagination">
-                  <ul class="pagination">
-
-                    <!-- Prev -->
-                    <% if (currentPage > 1) { %>
-                      <li>
-                        <a href="?page=<%= currentPage - 1 %>">
-                          <i class="fa-solid fa-arrow-left-long"></i>
-                        </a>
-                      </li>
-                    <% } %>
-
-                    <!-- Numbers -->
-                    <% for (let i = 1; i <= totalPages; i++) { %>
-                      <li class="<%= currentPage === i ? 'active' : '' %>">
-                        <a href="?page=<%= i %>"><%= i %></a>
-                      </li>
-                    <% } %>
-
-                    <!-- Next -->
-                    <% if (currentPage < totalPages) { %>
-                      <li>
-                        <a href="?page=<%= currentPage + 1 %>">
-                          <i class="fa-solid fa-arrow-right-long"></i>
-                        </a>
-                      </li>
-                    <% } %>
-
-                  </ul>
-                </div>
+                      <div class="team-content">
+                          <h3>Expert Name</h3>
+                          <p>Lead NLP Trainer</p>
+                      </div>
+                  </div>
               </div>
-              <% } %> 
-            </div>
+
+              <div class="col-lg-4 col-md-6">
+                  <div class="team-item wow fadeInUp" data-wow-delay="0.4s">
+                      <div class="team-image">
+                          <img src="images/team-2.jpg" alt="Psychologist">
+                          <div class="team-social">
+                              <ul>
+                                  <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                                  <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+                              </ul>
+                          </div>
+                      </div>
+                      <div class="team-content">
+                          <h3>Expert Name</h3>
+                          <p>Counseling Psychologist</p>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-lg-4 col-md-6">
+                  <div class="team-item wow fadeInUp" data-wow-delay="0.6s">
+                      <div class="team-image">
+                          <img src="images/team-3.jpg" alt="Psychiatrist">
+                          <div class="team-social">
+                              <ul>
+                                  <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                                  <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+                              </ul>
+                          </div>
+                      </div>
+                      <div class="team-content">
+                          <h3>Expert Name</h3>
+                          <p>Consultant Psychiatrist</p>
+                      </div>
+                  </div>
+              </div>
+          </div>
         </div>
     </div>
-    <!-- Program Section End -->
+    <!-- Page Team End -->
 
     <!-- Main Footer Section Start -->
     <%- include('../partials/footer.ejs') %>
     <!-- Main Footer Section End -->
 
      <!-- Login modal start -->
-   <div class="modal fade" id="authModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="authModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content auth-modal">
           <!-- Close -->
@@ -230,13 +197,13 @@
                 </div>
 
                 <!-- GOOGLE LOGIN -->
-                <a href="/auth/google" class="google-btn w-100 d-flex justify-content-center align-items-center text-decoration-none">
-                <img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
-                  alt=""
-                />
-                Continue with Google
-              </a>
+                <button class="google-btn w-100">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+                    alt=""
+                  />
+                  Continue with Google
+                </button>
               </div>
             </div>
           </div>
@@ -285,5 +252,5 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 
-<!-- Mirrored from html.awaikenthemes.com/healix/programs.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:02 GMT -->
+<!-- Mirrored from html.awaikenthemes.com/healix/team.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 Apr 2026 07:36:03 GMT -->
 </html>
