@@ -1,114 +1,98 @@
-	  <header class="main-header bg-section">
-      <div class="header-sticky">
-        <nav class="navbar navbar-expand-lg">
-          <div class="container">
-            <!-- Logo Start -->
-            <a class="navbar-brand" href="/">
-              <img class="logo-img" src="/images/logo.png" alt="Logo" />
-            </a>
-            <!-- Logo End -->
+<header class="main-header bg-section">
+  <div class="header-sticky">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <!-- Logo Start -->
+        <a class="navbar-brand" href="/">
+          <img class="logo-img" src="/images/logo.png" alt="Logo" />
+        </a>
+        <!-- Logo End -->
 
-            <!-- Main Menu Start -->
-            <div class="collapse navbar-collapse main-menu">
-              <div class="nav-menu-wrapper">
-                <ul class="navbar-nav mr-auto" id="menu">
+        <!-- Main Menu Start -->
+        <div class="collapse navbar-collapse main-menu">
+          <div class="nav-menu-wrapper">
+            <ul class="navbar-nav mr-auto" id="menu">
+              <li class="nav-item">
+                <a class="nav-link" href="/">HOME</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about">ABOUT US</a>
+              </li>
+              <li class="nav-item submenu">
+                <a class="nav-link" href="/services">SERVICES</a>
+                <ul>
                   <li class="nav-item">
-                    <a class="nav-link" href="/">HOME</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/about">ABOUT US</a>
-                  </li>
-                  <li class="nav-item submenu">
-                    <a class="nav-link" href="/services">SERVICES</a>
-                    <ul>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/personal-service"
-                          >Personal Support</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/family-service"
-                          >Family Support</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/student-service"
-                          >Student Support</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/organization-service"
-                          >Corporate Wellness</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/workspace-service"
-                          >Workplace Wellness</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="/frontline-service"
-                          >Healthcare Support</a
-                        >
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="nav-item submenu">
-                   <a class="nav-link" href="/programs">PROGRAMS</a>
-                    <ul>
-                      <% if (allPrograms && allPrograms.length > 0) { %>
-                        <% allPrograms.forEach(program => { %>
-                          <li class="nav-item">
-                            <a class="nav-link" href="/program/<%= program.slug %>">
-                              <%= program.title %>
-                            </a>
-                          </li>
-                        <% }) %>
-                      <% } else { %>
-                        <li class="nav-item"><a class="nav-link" href="#">No Programs Available</a></li>
-                      <% } %>
-                    </ul>
+                    <a class="nav-link" href="/personal-service">Personal Support</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/courses">COURSES</a>
+                    <a class="nav-link" href="/family-service">Family Support</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/contact">CONTACT US</a>
+                    <a class="nav-link" href="/student-service">Student Support</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/organization-service">Corporate Wellness</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/workspace-service">Workplace Wellness</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/frontline-service">Healthcare Support</a>
                   </li>
                 </ul>
-              </div>
-
-              <!-- Header Btn Start -->
-              <div class="header-btn">
-
-  <% if (!user) { %>
-
-    <a
-      href="#"
-      class="profile-icon"
-      data-bs-toggle="modal"
-      data-bs-target="#authModal"
-    >
-      <i class="fa fa-user"></i>
-    </a>
-
-  <% } else { %>
-
-    <div class="dropdown">
-      <a href="/account" class="profile-icon">
-        <i class="fa fa-user"></i>
-      </a>
-    </div>
-
-  <% } %>
-
-</div>
-              <!-- Header Btn End -->
-            </div>
-            <!-- Main Menu End -->
-            <div class="navbar-toggle"></div>
+              </li>
+              <li class="nav-item submenu">
+                <a class="nav-link" href="/programs">PROGRAMS</a>
+                <ul>
+                  <% if (allPrograms && allPrograms.length> 0) { %>
+                    <% allPrograms.forEach(program=> { %>
+                      <li class="nav-item">
+                        <a class="nav-link" href="/program/<%= program.slug %>">
+                          <%= program.title %>
+                        </a>
+                      </li>
+                      <% }) %>
+                        <% } else { %>
+                          <li class="nav-item"><a class="nav-link" href="#">No Programs Available</a></li>
+                          <% } %>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/courses">COURSES</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/contact">CONTACT US</a>
+              </li>
+            </ul>
           </div>
-        </nav>
-        <div class="responsive-menu"></div>
+
+          <!-- Header Btn Start -->
+          <div class="header-btn">
+            <% if (!user) { %>
+             
+              <a href="#" 
+                 class="profile-btn d-flex align-items-center justify-content-center"
+                 style="background: #fff; border-radius: 50px; padding: 7px 20px; box-shadow: 0 2px 8px rgba(30,41,59,.07); color: #222; white-space: nowrap; font-weight: 500; font-size: 16px; gap: 10px; min-width: 0;"
+                 data-bs-toggle="modal" data-bs-target="#authModal">
+                <i class="fa fa-sign-in-alt" style="font-size: 18px; color: #6366f1;"></i>
+                <span>Sign In</span>
+              </a>
+            <% } else { %>
+           
+              <a href="/account" 
+                 class="profile-btn d-flex align-items-center justify-content-center"
+                 style="background: #fff; border-radius: 50px; padding: 7px 24px; box-shadow: 0 2px 8px rgba(30,41,59,.07); color: #222; white-space: nowrap; font-weight: 500; font-size: 16px; gap: 10px; min-width: 0;">
+                <i class="fa fa-user" style="font-size: 18px; color: #6366f1;"></i>
+                <span>Account</span>
+              </a>
+            <% } %>
+          </div>
+          <!-- Header Btn End -->
+        </div>
+        <!-- Main Menu End -->
+        <div class="navbar-toggle"></div>
       </div>
-    </header>
+    </nav>
+    <div class="responsive-menu"></div>
+  </div>
+</header>

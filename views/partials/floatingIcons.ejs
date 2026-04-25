@@ -1,8 +1,126 @@
-    <div class="floating-contact">
-        <a href="https://wa.me/919744975574" class="floating-icon whatsapp" target="_blank" title="WhatsApp Us">
-            <i class="fa-brands fa-whatsapp"></i>
-        </a>
-        <a href="tel:+919744975574" class="floating-icon phone" title="Call Us">
-            <i class="fa fa-phone"></i>
-        </a>
+<div class="floating-contact">
+  <button class="floating-icon chatbot" id="chatbotToggleBtn" title="Chat with us" type="button">
+    <i class="fa fa-comments"></i>
+  </button>
+
+  <a href="https://wa.me/919744975574" class="floating-icon whatsapp" target="_blank" title="WhatsApp Us">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <a href="tel:+919744975574" class="floating-icon phone" title="Call Us">
+    <i class="fa fa-phone"></i>
+  </a>
+</div>
+
+<div class="chatbot-panel" id="chatbotPanel" aria-hidden="true">
+  <div class="chatbot-header">
+    <div>
+      <strong>Shony Talks Assistant</strong>
+      <small>Ask about services, programs, and contact</small>
     </div>
+    <button type="button" class="chatbot-close" id="chatbotCloseBtn" aria-label="Close chat">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div class="chatbot-messages" id="chatbotMessages">
+    <div class="chatbot-message bot">
+      Hello! I can help you with Shony Talks programs, services, and how to book a session.
+    </div>
+  </div>
+
+  <form id="chatbotForm" class="chatbot-form">
+    <input
+      id="chatbotInput"
+      type="text"
+      placeholder="Type your message..."
+      autocomplete="off"
+      maxlength="400"
+      required
+    />
+    <button type="submit">Send</button>
+  </form>
+</div>
+
+<script>
+  (function () {
+    const toggleBtn = document.getElementById("chatbotToggleBtn");
+    const closeBtn = document.getElementById("chatbotCloseBtn");
+    const panel = document.getElementById("chatbotPanel");
+    const form = document.getElementById("chatbotForm");
+    const input = document.getElementById("chatbotInput");
+    const messages = document.getElementById("chatbotMessages");
+
+    if (!toggleBtn || !panel || !form || !input || !messages) return;
+
+    const history = [];
+
+    function appendMessage(role, text) {
+      const messageEl = document.createElement("div");
+      messageEl.className = "chatbot-message " + (role === "user" ? "user" : "bot");
+      messageEl.textContent = text;
+      messages.appendChild(messageEl);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function setPanel(open) {
+      panel.classList.toggle("open", open);
+      panel.setAttribute("aria-hidden", open ? "false" : "true");
+      if (open) input.focus();
+    }
+
+    async function askBot(message) {
+      appendMessage("user", message);
+      history.push({ role: "user", content: message });
+
+      const loadingEl = document.createElement("div");
+      loadingEl.className = "chatbot-message bot loading";
+      loadingEl.textContent = "Typing...";
+      messages.appendChild(loadingEl);
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const response = await fetch("/api/chatbot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, history }),
+        });
+
+        const data = await response.json();
+        loadingEl.remove();
+
+        const reply =
+          data && data.success && data.reply
+            ? data.reply
+            : "Sorry, I could not answer right now. Please try again or contact us on WhatsApp: +91 9744 975 574.";
+
+        appendMessage("assistant", reply);
+        history.push({ role: "assistant", content: reply });
+      } catch (error) {
+        loadingEl.remove();
+        appendMessage(
+          "assistant",
+          "I am having trouble connecting right now. Please try again in a moment."
+        );
+      }
+    }
+
+    toggleBtn.addEventListener("click", function () {
+      setPanel(!panel.classList.contains("open"));
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        setPanel(false);
+      });
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const message = input.value.trim();
+      if (!message) return;
+      input.value = "";
+      askBot(message);
+    });
+  })();
+</script>

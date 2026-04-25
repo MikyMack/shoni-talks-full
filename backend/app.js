@@ -60,6 +60,7 @@ const courseRoutes = require("./routes/courseRoute");
 const planRoutes = require("./routes/planRoute");
 const bannerRoutes = require("./routes/bannerRoutes");
 const publicRoutes = require("./routes/publicRoutes");
+const chatbotRoutes = require("./routes/chatbotRoutes");
 
 app.use("/admin", adminRoutes);
 app.use("/auth", authRoutes);
@@ -69,6 +70,7 @@ app.use("/testimonial", testimonialRoutes);
 app.use("/admin/courses", courseRoutes);
 app.use("/admin/plans", planRoutes);
 app.use("/admin/blogs", blogRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 app.use("/", publicRoutes);
 
 
