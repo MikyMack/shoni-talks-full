@@ -135,6 +135,7 @@ router.get("/program/:slug", async (req, res) => {
 // course page
 router.get("/courses", async (req, res) => {
   try {
+     const userId = req.user?._id;
     const page = parseInt(req.query.page) || 1;
     const limit = 6;
 
@@ -182,6 +183,19 @@ router.get("/courses", async (req, res) => {
         .limit(limit);
     }
 
+    let ownedCourseIds = [];
+
+    if (userId) {
+      const access = await UserAccess.find({ user: userId }).select("course");
+
+      ownedCourseIds = access.map((a) => a.course.toString());
+    }
+
+    // 🔥 attach flag
+    courses.forEach((course) => {
+      course.isOwned = ownedCourseIds.includes(course._id.toString());
+    });
+
     res.render("user/courses", {
       title: "Courses",
       courses,
@@ -219,6 +233,16 @@ router.get("/course/:slug", async (req, res) => {
     if (!course) {
       return res.status(404).send("Course not found");
     }
+     let isOwned = false;
+
+    if (req.user) {
+      const access = await UserAccess.findOne({
+        user: req.user._id,
+        course: course._id,
+      });
+
+      isOwned = !!access;
+    }
 
     // filter active videos (optional)
     course.videos = course.videos || [];
@@ -234,6 +258,7 @@ router.get("/course/:slug", async (req, res) => {
     res.render("user/courseDetails", {
       title: course.title,
       course,
+      isOwned,
       user: req.user || null,
     });
   } catch (error) {
@@ -896,22 +921,22 @@ async function grantPlanAccess(userId, plan, session) {
 router.get("/course/:id/videos", isAuthenticated, async (req, res) => {
   try {
     const access = await UserAccess.findOne({
-  user: req.user._id,
-  course: req.params.id,
-});
+      user: req.user._id,
+      course: req.params.id,
+    });
 
-const course = await Course.findById(req.params.id);
+    const course = await Course.findById(req.params.id);
 
-const videos = course.videos
-  .sort((a, b) => a.order - b.order)
-  .map((v, index) => ({
-    title: v.title,
-    url: v.url,
-    isPreview: v.isPreview,
+    const videos = course.videos
+      .sort((a, b) => a.order - b.order)
+      .map((v, index) => ({
+        title: v.title,
+        url: v.url,
+        isPreview: v.isPreview,
 
-    // 🔥 THIS is the real unlock logic
-    isUnlocked: index < (access?.currentVideoIndex || 0) || v.isPreview,
-  }));
+        // 🔥 THIS is the real unlock logic
+        isUnlocked: index < (access?.currentVideoIndex || 0) || v.isPreview,
+      }));
 
     return res.json({ videos });
   } catch (err) {

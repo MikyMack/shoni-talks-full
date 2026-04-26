@@ -154,19 +154,25 @@
               <div>📦 <%= course.resourcesCount || 0 %> resources</div>
             </div>
 
-            <div class="course-footer">
-              <div class="price">
-                <span class="current">₹<%= course.offerPrice || course.price %></span>
+<div class="course-footer">
+  <div class="price">
+    <span class="current">₹<%= course.offerPrice || course.price %></span>
 
-                <% if (course.offerPrice && course.offerPrice < course.price) { %>
-                  <span class="old">₹<%= course.price %></span>
-                <% } %>
-              </div>
+    <% if (course.offerPrice && course.offerPrice < course.price) { %>
+      <span class="old">₹<%= course.price %></span>
+    <% } %>
+  </div>
 
-              <a href="/course/<%= course.slug %>" class="btn-view">
-                Explore
-              </a>
-            </div>
+  <% if (course.isOwned) { %>
+    <span class="text-success fw-semibold">
+      ✔ You already have access to this course
+    </span>
+  <% } else { %>
+    <a href="/course/<%= course.slug %>" class="btn-view">
+      Explore
+    </a>
+  <% } %>
+</div>
 
           </div>
 
