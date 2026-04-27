@@ -223,16 +223,27 @@
             </div>
 
             <!-- BUY BUTTON -->
-            <a href="javascript:void(0)"
-              class="buy-btn d-grid"
-              data-type="course"
-              data-id="<%= course._id %>"
-              data-auth="<%= user ? 1 : 0 %>">
+            <% if (isOwned) { %>
+  <button class="btn btn-success btn-lg w-100" disabled>
+    ✔ You already have access to this course
+  </button>
 
-              <button class="btn btn-default btn-lg rounded-3">
-                Buy Now
-              </button>
-            </a>
+  <a href="/account" class="btn btn-outline-primary w-100 mt-2">
+    Go to My Courses
+  </a>
+
+<% } else { %>
+  <a href="javascript:void(0)"
+    class="buy-btn d-grid"
+    data-type="course"
+    data-id="<%= course._id %>"
+    data-auth="<%= user ? 1 : 0 %>">
+
+    <button class="btn btn-default btn-lg rounded-3">
+      Buy Now
+    </button>
+  </a>
+<% } %>
 
           </div>
         </div>
